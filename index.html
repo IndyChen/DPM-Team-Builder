@@ -115,14 +115,16 @@
                 下方的編隊選單將會自動過濾，為您推薦最符合您實戰能力的 DPS！
             </div>
             
-            <div class="header-actions" style="margin-bottom: 15px; justify-content: flex-start; gap: 10px;">
-                <button id="rot-all-btn" class="btn-reset" style="padding: 8px 15px; font-size: 0.95em;" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
-                <button style="background: #4caf50; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
-                <button style="background: #2196f3; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🔵')">🔵 中等</button>
-                <button style="background: #ffb300; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
-                <button style="background: #d32f2f; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+            <div class="header-actions" style="margin-bottom: 15px; justify-content: flex-start; gap: 15px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <button id="rot-all-btn" class="btn-reset" style="padding: 8px 15px; font-size: 0.95em;" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
+                    <button style="background: #4caf50; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
+                    <button style="background: #2196f3; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🔵')">🔵 中等</button>
+                    <button style="background: #ffb300; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
+                    <button style="background: #d32f2f; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+                </div>
                 
-                <input type="text" id="rot-search" placeholder="🔍 搜尋排軸內角色 (如: 千咲)..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 0.95em; max-width: 250px; flex: 1; outline: none; margin-left: auto;">
+                <input type="text" id="rot-search" placeholder="🔍 搜尋排軸內角色 (如: 千咲)..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 0.95em; min-width: 220px; max-width: 350px; flex: 1; outline: none;">
             </div>
 
             <div id="rotation-setup" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
@@ -137,7 +139,7 @@
 
         <div class="panel team-panel">
             <div class="header-actions" style="margin-bottom: 10px;">
-                <h3>4. 隊伍編排 (當前可組建16隊 )</h3>
+                <h3>4. 隊伍編排 (當前可組建16隊)</h3>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-export" onclick="exportImage()">📷 匯出完成隊伍圖片</button>
                     <button class="btn-reset" onclick="resetTeams()">🗑️ 清空隊伍重設</button>
