@@ -9,24 +9,23 @@
         /* 基礎全域設定 */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #f5f5f5; padding: 20px; max-width: 1300px; margin: auto; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
-        h2 { border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 15px; display: inline-block; color: #fff; word-break: break-word; }
+        h2 { border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 5px; display: inline-block; color: #fff; word-break: break-word; }
+        .data-source { color: #aaa; font-size: 0.9em; margin-bottom: 15px; font-style: italic; }
         
         .panel { background: #2b2b36; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 20px; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
         
-        /* 左側狀態面板 */
+        /* 左側與右側面板 */
         .pool-panel { flex: 1; min-width: 280px; max-height: 80vh; overflow-y: auto; position: sticky; top: 20px; }
-        
-        /* 右側隊伍面板 */
         .team-panel { flex: 2; min-width: 0; width: 100%; }
         
-        /* 角色勾選區塊樣式 */
+        /* 角色勾選區塊 */
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
         .checkbox-item { background: #3f3f4e; padding: 8px 12px; border-radius: 5px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 6px; border: 1px solid #555; transition: 0.2s; font-size: 0.95em; }
         .checkbox-item:hover { background: #4f4f60; }
         input[type="checkbox"] { cursor: pointer; transform: scale(1.2); }
         
-        /* 表格區塊保護 */
+        /* 表格區塊 */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
         th, td { border: 1px solid #444; padding: 12px 8px; text-align: center; }
@@ -44,7 +43,7 @@
         
         .type-title { color: #d4af37; margin-top: 15px; margin-bottom: 10px; font-size: 1.1em; font-weight: bold; border-bottom: 1px solid #555; padding-bottom: 5px; position: sticky; top: 0; background: #2b2b36; z-index: 10; }
         
-        /* 按鈕與標題佈局 */
+        /* 按鈕佈局 */
         .header-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .header-actions h3 { margin: 0; }
         .btn-reset { background-color: #d9534f; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
@@ -77,17 +76,17 @@
 </head>
 <body>
 
-    <h2>鳴潮矩陣編隊工具 v4.6.1 (搜尋與快篩升級版)</h2>
+    <h2>鳴潮矩陣編隊工具 v4.6.2 (全面優化版)</h2>
+    <div class="data-source">📊 數據計算與統計：QuichilOvO、南邊 / 收集整理：Kolton</div>
 
     <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
-        <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新日誌 (v4.6.1)</summary>
+        <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新日誌 (v4.6.2)</summary>
         <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6;">
-            <strong>[v4.6.1] 體驗升級 (QoL Improvements)</strong><br>
-            - 🔍 <strong>簡繁無縫部分搜索</strong>：新增角色搜尋框，支援部分匹配（如輸入「千」即可），並內建字典，允許輸入簡體字（如「卡卡罗」）也能準確找到繁體角色。<br>
-            - ⚡ <strong>常駐排軸快篩</strong>：於排軸面板新增常駐的 5 顆快捷鍵。總開關「一鍵全選/清空」確保放置於首位，搭配 4 顆特定難度（🟩/🔵/⭐/⚠️）獨立開關，極大化過濾效率。<br>
-            <strong>[v4.5.1] 重大疊代 (客製排軸)</strong><br>
-            - 🎯 <strong>自訂排軸資料庫</strong>：隱藏未擁有的隊伍，允許精確取消勾選不會打的排軸，下拉選單動態連動真實 DPS。<br>
-            - 🔓 <strong>一號位解禁</strong>：現在玩家可於一號位自由選擇所有已擁有的角色作為主 C。<br>
+            <strong>[v4.6.2] 全面優化與校正 (Optimization & Fixes)</strong><br>
+            - 🐞 <strong>重整 UI 修復</strong>：修復網頁重新整理後，「清空/全選排軸」按鈕未能正確讀取 LocalStorage 狀態，導致全空時按鈕仍顯示紅色的 Bug。<br>
+            - 🔍 <strong>排軸快搜實裝</strong>：在「配置實戰排軸」區塊新增專屬搜尋框，支援簡繁與部分匹配，找特定角色的排軸更有效率。<br>
+            - 📊 <strong>數據全面校正</strong>：依照最新數據，更新卡卡羅、菲比、愛彌斯等所有隊伍的排軸與 DPS 數值。<br>
+            - ⚔️ <strong>漂泊者型態分離</strong>：配隊選單正式將漂泊者分離為「光主、暗主、風主」。三者共用同一個「漂泊者」的耐力上限，因遊戲當前如此設定！<br>
         </div>
     </details>
     
@@ -99,7 +98,7 @@
             <div style="margin-top: 15px;">
                 <div class="header-actions" style="margin-bottom: 10px; justify-content: flex-start; gap: 15px;">
                     <button id="roster-switch" class="btn-reset" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
-                    <input type="text" id="char-search" placeholder="🔍 搜尋角色 (支援簡繁部分搜索)..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 1em; max-width: 250px; flex: 1; outline: none;">
+                    <input type="text" id="char-search" placeholder="🔍 搜尋擁有角色 (支援簡繁)..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 1em; max-width: 250px; flex: 1; outline: none;">
                 </div>
                 <div id="roster-setup"></div>
             </div>
@@ -122,6 +121,8 @@
                 <button style="background: #2196f3; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🔵')">🔵 中等</button>
                 <button style="background: #ffb300; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
                 <button style="background: #d32f2f; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+                
+                <input type="text" id="rot-search" placeholder="🔍 搜尋排軸內角色 (如: 千咲)..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 0.95em; max-width: 250px; flex: 1; outline: none; margin-left: auto;">
             </div>
 
             <div id="rotation-setup" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
@@ -136,7 +137,7 @@
 
         <div class="panel team-panel">
             <div class="header-actions" style="margin-bottom: 10px;">
-                <h3>4. 隊伍編排 (極限 16 關)</h3>
+                <h3>4. 隊伍編排 (當前可組建16隊 )</h3>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-export" onclick="exportImage()">📷 匯出完成隊伍圖片</button>
                     <button class="btn-reset" onclick="resetTeams()">🗑️ 清空隊伍重設</button>
@@ -153,240 +154,107 @@
                 <table>
                     <thead>
                         <tr>
-                            <th width="10%">關卡</th>
+                            <th width="10%">隊伍</th>
                             <th width="30%">位置 1 (主輸出)</th>
                             <th width="30%">位置 2 (副C/輔助)</th>
                             <th width="30%">位置 3 (生存/輔助)</th>
                         </tr>
                     </thead>
-                    <tbody id="team-board">
-                        </tbody>
+                    <tbody id="team-board"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
 <script>
+    // 角色基本屬性宣告 (共 45 名)
     const charData = {
-        "白芷": { max: 2, type: "生存位 (可用 2 次)" },
-        "維里奈": { max: 2, type: "生存位 (可用 2 次)" },
-        "守岸人": { max: 2, type: "生存位 (可用 2 次)" },
-        "卜靈": { max: 2, type: "生存位 (可用 2 次)" },
-        "莫寧": { max: 2, type: "生存位 (可用 2 次)" },
-        "漂泊者": { max: 1, type: "一般角色 (可用 1 次)" },
-        "今汐": { max: 1, type: "一般角色 (可用 1 次)" },
-        "長離": { max: 1, type: "一般角色 (可用 1 次)" },
-        "忌炎": { max: 1, type: "一般角色 (可用 1 次)" },
-        "相里要": { max: 1, type: "一般角色 (可用 1 次)" },
-        "椿": { max: 1, type: "一般角色 (可用 1 次)" },
-        "折枝": { max: 1, type: "一般角色 (可用 1 次)" },
-        "吟霖": { max: 1, type: "一般角色 (可用 1 次)" },
-        "卡卡羅": { max: 1, type: "一般角色 (可用 1 次)" },
-        "鑒心": { max: 1, type: "一般角色 (可用 1 次)" },
-        "凌陽": { max: 1, type: "一般角色 (可用 1 次)" },
-        "弗洛洛": { max: 1, type: "一般角色 (可用 1 次)" },
-        "坎特蕾拉": { max: 1, type: "一般角色 (可用 1 次)" },
-        "陸·赫斯": { max: 1, type: "一般角色 (可用 1 次)" },
-        "琳奈": { max: 1, type: "一般角色 (可用 1 次)" },
-        "千咲": { max: 1, type: "一般角色 (可用 1 次)" },
-        "贊妮": { max: 1, type: "一般角色 (可用 1 次)" },
-        "菲比": { max: 1, type: "一般角色 (可用 1 次)" },
-        "仇遠": { max: 1, type: "一般角色 (可用 1 次)" },
-        "尤諾": { max: 1, type: "一般角色 (可用 1 次)" },
-        "卡提希婭": { max: 1, type: "一般角色 (可用 1 次)" },
-        "夏空": { max: 1, type: "一般角色 (可用 1 次)" },
-        "奧古斯塔": { max: 1, type: "一般角色 (可用 1 次)" },
-        "愛彌斯": { max: 1, type: "一般角色 (可用 1 次)" },
-        "嘉貝莉娜": { max: 1, type: "一般角色 (可用 1 次)" },
-        "露帕": { max: 1, type: "一般角色 (可用 1 次)" },
-        "布蘭特": { max: 1, type: "一般角色 (可用 1 次)" },
-        "珂萊塔": { max: 1, type: "一般角色 (可用 1 次)" },
-        "洛可可": { max: 1, type: "一般角色 (可用 1 次)" },
-        "丹瑾": { max: 1, type: "一般角色 (可用 1 次)" },
-        "桃祈": { max: 1, type: "一般角色 (可用 1 次)" },
-        "燈燈": { max: 1, type: "一般角色 (可用 1 次)" },
-        "秋水": { max: 1, type: "一般角色 (可用 1 次)" },
-        "秧秧": { max: 1, type: "一般角色 (可用 1 次)" },
-        "淵武": { max: 1, type: "一般角色 (可用 1 次)" },
-        "莫特斐": { max: 1, type: "一般角色 (可用 1 次)" },
-        "安可": { max: 1, type: "一般角色 (可用 1 次)" },
-        "熾霞": { max: 1, type: "一般角色 (可用 1 次)" },
-        "釉瑚": { max: 1, type: "一般角色 (可用 1 次)" },
+        "白芷": { max: 2, type: "生存位 (可用 2 次)" }, "維里奈": { max: 2, type: "生存位 (可用 2 次)" },
+        "守岸人": { max: 2, type: "生存位 (可用 2 次)" }, "卜靈": { max: 2, type: "生存位 (可用 2 次)" },
+        "莫寧": { max: 2, type: "生存位 (可用 2 次)" }, "漂泊者": { max: 1, type: "一般角色 (可用 1 次)" },
+        "今汐": { max: 1, type: "一般角色 (可用 1 次)" }, "長離": { max: 1, type: "一般角色 (可用 1 次)" },
+        "忌炎": { max: 1, type: "一般角色 (可用 1 次)" }, "相里要": { max: 1, type: "一般角色 (可用 1 次)" },
+        "椿": { max: 1, type: "一般角色 (可用 1 次)" }, "折枝": { max: 1, type: "一般角色 (可用 1 次)" },
+        "吟霖": { max: 1, type: "一般角色 (可用 1 次)" }, "卡卡羅": { max: 1, type: "一般角色 (可用 1 次)" },
+        "鑒心": { max: 1, type: "一般角色 (可用 1 次)" }, "凌陽": { max: 1, type: "一般角色 (可用 1 次)" },
+        "弗洛洛": { max: 1, type: "一般角色 (可用 1 次)" }, "坎特蕾拉": { max: 1, type: "一般角色 (可用 1 次)" },
+        "陸·赫斯": { max: 1, type: "一般角色 (可用 1 次)" }, "琳奈": { max: 1, type: "一般角色 (可用 1 次)" },
+        "千咲": { max: 1, type: "一般角色 (可用 1 次)" }, "贊妮": { max: 1, type: "一般角色 (可用 1 次)" },
+        "菲比": { max: 1, type: "一般角色 (可用 1 次)" }, "仇遠": { max: 1, type: "一般角色 (可用 1 次)" },
+        "尤諾": { max: 1, type: "一般角色 (可用 1 次)" }, "卡提希婭": { max: 1, type: "一般角色 (可用 1 次)" },
+        "夏空": { max: 1, type: "一般角色 (可用 1 次)" }, "奧古斯塔": { max: 1, type: "一般角色 (可用 1 次)" },
+        "愛彌斯": { max: 1, type: "一般角色 (可用 1 次)" }, "嘉貝莉娜": { max: 1, type: "一般角色 (可用 1 次)" },
+        "露帕": { max: 1, type: "一般角色 (可用 1 次)" }, "布蘭特": { max: 1, type: "一般角色 (可用 1 次)" },
+        "珂萊塔": { max: 1, type: "一般角色 (可用 1 次)" }, "洛可可": { max: 1, type: "一般角色 (可用 1 次)" },
+        "丹瑾": { max: 1, type: "一般角色 (可用 1 次)" }, "桃祈": { max: 1, type: "一般角色 (可用 1 次)" },
+        "燈燈": { max: 1, type: "一般角色 (可用 1 次)" }, "秋水": { max: 1, type: "一般角色 (可用 1 次)" },
+        "秧秧": { max: 1, type: "一般角色 (可用 1 次)" }, "淵武": { max: 1, type: "一般角色 (可用 1 次)" },
+        "莫特斐": { max: 1, type: "一般角色 (可用 1 次)" }, "安可": { max: 1, type: "一般角色 (可用 1 次)" },
+        "熾霞": { max: 1, type: "一般角色 (可用 1 次)" }, "釉瑚": { max: 1, type: "一般角色 (可用 1 次)" },
         "散華": { max: 1, type: "一般角色 (可用 1 次)" }
     };
 
-    // 🏆 結合實戰排軸(rot)與難度(diff)的完整資料庫
     const dpsData = [
-        {c1:"椿", c2:"散華", c3:"守岸人", dps:5.59, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"椿", c2:"洛可可", c3:"守岸人", dps:6.35, rot:"常規", diff:"⭐", gen:1}, 
-        {c1:"椿", c2:"洛可可", c3:"守岸人", dps:5.95, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"漂泊者", c2:"琳奈", c3:"守岸人", dps:7.10, rot:"錯亂2min軸", diff:"⭐", gen:1}, 
-        {c1:"漂泊者", c2:"琳奈", c3:"守岸人", dps:6.77, rot:"錯輪", diff:"🔵", gen:1}, 
-        {c1:"漂泊者", c2:"琳奈", c3:"守岸人", dps:5.48, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"漂泊者", c2:"散華", c3:"守岸人", dps:6.16, rot:"錯輪", diff:"🔵", gen:1}, 
-        {c1:"漂泊者", c2:"散華", c3:"守岸人", dps:5.40, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"漂泊者", c2:"洛可可", c3:"守岸人", dps:6.48, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"漂泊者", c2:"洛可可", c3:"守岸人", dps:5.60, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"今汐", c2:"坎特蕾拉", c3:"守岸人", dps:6.07, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"今汐", c2:"折枝", c3:"守岸人", dps:6.38, rot:"常規", diff:"⭐", gen:1}, 
-        {c1:"今汐", c2:"折枝", c3:"守岸人", dps:5.85, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"今汐", c2:"折枝", c3:"卜靈", dps:5.77, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"今汐", c2:"吟霖", c3:"守岸人", dps:6.45, rot:"錯輪", diff:"⭐", gen:1}, 
-        {c1:"今汐", c2:"吟霖", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"安可", c2:"露帕", c3:"莫寧", dps:6.47, rot:"常規上限", diff:"🔵", gen:1}, 
-        {c1:"安可", c2:"露帕", c3:"守岸人", dps:6.25, rot:"6鏈安可", diff:"🔵", gen:1}, 
-        {c1:"安可", c2:"露帕", c3:"守岸人", dps:5.79, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"安可", c2:"散華", c3:"守岸人", dps:5.50, rot:"錯輪", diff:"🔵", gen:1}, 
-        {c1:"安可", c2:"散華", c3:"守岸人", dps:5.00, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"莫寧", dps:7.20, rot:"極限", diff:"⭐", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"莫寧", dps:6.90, rot:"錯輪", diff:"⭐", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"莫寧", dps:6.40, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"守岸人", dps:6.01, rot:"7離火", diff:"⭐", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"守岸人", dps:5.83, rot:"6離火", diff:"🔵", gen:1}, 
-        {c1:"長離", c2:"露帕", c3:"守岸人", dps:5.63, rot:"5離火", diff:"🟩", gen:1}, 
-        {c1:"長離", c2:"散華", c3:"守岸人", dps:4.81, rot:"錯輪3延", diff:"🔵", gen:1}, 
-        {c1:"長離", c2:"散華", c3:"守岸人", dps:4.20, rot:"常規", diff:"🟩", gen:1}, 
-        {c1:"忌炎", c2:"夏空", c3:"守岸人", dps:7.81, rot:"龍切", diff:"⭐", gen:1}, 
-        {c1:"忌炎", c2:"夏空", c3:"守岸人", dps:6.79, rot:"常規", diff:"⭐", gen:1}, 
-        {c1:"忌炎", c2:"夏空", c3:"尤諾", dps:6.55, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"忌炎", c2:"莫特斐", c3:"守岸人", dps:5.85, rot:"常規", diff:"⭐", gen:1}, 
-        {c1:"忌炎", c2:"莫特斐", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"相里要", c2:"琳奈", c3:"守岸人", dps:6.28, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"相里要", c2:"吟霖", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"相里要", c2:"散華", c3:"守岸人", dps:4.58, rot:"錯輪3變", diff:"🔵", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.74, rot:"6鏈卡1Z4死告", diff:"⚠️", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.53, rot:"6鏈卡4死告", diff:"⭐", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.20, rot:"6鏈卡3死告", diff:"🔵", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:6.40, rot:"4死告", diff:"⭐", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:6.10, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:5.80, rot:"3Z2死告", diff:"🟩", gen:1}, 
-        {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:6.10, rot:"6鏈卡4死告", diff:"⭐", gen:1}, 
-        {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:5.72, rot:"6鏈卡3死告", diff:"🔵", gen:1}, 
-        {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:5.07, rot:"4死告", diff:"⭐", gen:1}, 
-        {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:4.65, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"卡卡羅", c2:"散華", c3:"守岸人", dps:4.13, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"凌陽", c2:"琳奈", c3:"守岸人", dps:5.18, rot:"常規", diff:"🔵", gen:1}, 
-        {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:5.08, rot:"6鏈豹", diff:"🔵", gen:1}, 
-        {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:4.32, rot:"常規", diff:"🔵", gen:1},
-        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:9.02, rot:"1鏈莫", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:8.57, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"嘉貝莉娜", c3:"仇遠", dps:8.55, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"守岸人", dps:8.00, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"仇遠", dps:7.96, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"洛可可", dps:7.51, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"仇遠", c3:"守岸人", dps:7.86, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"卜靈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"弗洛洛", c2:"燈燈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"坎特蕾拉", c2:"散華", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"坎特蕾拉", c2:"散華", c3:"守岸人", dps:5.37, rot:"錯輪", diff:"🔵", gen:2}, 
-        {c1:"千咲", c2:"琳奈", c3:"守岸人", dps:6.40, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"千咲", c2:"洛可可", c3:"守岸人", dps:4.51, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"贊妮", c2:"菲比", c3:"漂泊者", dps:9.15, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"贊妮", c2:"菲比", c3:"漂泊者", dps:8.39, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"贊妮", c2:"菲比", c3:"千咲", dps:8.34, rot:"奶套千", diff:"🔵", gen:2}, 
-        {c1:"贊妮", c2:"菲比", c3:"守岸人", dps:7.95, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"贊妮", c2:"菲比", c3:"守岸人", dps:7.18, rot:"基礎", diff:"🟩", gen:2}, 
-        {c1:"贊妮", c2:"漂泊者", c3:"守岸人", dps:4.78, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"菲比", c2:"漂泊者", c3:"琳奈", dps:6.52, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"菲比", c2:"漂泊者", c3:"守岸人", dps:5.16, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"莫寧", dps:8.56, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"莫寧", dps:7.84, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"琳奈", c3:"守岸人", dps:8.26, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:9.15, rot:"雙錨錯延", diff:"⚠️", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:8.80, rot:"雙錨縮軸改", diff:"⭐", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:8.31, rot:"單錨改", diff:"⚠️", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:7.67, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:8.68, rot:"4旋踢", diff:"⚠️", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:8.11, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:7.77, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"守岸人", dps:8.02, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"守岸人", dps:7.35, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"長離", dps:7.67, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"露帕", c3:"長離", dps:6.72, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"嘉貝莉娜", c2:"莫特斐", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:8.35, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:7.53, rot:"常規下限", diff:"🔵", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:7.20, rot:"基礎", diff:"🟩", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.74, rot:"雙錨縮軸", diff:"⭐", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.57, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.00, rot:"單錨", diff:"🔵", gen:2}, 
-        {c1:"布蘭特", c2:"露帕", c3:"守岸人", dps:7.73, rot:"改軸", diff:"🔵", gen:2}, 
-        {c1:"布蘭特", c2:"散華", c3:"守岸人", dps:5.43, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"露帕", c2:"琳奈", c3:"守岸人", dps:5.68, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:11.00, rot:"劍切", diff:"⚠️", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:9.72, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:9.01, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"漂泊者", dps:9.30, rot:"劍切", diff:"⭐", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"漂泊者", dps:8.47, rot:"雙下", diff:"⭐", gen:2}, 
-        {c1:"卡提希婭", c2:"夏空", c3:"漂泊者", dps:8.20, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"卡提希婭", c2:"散華", c3:"漂泊者", dps:6.39, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"卡提希婭", c2:"漂泊者", c3:"卜靈", dps:6.39, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"夏空", dps:8.67, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:9.20, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:8.41, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"莫寧", dps:8.47, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"莫寧", dps:8.10, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:7.90, rot:"基礎", diff:"🟩", gen:2}, 
-        {c1:"尤諾", c2:"夏空", c3:"守岸人", dps:7.92, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"尤諾", c2:"夏空", c3:"守岸人", dps:7.45, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"尤諾", c2:"散華", c3:"守岸人", dps:5.03, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"夏空", c2:"千咲", c3:"守岸人", dps:7.64, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"夏空", c2:"千咲", c3:"守岸人", dps:7.38, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"夏空", c2:"散華", c3:"守岸人", dps:6.23, rot:"錯輪", diff:"🔵", gen:2}, 
-        {c1:"夏空", c2:"散華", c3:"守岸人", dps:5.53, rot:"基礎", diff:"🟩", gen:2}, 
-        {c1:"仇遠", c2:"弗洛洛", c3:"守岸人", dps:8.34, rot:"仇3鏈", diff:"🔵", gen:2}, 
-        {c1:"仇遠", c2:"夏空", c3:"守岸人", dps:5.65, rot:"夏雙延", diff:"🔵", gen:2}, 
-        {c1:"仇遠", c2:"夏空", c3:"守岸人", dps:5.54, rot:"仇雙延", diff:"🔵", gen:2}, 
-        {c1:"仇遠", c2:"莫特斐", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"奧古斯塔", c2:"尤諾", c3:"琳奈", dps:8.50, rot:"2旋1升", diff:"🔵", gen:2}, 
-        {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:9.05, rot:"2旋4升", diff:"⭐", gen:2}, 
-        {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:8.79, rot:"2旋3升", diff:"⭐", gen:2}, 
-        {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:8.28, rot:"2旋1升", diff:"🔵", gen:2}, 
-        {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:7.67, rot:"2旋", diff:"🟩", gen:2}, 
-        {c1:"奧古斯塔", c2:"莫特斐", c3:"守岸人", dps:7.35, rot:"4旋1升", diff:"⭐", gen:2}, 
-        {c1:"奧古斯塔", c2:"莫特斐", c3:"守岸人", dps:7.00, rot:"3旋1升", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"琳奈", c3:"莫寧", dps:6.98, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"琳奈", c3:"守岸人", dps:7.08, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"布蘭特", c3:"守岸人", dps:6.71, rot:"極限", diff:"⭐", gen:2}, 
-        {c1:"珂萊塔", c2:"折枝", c3:"守岸人", dps:6.45, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"燈燈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"卜靈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵", gen:2}, 
-        {c1:"珂萊塔", c2:"散華", c3:"守岸人", dps:5.53, rot:"錯輪3變", diff:"🔵", gen:2},
-
+        {c1:"椿", c2:"散華", c3:"守岸人", dps:5.59, rot:"常規", diff:"🟩", gen:1}, {c1:"椿", c2:"洛可可", c3:"守岸人", dps:6.35, rot:"常規", diff:"⭐", gen:1}, {c1:"椿", c2:"洛可可", c3:"守岸人", dps:5.95, rot:"常規", diff:"🔵", gen:1},
+        {c1:"暗主", c2:"琳奈", c3:"守岸人", dps:7.10, rot:"錯亂2min軸", diff:"⭐", gen:1}, {c1:"暗主", c2:"琳奈", c3:"守岸人", dps:6.77, rot:"錯輪", diff:"🔵", gen:1}, {c1:"暗主", c2:"琳奈", c3:"守岸人", dps:5.48, rot:"常規", diff:"🟩", gen:1},
+        {c1:"暗主", c2:"散華", c3:"守岸人", dps:6.16, rot:"錯輪", diff:"🔵", gen:1}, {c1:"暗主", c2:"散華", c3:"守岸人", dps:5.40, rot:"常規", diff:"🟩", gen:1}, {c1:"暗主", c2:"洛可可", c3:"守岸人", dps:6.48, rot:"常規", diff:"🔵", gen:1}, {c1:"暗主", c2:"洛可可", c3:"守岸人", dps:5.60, rot:"常規", diff:"🟩", gen:1},
+        {c1:"今汐", c2:"坎特蕾拉", c3:"守岸人", dps:6.07, rot:"常規", diff:"🔵", gen:1}, {c1:"今汐", c2:"折枝", c3:"守岸人", dps:6.38, rot:"常規", diff:"⭐", gen:1}, {c1:"今汐", c2:"折枝", c3:"守岸人", dps:5.85, rot:"常規", diff:"🔵", gen:1}, {c1:"今汐", c2:"折枝", c3:"卜靈", dps:5.77, rot:"常規", diff:"🔵", gen:1}, {c1:"今汐", c2:"吟霖", c3:"守岸人", dps:6.45, rot:"錯輪", diff:"⭐", gen:1}, {c1:"今汐", c2:"吟霖", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵", gen:1},
+        {c1:"安可", c2:"露帕", c3:"莫寧", dps:6.47, rot:"常規上限", diff:"🔵", gen:1}, {c1:"安可", c2:"露帕", c3:"守岸人", dps:6.25, rot:"6鏈安可", diff:"🔵", gen:1}, {c1:"安可", c2:"露帕", c3:"守岸人", dps:5.79, rot:"常規", diff:"🔵", gen:1}, {c1:"安可", c2:"散華", c3:"守岸人", dps:5.50, rot:"錯輪", diff:"🔵", gen:1}, {c1:"安可", c2:"散華", c3:"守岸人", dps:5.00, rot:"常規", diff:"🟩", gen:1},
+        {c1:"長離", c2:"露帕", c3:"莫寧", dps:7.20, rot:"極限", diff:"⭐", gen:1}, {c1:"長離", c2:"露帕", c3:"莫寧", dps:6.90, rot:"錯輪", diff:"⭐", gen:1}, {c1:"長離", c2:"露帕", c3:"莫寧", dps:6.40, rot:"常規", diff:"🔵", gen:1}, {c1:"長離", c2:"露帕", c3:"守岸人", dps:6.01, rot:"7離火", diff:"⭐", gen:1}, {c1:"長離", c2:"露帕", c3:"守岸人", dps:5.83, rot:"6離火", diff:"🔵", gen:1}, {c1:"長離", c2:"露帕", c3:"守岸人", dps:5.63, rot:"5離火", diff:"🟩", gen:1}, {c1:"長離", c2:"散華", c3:"守岸人", dps:4.81, rot:"錯輪3延", diff:"🔵", gen:1}, {c1:"長離", c2:"散華", c3:"守岸人", dps:4.20, rot:"常規", diff:"🟩", gen:1},
+        {c1:"忌炎", c2:"夏空", c3:"守岸人", dps:7.81, rot:"龍切", diff:"⭐", gen:1}, {c1:"忌炎", c2:"夏空", c3:"守岸人", dps:6.79, rot:"常規", diff:"⭐", gen:1}, {c1:"忌炎", c2:"夏空", c3:"尤諾", dps:6.55, rot:"常規", diff:"🔵", gen:1}, {c1:"忌炎", c2:"莫特斐", c3:"守岸人", dps:5.85, rot:"常規", diff:"⭐", gen:1}, {c1:"忌炎", c2:"莫特斐", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵", gen:1},
+        {c1:"相里要", c2:"琳奈", c3:"守岸人", dps:6.28, rot:"常規", diff:"🔵", gen:1}, {c1:"相里要", c2:"吟霖", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵", gen:1}, {c1:"相里要", c2:"散華", c3:"守岸人", dps:4.58, rot:"錯輪3變", diff:"🔵", gen:1},
+        {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.65, rot:"6鏈卡1Z4死告", diff:"⚠️", gen:1}, {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.53, rot:"6鏈卡4死告", diff:"⭐", gen:1}, {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:7.20, rot:"6鏈卡3死告", diff:"🔵", gen:1}, {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:6.40, rot:"4死告", diff:"⭐", gen:1}, {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:6.10, rot:"常規", diff:"🔵", gen:1}, {c1:"卡卡羅", c2:"琳奈", c3:"守岸人", dps:5.80, rot:"3Z2死告", diff:"🟩", gen:1}, {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:6.10, rot:"6鏈卡4死告", diff:"⭐", gen:1}, {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:5.72, rot:"6鏈卡3死告", diff:"🔵", gen:1}, {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:5.07, rot:"4死告", diff:"⭐", gen:1}, {c1:"卡卡羅", c2:"吟霖", c3:"守岸人", dps:4.65, rot:"常規", diff:"🔵", gen:1}, {c1:"卡卡羅", c2:"散華", c3:"守岸人", dps:4.13, rot:"常規", diff:"🔵", gen:1},
+        {c1:"凌陽", c2:"琳奈", c3:"守岸人", dps:5.18, rot:"常規", diff:"🔵", gen:1}, {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:5.08, rot:"6鏈豹", diff:"🔵", gen:1}, {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:4.32, rot:"常規", diff:"🔵", gen:1},
+        
+        {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:9.02, rot:"1鏈莫", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:8.57, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"嘉貝莉娜", c3:"仇遠", dps:8.55, rot:"極限", diff:"⭐", gen:2}, {c1:"弗洛洛", c2:"坎特蕾拉", c3:"守岸人", dps:8.00, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"坎特蕾拉", c3:"仇遠", dps:7.96, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"坎特蕾拉", c3:"洛可可", dps:7.51, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"仇遠", c3:"守岸人", dps:7.86, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"卜靈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵", gen:2}, {c1:"弗洛洛", c2:"燈燈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵", gen:2},
+        {c1:"坎特蕾拉", c2:"散華", c3:"守岸人", dps:5.73, rot:"1鏈坎", diff:"🔵", gen:2}, {c1:"坎特蕾拉", c2:"散華", c3:"守岸人", dps:5.37, rot:"錯輪1鏈坎", diff:"🔵", gen:2},
+        {c1:"千咲", c2:"琳奈", c3:"守岸人", dps:6.40, rot:"常規", diff:"🔵", gen:2}, {c1:"千咲", c2:"洛可可", c3:"守岸人", dps:4.51, rot:"常規", diff:"🔵", gen:2},
+        {c1:"贊妮", c2:"菲比", c3:"光主", dps:9.15, rot:"極限", diff:"⭐", gen:2}, {c1:"贊妮", c2:"菲比", c3:"光主", dps:8.39, rot:"常規", diff:"🔵", gen:2}, {c1:"贊妮", c2:"菲比", c3:"千咲", dps:8.34, rot:"奶套千", diff:"🔵", gen:2}, {c1:"贊妮", c2:"菲比", c3:"守岸人", dps:7.95, rot:"常規", diff:"🔵", gen:2}, {c1:"贊妮", c2:"菲比", c3:"守岸人", dps:7.18, rot:"基礎", diff:"🟩", gen:2}, {c1:"贊妮", c2:"光主", c3:"守岸人", dps:4.78, rot:"常規", diff:"🔵", gen:2},
+        {c1:"菲比", c2:"光主", c3:"琳奈", dps:6.52, rot:"常規", diff:"🔵", gen:2}, {c1:"菲比", c2:"光主", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵", gen:2},
+        {c1:"嘉貝莉娜", c2:"露帕", c3:"莫寧", dps:8.56, rot:"極限", diff:"⭐", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"莫寧", dps:7.84, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"琳奈", c3:"守岸人", dps:8.26, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:9.15, rot:"雙錨錯延", diff:"⚠️", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:8.80, rot:"雙錨縮軸改", diff:"⭐", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:8.31, rot:"單錨改", diff:"⚠️", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"布蘭特", dps:7.67, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:8.68, rot:"4旋踢", diff:"⚠️", gen:2}, {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:8.11, rot:"極限", diff:"⭐", gen:2}, {c1:"嘉貝莉娜", c2:"仇遠", c3:"守岸人", dps:7.77, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"守岸人", dps:8.02, rot:"極限", diff:"⭐", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"守岸人", dps:7.35, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"長離", dps:7.67, rot:"極限", diff:"⭐", gen:2}, {c1:"嘉貝莉娜", c2:"露帕", c3:"長離", dps:6.72, rot:"常規", diff:"🔵", gen:2}, {c1:"嘉貝莉娜", c2:"莫特斐", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵", gen:2},
+        {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:8.35, rot:"常規", diff:"🔵", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:7.53, rot:"常規下限", diff:"🔵", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"莫寧", dps:7.20, rot:"基礎", diff:"🟩", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.74, rot:"雙錨縮軸", diff:"⭐", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.57, rot:"極限", diff:"⭐", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"長離", dps:7.05, rot:"單錨", diff:"🔵", gen:2}, {c1:"布蘭特", c2:"露帕", c3:"守岸人", dps:7.73, rot:"改軸", diff:"🔵", gen:2}, {c1:"布蘭特", c2:"散華", c3:"守岸人", dps:5.43, rot:"常規", diff:"🔵", gen:2},
+        {c1:"露帕", c2:"琳奈", c3:"守岸人", dps:5.68, rot:"常規", diff:"🔵", gen:2},
+        {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:11.00, rot:"劍切", diff:"⚠️", gen:2}, {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:9.72, rot:"極限", diff:"⭐", gen:2}, {c1:"卡提希婭", c2:"夏空", c3:"千咲", dps:9.01, rot:"常規", diff:"🔵", gen:2}, {c1:"卡提希婭", c2:"夏空", c3:"風主", dps:9.30, rot:"劍切", diff:"⭐", gen:2}, {c1:"卡提希婭", c2:"夏空", c3:"風主", dps:8.47, rot:"雙下", diff:"⭐", gen:2}, {c1:"卡提希婭", c2:"夏空", c3:"風主", dps:8.20, rot:"常規", diff:"🔵", gen:2}, {c1:"卡提希婭", c2:"散華", c3:"風主", dps:6.39, rot:"常規", diff:"🔵", gen:2}, {c1:"卡提希婭", c2:"風主", c3:"卜靈", dps:6.39, rot:"常規", diff:"🔵", gen:2},
+        {c1:"尤諾", c2:"琳奈", c3:"夏空", dps:8.67, rot:"常規", diff:"🔵", gen:2}, {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:9.20, rot:"極限", diff:"⭐", gen:2}, {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:8.41, rot:"常規", diff:"🔵", gen:2}, {c1:"尤諾", c2:"琳奈", c3:"莫寧", dps:8.47, rot:"極限", diff:"⭐", gen:2}, {c1:"尤諾", c2:"琳奈", c3:"莫寧", dps:8.10, rot:"常規", diff:"🔵", gen:2}, {c1:"尤諾", c2:"琳奈", c3:"守岸人", dps:7.90, rot:"基礎", diff:"🟩", gen:2}, {c1:"尤諾", c2:"夏空", c3:"守岸人", dps:7.92, rot:"極限", diff:"⭐", gen:2}, {c1:"尤諾", c2:"夏空", c3:"守岸人", dps:7.45, rot:"常規", diff:"🔵", gen:2}, {c1:"尤諾", c2:"散華", c3:"守岸人", dps:5.03, rot:"常規", diff:"🔵", gen:2},
+        {c1:"夏空", c2:"千咲", c3:"守岸人", dps:7.64, rot:"極限", diff:"⭐", gen:2}, {c1:"夏空", c2:"千咲", c3:"守岸人", dps:7.38, rot:"常規", diff:"🔵", gen:2}, {c1:"夏空", c2:"散華", c3:"守岸人", dps:6.23, rot:"錯輪", diff:"🔵", gen:2}, {c1:"夏空", c2:"散華", c3:"守岸人", dps:5.53, rot:"基礎", diff:"🟩", gen:2},
+        {c1:"仇遠", c2:"弗洛洛", c3:"守岸人", dps:8.34, rot:"仇3鏈", diff:"🔵", gen:2}, {c1:"仇遠", c2:"夏空", c3:"守岸人", dps:5.65, rot:"夏雙延", diff:"🔵", gen:2}, {c1:"仇遠", c2:"夏空", c3:"守岸人", dps:5.54, rot:"仇雙延", diff:"🔵", gen:2}, {c1:"仇遠", c2:"莫特斐", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵", gen:2},
+        {c1:"奧古斯塔", c2:"尤諾", c3:"琳奈", dps:8.50, rot:"2旋1升", diff:"🔵", gen:2}, {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:9.05, rot:"2旋4升", diff:"⭐", gen:2}, {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:8.79, rot:"2旋3升", diff:"⭐", gen:2}, {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:8.28, rot:"2旋1升", diff:"🔵", gen:2}, {c1:"奧古斯塔", c2:"尤諾", c3:"守岸人", dps:7.67, rot:"2旋", diff:"🟩", gen:2}, {c1:"奧古斯塔", c2:"莫特斐", c3:"守岸人", dps:7.35, rot:"4旋1升", diff:"⭐", gen:2}, {c1:"奧古斯塔", c2:"莫特斐", c3:"守岸人", dps:7.00, rot:"3旋1升", diff:"🔵", gen:2},
+        {c1:"珂萊塔", c2:"琳奈", c3:"莫寧", dps:6.98, rot:"常規", diff:"🔵", gen:2}, {c1:"珂萊塔", c2:"琳奈", c3:"守岸人", dps:7.08, rot:"常規", diff:"🔵", gen:2}, {c1:"珂萊塔", c2:"布蘭特", c3:"守岸人", dps:6.71, rot:"極限", diff:"⭐", gen:2}, {c1:"珂萊塔", c2:"折枝", c3:"守岸人", dps:6.45, rot:"常規", diff:"🔵", gen:2}, {c1:"珂萊塔", c2:"燈燈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵", gen:2}, {c1:"珂萊塔", c2:"卜靈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵", gen:2}, {c1:"珂萊塔", c2:"散華", c3:"守岸人", dps:5.53, rot:"錯輪3變", diff:"🔵", gen:2},
+        
         // --- 三代隊 (gen: 3) ---
-        {c1:"陸·赫斯", c2:"琳奈", c3:"莫寧", dps:8.55, rot:"1鏈莫", diff:"🔵", gen:3}, 
-        {c1:"陸·赫斯", c2:"琳奈", c3:"守岸人", dps:8.37, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"陸·赫斯", c2:"散華", c3:"莫寧", dps:6.32, rot:"1鏈莫", diff:"🔵", gen:3}, 
-        {c1:"陸·赫斯", c2:"散華", c3:"守岸人", dps:6.19, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"陸·赫斯", c2:"散華", c3:"維里奈", dps:5.33, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"琳奈", c2:"散華", c3:"守岸人", dps:5.46, rot:"極限", diff:"⭐", gen:3}, 
-        {c1:"琳奈", c2:"散華", c3:"守岸人", dps:4.30, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"琳奈", c3:"莫寧", dps:10.50, rot:"雙處", diff:"⭐", gen:3}, 
-        {c1:"愛彌斯", c2:"琳奈", c3:"莫寧", dps:9.50, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"弗洛洛", c3:"莫寧", dps:9.04, rot:"1鏈莫", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"琳奈", c3:"守岸人", dps:8.35, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"琳奈", c3:"千咲", dps:8.10, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"莫寧", dps:8.70, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"千咲", dps:7.89, rot:"極限", diff:"⭐", gen:3}, 
-        {c1:"愛彌斯", c2:"千咲", c3:"莫寧", dps:7.68, rot:"轉聚暴", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"千咲", c3:"莫寧", dps:7.28, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"嘉貝莉娜", dps:8.62, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"布蘭特", dps:8.56, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"長離", dps:7.76, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"長離", c3:"莫寧", dps:7.04, rot:"極限", diff:"⭐", gen:3}, 
-        {c1:"愛彌斯", c2:"長離", c3:"莫寧", dps:6.11, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"露帕", c3:"守岸人", dps:7.48, rot:"常規", diff:"🔵", gen:3}, 
-        {c1:"愛彌斯", c2:"散華", c3:"守岸人", dps:5.07, rot:"常規", diff:"🔵", gen:3}
+        {c1:"陸·赫斯", c2:"琳奈", c3:"莫寧", dps:8.55, rot:"1鏈莫", diff:"🔵", gen:3}, {c1:"陸·赫斯", c2:"琳奈", c3:"守岸人", dps:8.37, rot:"常規", diff:"🔵", gen:3}, {c1:"陸·赫斯", c2:"散華", c3:"莫寧", dps:6.32, rot:"1鏈莫", diff:"🔵", gen:3}, {c1:"陸·赫斯", c2:"散華", c3:"守岸人", dps:6.19, rot:"常規", diff:"🔵", gen:3}, {c1:"陸·赫斯", c2:"散華", c3:"維里奈", dps:5.33, rot:"常規", diff:"🔵", gen:3}, {c1:"琳奈", c2:"散華", c3:"守岸人", dps:5.46, rot:"極限", diff:"⭐", gen:3}, {c1:"琳奈", c2:"散華", c3:"守岸人", dps:4.30, rot:"常規", diff:"🔵", gen:3},
+        {c1:"愛彌斯", c2:"琳奈", c3:"莫寧", dps:10.50, rot:"雙處", diff:"⭐", gen:3}, {c1:"愛彌斯", c2:"琳奈", c3:"莫寧", dps:9.50, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"弗洛洛", c3:"莫寧", dps:9.04, rot:"1鏈莫", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"琳奈", c3:"守岸人", dps:8.35, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"琳奈", c3:"千咲", dps:8.15, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"莫寧", dps:8.72, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"千咲", dps:7.89, rot:"極限", diff:"⭐", gen:3}, {c1:"愛彌斯", c2:"千咲", c3:"莫寧", dps:7.68, rot:"轉聚暴", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"千咲", c3:"莫寧", dps:7.28, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"嘉貝莉娜", dps:8.62, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"布蘭特", dps:8.56, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"長離", dps:7.76, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"長離", c3:"莫寧", dps:7.04, rot:"極限", diff:"⭐", gen:3}, {c1:"愛彌斯", c2:"長離", c3:"莫寧", dps:6.11, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"露帕", c3:"守岸人", dps:7.48, rot:"常規", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"鑒心", c3:"莫寧", dps:5.08, rot:"2鏈鑒", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"鑒心", c3:"守岸人", dps:5.08, rot:"2鏈鑒", diff:"🔵", gen:3}, {c1:"愛彌斯", c2:"散華", c3:"守岸人", dps:4.62, rot:"常規", diff:"🔵", gen:3}
     ];
 
-    // 為每筆資料建立唯一ID
     dpsData.forEach((d, i) => d.id = 'rot_' + i);
 
     let isReset = true;
+    let isRotReset = false;
     let ownedCharacters = new Set(Object.keys(charData));
-    
-    // 預設將所有排軸皆納入選中名單
     let checkedRotations = new Set(dpsData.map(d => d.id));
+
+    // 核心判定：漂泊者型態分離與耐力共用
+    function isOwned(charName) {
+        if (['光主', '暗主', '風主'].includes(charName)) return ownedCharacters.has('漂泊者');
+        return ownedCharacters.has(charName);
+    }
+    
+    function getBase(charName) {
+        if (['光主', '暗主', '風主'].includes(charName)) return '漂泊者';
+        return charName;
+    }
+
+    // 簡繁與習慣用字轉換
+    function simpToTrad(str) {
+        const simp = "维灵宁长罗鉴阳陆赞远诺娅奥爱弥贝兰莱灯渊炽华";
+        const trad = "維靈寧長羅鑒陽陸贊遠諾婭奧愛彌貝蘭萊燈淵熾華";
+        let res = "";
+        for (let char of str) {
+            let idx = simp.indexOf(char);
+            res += idx !== -1 ? trad[idx] : char;
+        }
+        return res;
+    }
 
     function renderPresets() {
         const presetSelect = document.getElementById('preset-select');
@@ -396,9 +264,7 @@
         let presetMap = new Map();
         activeDps.forEach(d => {
             let key = `${d.c1}_${d.c2}_${d.c3}`;
-            if (!presetMap.has(key) || d.dps > presetMap.get(key).dps) {
-                presetMap.set(key, { ...d });
-            }
+            if (!presetMap.has(key) || d.dps > presetMap.get(key).dps) presetMap.set(key, { ...d });
         });
 
         const presetTeams = [];
@@ -414,8 +280,8 @@
         let html = '<option value="">-- 選擇推薦配隊 --</option>';
         let gen1 = [], gen2 = [], gen3 = [];
         
-        presetTeams.forEach((team, index) => {
-            if (ownedCharacters.has(team.chars[0]) && ownedCharacters.has(team.chars[1]) && ownedCharacters.has(team.chars[2])) {
+        presetTeams.forEach(team => {
+            if (isOwned(team.chars[0]) && isOwned(team.chars[1]) && isOwned(team.chars[2])) {
                 let opt = `<option value="${team.chars.join(',')}">${team.name}</option>`;
                 if (team.gen === 1) gen1.push(opt);
                 else if (team.gen === 2) gen2.push(opt);
@@ -428,9 +294,7 @@
         if(gen3.length > 0) html += `<optgroup label="🥉 三代隊伍">${gen3.join('')}</optgroup>`;
         
         presetSelect.innerHTML = html;
-        if (oldVal && presetSelect.querySelector(`option[value="${oldVal}"]`)) {
-            presetSelect.value = oldVal;
-        }
+        if (oldVal && presetSelect.querySelector(`option[value="${oldVal}"]`)) presetSelect.value = oldVal;
     }
 
     function renderCheckboxes() {
@@ -458,31 +322,18 @@
         }
     }
 
-    // 簡繁轉換過濾器
-    function simpToTrad(str) {
-        const simp = "维灵宁长罗鉴阳陆赞远诺娅奥爱弥贝兰莱灯渊炽华";
-        const trad = "維靈寧長羅鑒陽陸贊遠諾婭奧愛彌貝蘭萊燈淵熾華";
-        let res = "";
-        for (let char of str) {
-            let idx = simp.indexOf(char);
-            res += idx !== -1 ? trad[idx] : char;
-        }
-        return res;
-    }
-
-    // 角色實時搜尋功能 (支援簡體字與部分搜索)
+    // 角色背包過濾
     function filterCharacters() {
         let rawQuery = document.getElementById('char-search').value.trim().toLowerCase();
-        let query = simpToTrad(rawQuery); // 將輸入轉換為繁體進行底層比對
-
+        let query = simpToTrad(rawQuery); 
         const groups = document.querySelectorAll('#roster-setup > div');
-        
         groups.forEach(group => {
             let hasVisible = false;
             const labels = group.querySelectorAll('.checkbox-item');
             labels.forEach(label => {
-                // includes() 原生支援部分搜索
-                if (label.innerText.toLowerCase().includes(query)) {
+                let textToSearch = label.innerText.toLowerCase();
+                if (textToSearch.includes('漂泊者')) textToSearch += ' 光主 暗主 風主'; 
+                if (textToSearch.includes(query)) {
                     label.style.display = 'flex';
                     hasVisible = true;
                 } else {
@@ -493,14 +344,66 @@
         });
     }
 
+    // 排軸專屬即時搜尋過濾
+    function filterRotations() {
+        let searchElement = document.getElementById('rot-search');
+        if (!searchElement) return;
+        let rawQuery = searchElement.value.trim().toLowerCase();
+        let query = simpToTrad(rawQuery);
+
+        const groups = document.querySelectorAll('#rotation-setup > div');
+        groups.forEach(group => {
+            let groupHasVisible = false;
+            const subgroups = group.querySelectorAll('div');
+            
+            subgroups.forEach(sub => {
+                let subHasVisible = false;
+                const labels = sub.querySelectorAll('label');
+                labels.forEach(label => {
+                    let text = group.querySelector('h4').innerText + sub.querySelector('span').innerText + label.innerText;
+                    text = text.toLowerCase();
+                    if (text.includes('光主') || text.includes('暗主') || text.includes('風主')) text += ' 漂泊者';
+                    
+                    if (text.includes(query)) {
+                        label.style.display = 'flex';
+                        subHasVisible = true;
+                        groupHasVisible = true;
+                    } else {
+                        label.style.display = 'none';
+                    }
+                });
+                sub.style.display = subHasVisible ? 'flex' : 'none';
+            });
+            group.style.display = groupHasVisible ? 'block' : 'none';
+        });
+    }
+
+    // 排軸按鈕狀態同步校準器 (解決重整 Bug)
+    function syncRotBtnState() {
+        let btn = document.getElementById('rot-all-btn');
+        if (!btn) return;
+        const checkboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
+        if (checkboxes.length === 0) return;
+
+        let checkedCount = document.querySelectorAll('#rotation-setup input[type="checkbox"]:checked').length;
+        if (checkedCount === 0) {
+            isRotReset = true;
+            btn.classList.remove('btn-reset');
+            btn.classList.add('btn-apply');
+            btn.innerText = "➕ 勾選所有排軸";
+        } else {
+            isRotReset = false;
+            btn.classList.remove('btn-apply');
+            btn.classList.add('btn-reset');
+            btn.innerText = "🗑️ 清空所有排軸";
+        }
+    }
+
     function renderRotations() {
         const container = document.getElementById('rotation-setup');
         if (!container) return;
 
-        const validTeams = dpsData.filter(d => 
-            ownedCharacters.has(d.c1) && ownedCharacters.has(d.c2) && ownedCharacters.has(d.c3)
-        );
-
+        const validTeams = dpsData.filter(d => isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3));
         if(validTeams.length === 0) {
             container.innerHTML = '<p style="color:#aaa;">目前沒有可組建的完整隊伍，請先在上方勾選角色。</p>';
             return;
@@ -518,11 +421,9 @@
         for(let c1 in groups) {
             html += `<div style="margin-bottom: 15px; padding: 12px; background: #2b2b36; border-radius: 5px; border-left: 3px solid #d4af37;">`;
             html += `<h4 style="color: #d4af37; margin-top: 0; margin-bottom: 10px; font-size: 1.1em;">🎯 主輸出：${c1}</h4>`;
-            
             for(let teamKey in groups[c1]) {
                 html += `<div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">`;
                 html += `<span style="font-weight: bold; color: #fff; min-width: 140px;">配 ${teamKey}</span>`;
-                
                 groups[c1][teamKey].sort((a,b) => b.dps - a.dps).forEach(d => {
                     let isChecked = checkedRotations.has(d.id) ? 'checked' : '';
                     html += `<label style="cursor: pointer; color: #ccc; font-size: 0.9em; white-space: nowrap; display: flex; align-items: center; gap: 4px; background: #1e1e24; padding: 4px 8px; border-radius: 4px; border: 1px solid #444;">
@@ -535,6 +436,10 @@
             html += `</div>`;
         }
         container.innerHTML = html;
+        
+        // 渲染後立即同步狀態與搜尋過濾
+        syncRotBtnState();
+        filterRotations();
     }
 
     const stages = 16; 
@@ -544,7 +449,7 @@
         for (let i = 1; i <= stages; i++) {
             let tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>第 ${i} 關</td>
+                <td>第 ${i} 隊</td>
                 <td><select id="s${i}-p1" name="stage${i}-pos1" class="char-select" onchange="updateTracker()"></select></td>
                 <td><select id="s${i}-p2" name="stage${i}-pos2" class="char-select" onchange="updateTracker()"></select></td>
                 <td><select id="s${i}-p3" name="stage${i}-pos3" class="char-select" onchange="updateTracker()"></select></td>
@@ -556,7 +461,6 @@
     function buildOptionsHTML(slotType, v1, v2, v3, currentValRaw, usedCounts, teamUsedChars) {
         let defaultText = slotType === 1 ? '-- 主輸出 --' : (slotType === 2 ? '-- 副C/輔助 --' : '-- 生存/輔助 --');
         let html = `<option value="">${defaultText}</option>`;
-        
         let recommendedMap = new Map(); 
         
         let hasFilterContext = false;
@@ -564,12 +468,7 @@
         if (slotType === 2 && (v1 || v3)) hasFilterContext = true;
         if (slotType === 3 && (v1 || v2)) hasFilterContext = true;
 
-        const activeDps = dpsData.filter(d => 
-            checkedRotations.has(d.id) &&
-            ownedCharacters.has(d.c1) && 
-            ownedCharacters.has(d.c2) && 
-            ownedCharacters.has(d.c3)
-        );
+        const activeDps = dpsData.filter(d => checkedRotations.has(d.id) && isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3));
 
         if (hasFilterContext) {
             activeDps.forEach(d => {
@@ -584,25 +483,17 @@
                 if (match) {
                     let targetChar = slotType === 1 ? d.c1 : (slotType === 2 ? d.c2 : d.c3);
                     let existing = recommendedMap.get(targetChar);
-                    if (!existing || d.dps > existing.dps) {
-                        recommendedMap.set(targetChar, { dps: d.dps });
-                    }
+                    if (!existing || d.dps > existing.dps) recommendedMap.set(targetChar, { dps: d.dps });
                 }
             });
         } else {
             if (slotType === 1) {
                 const slot1ValidSet = new Set(dpsData.map(d => d.c1));
-                for (let name of slot1ValidSet) {
-                    if (ownedCharacters.has(name)) {
-                        recommendedMap.set(name, { dps: 0 });
-                    }
-                }
+                for (let name of slot1ValidSet) if (isOwned(name)) recommendedMap.set(name, { dps: 0 });
             } else {
                 activeDps.forEach(d => {
                     let targetChar = slotType === 1 ? d.c1 : (slotType === 2 ? d.c2 : d.c3);
-                    if (!recommendedMap.has(targetChar)) {
-                        recommendedMap.set(targetChar, { dps: 0 });
-                    }
+                    if (!recommendedMap.has(targetChar)) recommendedMap.set(targetChar, { dps: 0 });
                 });
             }
         }
@@ -614,35 +505,37 @@
             finalRecommended.push({ name: name, dps: data.dps, rawValue: name, text: text });
         }
 
-        if (hasFilterContext) {
-            finalRecommended.sort((a, b) => b.dps - a.dps);
-        } else {
-            finalRecommended.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
-        }
+        if (hasFilterContext) finalRecommended.sort((a, b) => b.dps - a.dps);
+        else finalRecommended.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
 
         let recSet = new Set(finalRecommended.map(x => x.name));
         let others = [];
         
-        for (let name of ownedCharacters) {
-            if (!recSet.has(name)) {
-                others.push(name);
-            }
+        let displayChars = [];
+        for(let name of ownedCharacters) {
+            if(name === '漂泊者') displayChars.push('光主', '暗主', '風主');
+            else displayChars.push(name);
         }
+        for (let name of displayChars) if (!recSet.has(name)) others.push(name);
 
         let optGroupLabel = "";
         if (slotType === 1) optGroupLabel = hasFilterContext ? "🔥 適配主輸出 (依DPS排序)" : "🎯 推薦主輸出";
         else if (slotType === 2) optGroupLabel = hasFilterContext ? "🔥 適配副C/輔助 (依DPS排序)" : "⚔️ 推薦副C/輔助";
         else if (slotType === 3) optGroupLabel = hasFilterContext ? "🔥 適配生存/輔助 (依DPS排序)" : "🛡️ 推薦生存/輔助";
 
+        let currentValName = currentValRaw ? currentValRaw.split('|')[0] : "";
+        let currentBaseName = getBase(currentValName);
+        let teamUsedBaseChars = new Set([...teamUsedChars].map(c => getBase(c)));
+
         if (finalRecommended.length > 0) {
             html += `<optgroup label="${optGroupLabel}">`;
-            let currentValName = currentValRaw ? currentValRaw.split('|')[0] : "";
             finalRecommended.forEach(item => {
+                let baseItemName = getBase(item.name);
                 let disabled = "";
-                let maxCount = charData[item.name] ? charData[item.name].max : 1;
-                let used = usedCounts[item.name] || 0;
-                let isGloballyExhausted = (used >= maxCount && currentValName !== item.name);
-                let isLocallyUsed = teamUsedChars.has(item.name) && currentValName !== item.name;
+                let maxCount = charData[baseItemName] ? charData[baseItemName].max : 1;
+                let used = usedCounts[baseItemName] || 0;
+                let isGloballyExhausted = (used >= maxCount && currentBaseName !== baseItemName);
+                let isLocallyUsed = teamUsedBaseChars.has(baseItemName) && currentBaseName !== baseItemName;
                 if (isGloballyExhausted || isLocallyUsed) disabled = ' disabled hidden ';
                 html += `<option value="${item.rawValue}" class="recommended" ${disabled}>${item.text}</option>`;
             });
@@ -652,13 +545,13 @@
         if (others.length > 0) {
             html += '<optgroup label="🔸 其他角色">';
             others.sort((a,b) => a.localeCompare(b, 'zh-TW'));
-            let currentValName = currentValRaw ? currentValRaw.split('|')[0] : "";
             others.forEach(name => {
+                let baseItemName = getBase(name);
                 let disabled = "";
-                let maxCount = charData[name] ? charData[name].max : 1;
-                let used = usedCounts[name] || 0;
-                let isGloballyExhausted = (used >= maxCount && currentValName !== name);
-                let isLocallyUsed = teamUsedChars.has(name) && currentValName !== name;
+                let maxCount = charData[baseItemName] ? charData[baseItemName].max : 1;
+                let used = usedCounts[baseItemName] || 0;
+                let isGloballyExhausted = (used >= maxCount && currentBaseName !== baseItemName);
+                let isLocallyUsed = teamUsedBaseChars.has(baseItemName) && currentBaseName !== baseItemName;
                 if (isGloballyExhausted || isLocallyUsed) disabled = ' disabled hidden ';
                 html += `<option value="${name}" ${disabled}>${name}</option>`;
             });
@@ -697,7 +590,6 @@
                 break;
             }
         }
-
         if (!applied) alert("沒有完全空白的隊伍欄位了！請先清空部分隊伍。");
         updateTracker();
     }
@@ -720,7 +612,6 @@
             allCheckboxes.forEach(cb => ownedCharacters.add(cb.value));
         }
         isReset = !isReset;
-        
         renderRotations();
         updateTracker();
     }
@@ -744,47 +635,30 @@
             button.classList.add('btn-reset');
             button.innerText = "🗑️ 清空角色勾選";
         }
-        
         renderRotations();
         updateTracker();
     }
 
-    let isRotReset = false;
     function toggleAllRotations() {
-        let button = document.getElementById('rot-all-btn');
         let allCheckboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
-        
         if (!isRotReset) {
-            button.classList.remove('btn-reset');
-            button.classList.add('btn-apply');
-            button.innerText = "➕ 勾選所有排軸";
             allCheckboxes.forEach(cb => cb.checked = false);
-            isRotReset = true;
         } else {
-            button.classList.remove('btn-apply');
-            button.classList.add('btn-reset');
-            button.innerText = "🗑️ 清空所有排軸";
             allCheckboxes.forEach(cb => cb.checked = true);
-            isRotReset = false;
         }
         updateRotationState();
     }
 
-    // 特定難度快篩邏輯
     function toggleDifficulty(diff) {
         const checkboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
         let targetCbs = [];
         checkboxes.forEach(cb => {
-            if (cb.parentNode.innerText.includes(diff)) {
-                targetCbs.push(cb);
-            }
+            if (cb.parentNode.innerText.includes(diff)) targetCbs.push(cb);
         });
-        
         if (targetCbs.length === 0) return;
         
         const allChecked = targetCbs.every(cb => cb.checked);
         targetCbs.forEach(cb => cb.checked = !allChecked);
-        
         updateRotationState();
     }
 
@@ -794,20 +668,7 @@
         checkboxes.forEach(cb => {
             if (cb.checked) checkedRotations.add(cb.value);
         });
-
-        let btn = document.getElementById('rot-all-btn');
-        if (checkedRotations.size === 0 && checkboxes.length > 0) {
-            isRotReset = true;
-            btn.classList.remove('btn-reset');
-            btn.classList.add('btn-apply');
-            btn.innerText = "➕ 勾選所有排軸";
-        } else if (checkboxes.length > 0) {
-            isRotReset = false;
-            btn.classList.remove('btn-apply');
-            btn.classList.add('btn-reset');
-            btn.innerText = "🗑️ 清空所有排軸";
-        }
-
+        syncRotBtnState();
         updateTracker();
     }
 
@@ -815,7 +676,6 @@
         try {
             const rosterArr = Array.from(ownedCharacters);
             localStorage.setItem('ww_roster', JSON.stringify(rosterArr));
-
             const rotationsArr = Array.from(checkedRotations);
             localStorage.setItem('ww_rotations', JSON.stringify(rotationsArr));
 
@@ -832,7 +692,6 @@
 
     function updateTracker() {
         renderPresets();
-
         let usedCounts = {};
         for (let name in charData) usedCounts[name] = 0;
 
@@ -841,7 +700,8 @@
             select.classList.remove('error'); 
             if (select.value) {
                 let realName = select.value.split('|')[0];
-                if (usedCounts[realName] !== undefined) usedCounts[realName]++;
+                let baseName = getBase(realName);
+                if (usedCounts[baseName] !== undefined) usedCounts[baseName]++;
             }
         });
 
@@ -856,9 +716,9 @@
             let v2 = rawV2 ? rawV2.split('|')[0] : "";
             let v3 = rawV3 ? rawV3.split('|')[0] : "";
 
-            if (v1 && (!ownedCharacters.has(v1))) { v1 = ""; rawV1 = ""; if(s1) s1.value = ""; }
-            if (v2 && (!ownedCharacters.has(v2))) { v2 = ""; rawV2 = ""; if(s2) s2.value = ""; }
-            if (v3 && (!ownedCharacters.has(v3))) { v3 = ""; rawV3 = ""; if(s3) s3.value = ""; }
+            if (v1 && (!isOwned(v1))) { v1 = ""; rawV1 = ""; if(s1) s1.value = ""; }
+            if (v2 && (!isOwned(v2))) { v2 = ""; rawV2 = ""; if(s2) s2.value = ""; }
+            if (v3 && (!isOwned(v3))) { v3 = ""; rawV3 = ""; if(s3) s3.value = ""; }
 
             let teamUsedChars = new Set([v1, v2, v3].filter(x => x));
 
@@ -878,13 +738,13 @@
             [s1, s2, s3].forEach(sel => {
                 if (sel && sel.value) {
                     let rName = sel.value.split('|')[0];
-                    if (usedCounts[rName] > (charData[rName] ? charData[rName].max : 1)) {
+                    let baseName = getBase(rName);
+                    if (usedCounts[baseName] > (charData[baseName] ? charData[baseName].max : 1)) {
                         sel.classList.add('error');
                     }
                 }
             });
         });
-
         renderTracker(usedCounts);
         saveData();
     }
@@ -942,10 +802,7 @@
             const s1 = document.getElementById(`s${i}-p1`).value;
             const s2 = document.getElementById(`s${i}-p2`).value;
             const s3 = document.getElementById(`s${i}-p3`).value;
-            
-            if (s1 && s2 && s3) {
-                completedTeams.push({ stage: i, chars: [s1.split('|')[0], s2.split('|')[0], s3.split('|')[0]] });
-            }
+            if (s1 && s2 && s3) completedTeams.push({ stage: i, chars: [s1.split('|')[0], s2.split('|')[0], s3.split('|')[0]] });
         }
 
         if (completedTeams.length === 0) {
@@ -976,7 +833,6 @@
                 </thead>
                 <tbody>
         `;
-
         completedTeams.forEach(t => {
             exportHTML += `
                 <tr>
@@ -987,7 +843,6 @@
                 </tr>
             `;
         });
-
         exportHTML += `
                 </tbody>
             </table>
@@ -1004,7 +859,6 @@
             link.click();
             document.body.removeChild(exportContainer);
         }).catch(err => {
-            console.error("圖片匯出失敗", err);
             alert("匯出圖片時發生錯誤！");
             document.body.removeChild(exportContainer);
         });
@@ -1028,14 +882,12 @@
             const savedRotations = localStorage.getItem('ww_rotations');
             if (savedRotations) {
                 let parsed = JSON.parse(savedRotations);
-                if (Array.isArray(parsed)) {
-                    checkedRotations = new Set(parsed);
-                }
+                if (Array.isArray(parsed)) checkedRotations = new Set(parsed);
             }
         } catch(e) {}
 
         renderCheckboxes();
-        renderRotations();
+        renderRotations(); // 內含 syncRotBtnState()
         initBoard();
 
         let button = document.getElementById('roster-switch');
@@ -1072,6 +924,7 @@
         } catch(e) {}
 
         updateTracker(); 
+        syncRotBtnState(); // 最後再確保同步一次
     }
 
     initializeApp();
