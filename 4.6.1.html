@@ -77,16 +77,17 @@
 </head>
 <body>
 
-    <h2>鳴潮矩陣編隊工具 v4.5.1 (客製化排軸修復版)</h2>
+    <h2>鳴潮矩陣編隊工具 v4.6.1 (搜尋與快篩升級版)</h2>
 
     <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
-        <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新日誌 (v4.5.1)</summary>
+        <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新日誌 (v4.6.1)</summary>
         <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6;">
-            - 🐞 <strong>緊急修復 (v4.5.1)</strong>：修復了底層陣列命名衝突導致整個網頁當機空白的嚴重 Bug。<br>
-            - 🛡️ <strong>骨幹回歸</strong>：採用最穩定的 4.3.1 核心框架進行升級，保證操作極速流暢無卡頓。<br>
-            - 🔓 <strong>一號位解禁</strong>：解除了一號位只能看見推薦主C的限制，現在所有角色皆可自由選取。<br>
-            - 🎯 <strong>專屬排軸資料庫</strong>：新增「配置實戰排軸」面板。系統會隱藏你未擁有的隊伍，並允許你精確勾選自己會打的排軸，下拉選單將依據你的選擇提供最真實的期望值。<br>
-            - 💾 <strong>實用工具</strong>：補回自動存檔 (LocalStorage) 與 📷 一鍵圖片匯出功能。<br>
+            <strong>[v4.6.1] 體驗升級 (QoL Improvements)</strong><br>
+            - 🔍 <strong>簡繁無縫部分搜索</strong>：新增角色搜尋框，支援部分匹配（如輸入「千」即可），並內建字典，允許輸入簡體字（如「卡卡罗」）也能準確找到繁體角色。<br>
+            - ⚡ <strong>常駐排軸快篩</strong>：於排軸面板新增常駐的 5 顆快捷鍵。總開關「一鍵全選/清空」確保放置於首位，搭配 4 顆特定難度（🟩/🔵/⭐/⚠️）獨立開關，極大化過濾效率。<br>
+            <strong>[v4.5.1] 重大疊代 (客製排軸)</strong><br>
+            - 🎯 <strong>自訂排軸資料庫</strong>：隱藏未擁有的隊伍，允許精確取消勾選不會打的排軸，下拉選單動態連動真實 DPS。<br>
+            - 🔓 <strong>一號位解禁</strong>：現在玩家可於一號位自由選擇所有已擁有的角色作為主 C。<br>
         </div>
     </details>
     
@@ -96,8 +97,9 @@
                 1. 勾選擁有的角色
             </summary>
             <div style="margin-top: 15px;">
-                <div class="header-actions" style="margin-bottom: 10px;">
+                <div class="header-actions" style="margin-bottom: 10px; justify-content: flex-start; gap: 15px;">
                     <button id="roster-switch" class="btn-reset" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
+                    <input type="text" id="char-search" placeholder="🔍 搜尋角色 (支援簡繁部分搜索)..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; font-size: 1em; max-width: 250px; flex: 1; outline: none;">
                 </div>
                 <div id="roster-setup"></div>
             </div>
@@ -110,9 +112,18 @@
                 2. 配置實戰排軸 (僅顯示可組建的隊伍)
             </summary>
             <div style="margin-top: 15px; font-size: 0.9em; color: #aaa; margin-bottom: 15px; line-height: 1.5;">
-                💡 這裡只會顯示您「已擁有全部成員」的隊伍。請取消勾選您不會打的排軸（例如極限軸）。<br>
-                下方的編隊選單將會自動排除您取消勾選的排軸，為您推薦最符合您實戰能力的 DPS！
+                💡 這裡只會顯示您「已擁有全部成員」的隊伍。利用下方常駐的快捷鍵，快速剔除您不想打的難度！<br>
+                下方的編隊選單將會自動過濾，為您推薦最符合您實戰能力的 DPS！
             </div>
+            
+            <div class="header-actions" style="margin-bottom: 15px; justify-content: flex-start; gap: 10px;">
+                <button id="rot-all-btn" class="btn-reset" style="padding: 8px 15px; font-size: 0.95em;" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
+                <button style="background: #4caf50; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
+                <button style="background: #2196f3; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🔵')">🔵 中等</button>
+                <button style="background: #ffb300; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
+                <button style="background: #d32f2f; color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 0.95em; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+            </div>
+
             <div id="rotation-setup" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
         </details>
     </div>
@@ -206,7 +217,6 @@
 
     // 🏆 結合實戰排軸(rot)與難度(diff)的完整資料庫
     const dpsData = [
-        // --- 一代隊 (gen: 1) ---
         {c1:"椿", c2:"散華", c3:"守岸人", dps:5.59, rot:"常規", diff:"🟩", gen:1}, 
         {c1:"椿", c2:"洛可可", c3:"守岸人", dps:6.35, rot:"常規", diff:"⭐", gen:1}, 
         {c1:"椿", c2:"洛可可", c3:"守岸人", dps:5.95, rot:"常規", diff:"🔵", gen:1}, 
@@ -258,8 +268,6 @@
         {c1:"凌陽", c2:"琳奈", c3:"守岸人", dps:5.18, rot:"常規", diff:"🔵", gen:1}, 
         {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:5.08, rot:"6鏈豹", diff:"🔵", gen:1}, 
         {c1:"凌陽", c2:"折枝", c3:"守岸人", dps:4.32, rot:"常規", diff:"🔵", gen:1},
-
-        // --- 二代隊 (gen: 2) ---
         {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:9.02, rot:"1鏈莫", diff:"🔵", gen:2}, 
         {c1:"弗洛洛", c2:"坎特蕾拉", c3:"莫寧", dps:8.57, rot:"常規", diff:"🔵", gen:2}, 
         {c1:"弗洛洛", c2:"嘉貝莉娜", c3:"仇遠", dps:8.55, rot:"極限", diff:"⭐", gen:2}, 
@@ -380,12 +388,10 @@
     // 預設將所有排軸皆納入選中名單
     let checkedRotations = new Set(dpsData.map(d => d.id));
 
-    // 負責生成「世代隊伍快速填入」的選單
     function renderPresets() {
         const presetSelect = document.getElementById('preset-select');
         if (!presetSelect) return;
 
-        // 計算當前在 checkedRotations 中活躍的最高 DPS 隊伍
         const activeDps = dpsData.filter(d => checkedRotations.has(d.id));
         let presetMap = new Map();
         activeDps.forEach(d => {
@@ -409,7 +415,6 @@
         let gen1 = [], gen2 = [], gen3 = [];
         
         presetTeams.forEach((team, index) => {
-            // 4.5.1 改動：隱藏未擁有的預設隊伍
             if (ownedCharacters.has(team.chars[0]) && ownedCharacters.has(team.chars[1]) && ownedCharacters.has(team.chars[2])) {
                 let opt = `<option value="${team.chars.join(',')}">${team.name}</option>`;
                 if (team.gen === 1) gen1.push(opt);
@@ -453,12 +458,45 @@
         }
     }
 
-    // 核心新功能：渲染排軸勾選列表
+    // 簡繁轉換過濾器
+    function simpToTrad(str) {
+        const simp = "维灵宁长罗鉴阳陆赞远诺娅奥爱弥贝兰莱灯渊炽华";
+        const trad = "維靈寧長羅鑒陽陸贊遠諾婭奧愛彌貝蘭萊燈淵熾華";
+        let res = "";
+        for (let char of str) {
+            let idx = simp.indexOf(char);
+            res += idx !== -1 ? trad[idx] : char;
+        }
+        return res;
+    }
+
+    // 角色實時搜尋功能 (支援簡體字與部分搜索)
+    function filterCharacters() {
+        let rawQuery = document.getElementById('char-search').value.trim().toLowerCase();
+        let query = simpToTrad(rawQuery); // 將輸入轉換為繁體進行底層比對
+
+        const groups = document.querySelectorAll('#roster-setup > div');
+        
+        groups.forEach(group => {
+            let hasVisible = false;
+            const labels = group.querySelectorAll('.checkbox-item');
+            labels.forEach(label => {
+                // includes() 原生支援部分搜索
+                if (label.innerText.toLowerCase().includes(query)) {
+                    label.style.display = 'flex';
+                    hasVisible = true;
+                } else {
+                    label.style.display = 'none';
+                }
+            });
+            group.style.display = hasVisible ? 'block' : 'none';
+        });
+    }
+
     function renderRotations() {
         const container = document.getElementById('rotation-setup');
         if (!container) return;
 
-        // 僅篩選出「三隻角色皆已擁有」的有效隊伍
         const validTeams = dpsData.filter(d => 
             ownedCharacters.has(d.c1) && ownedCharacters.has(d.c2) && ownedCharacters.has(d.c3)
         );
@@ -468,7 +506,6 @@
             return;
         }
 
-        // 分組整理：主C -> 隊伍 -> 具體排軸
         const groups = {};
         validTeams.forEach(d => {
             if(!groups[d.c1]) groups[d.c1] = {};
@@ -486,7 +523,6 @@
                 html += `<div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">`;
                 html += `<span style="font-weight: bold; color: #fff; min-width: 140px;">配 ${teamKey}</span>`;
                 
-                // 照 DPS 由高到低排
                 groups[c1][teamKey].sort((a,b) => b.dps - a.dps).forEach(d => {
                     let isChecked = checkedRotations.has(d.id) ? 'checked' : '';
                     html += `<label style="cursor: pointer; color: #ccc; font-size: 0.9em; white-space: nowrap; display: flex; align-items: center; gap: 4px; background: #1e1e24; padding: 4px 8px; border-radius: 4px; border: 1px solid #444;">
@@ -528,7 +564,6 @@
         if (slotType === 2 && (v1 || v3)) hasFilterContext = true;
         if (slotType === 3 && (v1 || v2)) hasFilterContext = true;
 
-        // 僅計算被使用者「勾選/保留」的排軸資料
         const activeDps = dpsData.filter(d => 
             checkedRotations.has(d.id) &&
             ownedCharacters.has(d.c1) && 
@@ -549,16 +584,13 @@
                 if (match) {
                     let targetChar = slotType === 1 ? d.c1 : (slotType === 2 ? d.c2 : d.c3);
                     let existing = recommendedMap.get(targetChar);
-                    // 根據使用者在上方資料庫的勾選，只顯示勾選的最高期望值
                     if (!existing || d.dps > existing.dps) {
                         recommendedMap.set(targetChar, { dps: d.dps });
                     }
                 }
             });
         } else {
-            // 無過濾條件，列出預設可任此位置的角色
             if (slotType === 1) {
-                // v4.5.1 一號位無關聯時，只顯示存在於資料庫主C位的角色為推薦
                 const slot1ValidSet = new Set(dpsData.map(d => d.c1));
                 for (let name of slot1ValidSet) {
                     if (ownedCharacters.has(name)) {
@@ -593,7 +625,6 @@
         
         for (let name of ownedCharacters) {
             if (!recSet.has(name)) {
-                // v4.5.1: 一號位全解禁，所有的角色都會出現在 other
                 others.push(name);
             }
         }
@@ -644,7 +675,6 @@
             return;
         }
 
-        // 我們將 select 的 value 設為了 characters 的 string 組合
         const teamChars = presetIndex.split(',');
         const rows = document.querySelectorAll('#team-board tr');
         let applied = false;
@@ -672,7 +702,6 @@
         updateTracker();
     }
 
-    // 原生 4.3.1 全選切換邏輯
     function rosterCheckboxButton() {
         let button = document.getElementById('roster-switch');
         let allCheckboxes = document.querySelectorAll('#roster-setup input[type="checkbox"]');
@@ -692,7 +721,6 @@
         }
         isReset = !isReset;
         
-        // 切換完背包，需要重新繪製可用的排軸表
         renderRotations();
         updateTracker();
     }
@@ -704,7 +732,6 @@
             if (cb.checked) ownedCharacters.add(cb.value);
         });
         
-        // 依照 4.3.1 的連動設計校正按鈕狀態
         let button = document.getElementById('roster-switch');
         if (ownedCharacters.size === 0) {
             isReset = true;
@@ -718,18 +745,69 @@
             button.innerText = "🗑️ 清空角色勾選";
         }
         
-        // 角色改變時，連動刷新排軸面板
         renderRotations();
         updateTracker();
     }
 
-    // 處理排軸勾選框變化
+    let isRotReset = false;
+    function toggleAllRotations() {
+        let button = document.getElementById('rot-all-btn');
+        let allCheckboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
+        
+        if (!isRotReset) {
+            button.classList.remove('btn-reset');
+            button.classList.add('btn-apply');
+            button.innerText = "➕ 勾選所有排軸";
+            allCheckboxes.forEach(cb => cb.checked = false);
+            isRotReset = true;
+        } else {
+            button.classList.remove('btn-apply');
+            button.classList.add('btn-reset');
+            button.innerText = "🗑️ 清空所有排軸";
+            allCheckboxes.forEach(cb => cb.checked = true);
+            isRotReset = false;
+        }
+        updateRotationState();
+    }
+
+    // 特定難度快篩邏輯
+    function toggleDifficulty(diff) {
+        const checkboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
+        let targetCbs = [];
+        checkboxes.forEach(cb => {
+            if (cb.parentNode.innerText.includes(diff)) {
+                targetCbs.push(cb);
+            }
+        });
+        
+        if (targetCbs.length === 0) return;
+        
+        const allChecked = targetCbs.every(cb => cb.checked);
+        targetCbs.forEach(cb => cb.checked = !allChecked);
+        
+        updateRotationState();
+    }
+
     function updateRotationState() {
         const checkboxes = document.querySelectorAll('#rotation-setup input[type="checkbox"]');
         checkedRotations.clear();
         checkboxes.forEach(cb => {
             if (cb.checked) checkedRotations.add(cb.value);
         });
+
+        let btn = document.getElementById('rot-all-btn');
+        if (checkedRotations.size === 0 && checkboxes.length > 0) {
+            isRotReset = true;
+            btn.classList.remove('btn-reset');
+            btn.classList.add('btn-apply');
+            btn.innerText = "➕ 勾選所有排軸";
+        } else if (checkboxes.length > 0) {
+            isRotReset = false;
+            btn.classList.remove('btn-apply');
+            btn.classList.add('btn-reset');
+            btn.innerText = "🗑️ 清空所有排軸";
+        }
+
         updateTracker();
     }
 
@@ -752,7 +830,6 @@
         } catch(e) {}
     }
 
-    // 原生 4.3.1 安全追蹤機制
     function updateTracker() {
         renderPresets();
 
@@ -779,7 +856,6 @@
             let v2 = rawV2 ? rawV2.split('|')[0] : "";
             let v3 = rawV3 ? rawV3.split('|')[0] : "";
 
-            // 如果背包裡已經沒有這個角色，自動清空該格子
             if (v1 && (!ownedCharacters.has(v1))) { v1 = ""; rawV1 = ""; if(s1) s1.value = ""; }
             if (v2 && (!ownedCharacters.has(v2))) { v2 = ""; rawV2 = ""; if(s2) s2.value = ""; }
             if (v3 && (!ownedCharacters.has(v3))) { v3 = ""; rawV3 = ""; if(s3) s3.value = ""; }
@@ -983,7 +1059,6 @@
                     if (parsedTeams[i-1]) {
                         const rowSelects = document.querySelectorAll(`#team-board tr:nth-child(${i}) select`);
                         if(rowSelects.length === 3) {
-                            // 預先填入假資料，再由 updateTracker 校正
                             rowSelects[0].innerHTML = `<option value="${parsedTeams[i-1][0]}"></option>`;
                             rowSelects[0].value = parsedTeams[i-1][0];
                             rowSelects[1].innerHTML = `<option value="${parsedTeams[i-1][1]}"></option>`;
