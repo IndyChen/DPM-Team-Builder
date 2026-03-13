@@ -7,7 +7,7 @@
 
 專為《鳴潮》(Wuthering Waves)「矩陣疊兵」模式設計的純前端開源排班與 DPS 計算輔助工具。幫助玩家在深厚的角色池中，精準分配耐力、過濾實戰排軸，並輕鬆完成極限 16 隊的最佳化編排！
 
-🌐 **[點此直接使用 (Live Demo) - 將此處替換為你的 GitHub Pages 網址]**
+🌐 **[https://indychen.github.io/DPM-Team-Builder/]**
 
 ---
 
