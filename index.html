@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鳴潮矩陣編隊工具</title>
-
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FYW9EX8V5G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,6 +13,7 @@
 
       gtag('config', 'G-FYW9EX8V5G');
     </script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* 基礎全域設定 */
@@ -64,6 +65,14 @@
         .btn-filter.active-4star { background: #9b59b6; color: #fff; border: 1px solid #9b59b6; }
         .btn-filter.active-gen { background: #34495e; color: #fff; border: 1px solid #34495e; }
 
+        /* 排軸難度按鈕：加入暗色對比機制 */
+        .btn-diff { border: none; border-radius: 5px; padding: 8px 12px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #777; border: 1px solid #444; }
+        .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; } /* 🟩 */
+        .btn-diff.active-diff-2 { background: #2196f3; color: white; border-color: #2196f3; } /* 🔵 */
+        .btn-diff.active-diff-3 { background: #ffb300; color: white; border-color: #ffb300; } /* ⭐ */
+        .btn-diff.active-diff-4 { background: #d32f2f; color: white; border-color: #d32f2f; } /* ⚠️ */
+        .btn-diff.active-diff-5 { background: #8e44ad; color: white; border-color: #8e44ad; } /* 🧩 */
+
         .preset-box { background: #3f3f4e; padding: 12px; border-radius: 5px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border: 1px solid #555; }
         .preset-box label { font-weight: bold; color: #d4af37; white-space: nowrap; }
         .preset-box select { flex: 1; min-width: 250px; width: auto; }
@@ -79,20 +88,20 @@
         }
     </style>
 </head>
-
 <body>
 
     <h2>鳴潮矩陣編隊工具 v4.6.3(公測版)</h2>
     <div class="data-source">📊 數據庫設計與邏輯：AI架構 / 數據提供：QuichilOvO、南邊 / 整理：Kolton</div>
 
-<details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
+    <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
         <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本說明 (v4.6.3 正式版)</summary>
         <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6;">
             - 🛠️ <strong>資料庫架構升級</strong>：底層重構為「以主C分類的樹狀資料庫」，未來新增隊伍簡化維護難度。<br>
             - 🐞 <strong>推薦邏輯漏洞修復</strong>：解決了產生「無效縫合怪隊伍」與「光主被清除」的 Bug。現在推薦系統採用嚴格匹配，確保推薦的每一步都符合真實排軸。<br>
             - 📊 <strong>動態 DPS 預測</strong>：未組成完整隊伍時僅保留星號不顯示 DPS；已耗盡角色的 DPS 數值會被自動過濾，只顯示「真正還能組得出來」的最高 DPS。<br>
-            - ✅ <strong>全選清空與篩選修復</strong>：修復排軸與角色一鍵按鈕失效問題；篩選掉的分類按鈕現在會變成明顯的「暗灰色」，不怕忘記切換。<br>
-            - 🔝 <strong>耐力與生存位雙置頂</strong>：左側面板將還有剩餘次數的角色自動置頂；3號位下拉選單也會將生存位強制排在最上方。
+            - 🎨 <strong>按鈕視覺同步修復</strong>：修復排軸難度與角色篩選按鈕狀態不同步問題，未選取分類現在會變成明顯的「暗灰色」，一目了然。<br>
+            - 🔝 <strong>耐力與生存位雙置頂</strong>：左側面板將還有剩餘次數的角色自動置頂；3號位下拉選單也會將生存位強制排在最上方。<br>
+            - 📈 <strong>流量追蹤實裝</strong>：已整合 Google Analytics 網頁資料追蹤功能。
         </div>
     </details>
     
@@ -128,11 +137,11 @@
             <div class="header-actions" style="margin: 15px 0; justify-content: flex-start; gap: 15px;">
                 <button id="rot-all-btn" class="btn-reset" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button style="background: #4caf50; color: white; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
-                    <button style="background: #2196f3; color: white; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🔵')">🔵 中等</button>
-                    <button style="background: #ffb300; color: white; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
-                    <button style="background: #d32f2f; color: white; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
-                    <button style="background: #8e44ad; color: white; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; font-weight: bold;" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
+                    <button id="btn-diff-1" class="btn-diff active-diff-1" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
+                    <button id="btn-diff-2" class="btn-diff active-diff-2" onclick="toggleDifficulty('🔵')">🔵 中等</button>
+                    <button id="btn-diff-3" class="btn-diff active-diff-3" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
+                    <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+                    <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
                 </div>
                 <input type="text" id="rot-search" placeholder="🔍 搜尋排軸角色..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; flex: 1; outline: none; max-width: 250px;">
             </div>
@@ -504,10 +513,34 @@
         const btn = document.getElementById('rot-all-btn');
         if (!btn) return;
         const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup label')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
-        if (visibleBoxes.length === 0) return;
-        let noneChecked = visibleBoxes.every(i => !i.checked);
-        btn.innerText = noneChecked ? "➕ 全選可見排軸" : "🗑️ 清空可見排軸";
-        btn.style.backgroundColor = noneChecked ? "#4caf50" : "#d9534f";
+        
+        if (visibleBoxes.length > 0) {
+            let noneChecked = visibleBoxes.every(i => !i.checked);
+            btn.innerText = noneChecked ? "➕ 全選可見排軸" : "🗑️ 清空可見排軸";
+            btn.className = noneChecked ? "btn-apply" : "btn-reset";
+        }
+
+        // 🎯 同步 5 個難度按鈕的視覺狀態
+        const diffMap = [
+            { id: 1, symbol: '🟩' },
+            { id: 2, symbol: '🔵' },
+            { id: 3, symbol: '⭐' },
+            { id: 4, symbol: '⚠️' },
+            { id: 5, symbol: '🧩' }
+        ];
+        
+        diffMap.forEach(d => {
+            const diffBtn = document.getElementById(`btn-diff-${d.id}`);
+            if (diffBtn) {
+                const diffBoxes = visibleBoxes.filter(i => i.parentNode.innerText.includes(d.symbol));
+                if (diffBoxes.length > 0) {
+                    const anyChecked = diffBoxes.some(i => i.checked);
+                    diffBtn.classList.toggle(`active-diff-${d.id}`, anyChecked);
+                } else {
+                    diffBtn.classList.remove(`active-diff-${d.id}`);
+                }
+            }
+        });
     }
 
     function updateRotationState() {
