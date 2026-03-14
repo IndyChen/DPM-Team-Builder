@@ -1,6 +1,6 @@
 # 🌊 鳴潮矩陣編隊工具 (Wuthering Waves Doubled Pawns Matrix Team Builder)
 
-![Version](https://img.shields.io/badge/version-v4.6.3-blue.svg)
+![Version](https://img.shields.io/badge/version-v4.6.4-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Web_Browser-success.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML_|_CSS_|_JS-orange.svg)
 ![License](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-green.svg)
@@ -11,7 +11,7 @@
 
 ---
 
-聲明:本專案在v4.6.3雖使用了google analytics工具追蹤網頁使用量，但不會有增設廣告之未來動作。
+聲明:本專案在v4.6.3後雖使用了google analytics工具追蹤網頁使用量，但不會有增設廣告之未來動作。
 
 ---
 ## ✨ 核心特色 (Features)
@@ -35,6 +35,7 @@
 ### 🛠️ 樹狀資料庫設計 (維護者福音)
 - 底層資料庫 (`teamDB`) 採用以主輸出 (Main DPS) 為節點的樹狀結構，未來更新版本、新增隊伍排軸極度直觀且不易出錯。
 
+### 🌍 **繁簡切換 (i18n)**：實裝字典映射翻譯技術，提供即時繁簡切換功能。
 ---
 
 ## 🛠️ 使用說明 (How to Use)
