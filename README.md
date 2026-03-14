@@ -1,6 +1,6 @@
 # 🌊 鳴潮矩陣編隊工具 (Wuthering Waves Doubled Pawns Matrix Team Builder)
 
-![Version](https://img.shields.io/badge/version-v4.6.2-blue.svg)
+![Version](https://img.shields.io/badge/version-v4.6.3-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Web_Browser-success.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML_|_CSS_|_JS-orange.svg)
 ![License](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-green.svg)
