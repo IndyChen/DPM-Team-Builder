@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鳴潮矩陣編隊工具</title>
+    <title>鳴潮矩陣編隊工具 v4.7.4</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FYW9EX8V5G"></script>
     <script>
@@ -13,23 +13,30 @@
       gtag('config', 'G-FYW9EX8V5G');
     </script>
     
-  
-</html>  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* 基礎全域設定 */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #f5f5f5; padding: 20px; max-width: 1450px; margin: auto; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #f5f5f5; padding: 20px; max-width: 1550px; margin: auto; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
-        h2 { border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 5px; display: inline-block; color: #fff; word-break: break-word; }
-        .data-source { color: #aaa; font-size: 0.9em; margin-bottom: 15px; font-style: italic; }
+        h2 { border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 5px; display: inline-block; color: #fff; }
+        .data-source { color: #aaa; font-size: 0.9em; margin-bottom: 15px; font-style: italic; display: flex; flex-wrap: wrap; align-items: center; gap: 15px; }
         
-        .panel { background: #2b2b36; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 20px; position: relative; }
+        /* 分頁標籤 (Tabs) 樣式 */
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #555; padding-bottom: 0; }
+        .tab-btn { background: #2b2b36; color: #aaa; border: 1px solid #555; border-bottom: none; padding: 12px 24px; font-size: 1.1em; cursor: pointer; border-radius: 8px 8px 0 0; font-weight: bold; transition: 0.3s; margin-bottom: -2px; }
+        .tab-btn:hover { background: #3f3f4e; color: #fff; }
+        .tab-btn.active { background: #1e1e24; color: #d4af37; border: 2px solid #d4af37; border-bottom: 2px solid #1e1e24; }
+        .page-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .page-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 面板與容器 */
+        .panel { background: #2b2b36; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 20px; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
-        
-        /* 左側與右側面板 */
         .pool-panel { flex: 1; min-width: 280px; max-height: 80vh; overflow-y: auto; position: sticky; top: 20px; }
         .team-panel { flex: 2; min-width: 0; width: 100%; }
         
-        /* 角色勾選區塊 */
+        /* 角色勾選 */
         #roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px; }
         .checkbox-item { background: #3f3f4e; padding: 8px 12px; border-radius: 5px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 6px; border: 1px solid #555; transition: 0.2s; font-size: 0.95em; width: 100%; }
         .checkbox-item:hover { background: #4f4f60; filter: brightness(1.2); }
@@ -37,36 +44,34 @@
         
         /* 表格區塊 */
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 1050px; }
-        th, td { border: 1px solid #444; padding: 12px 8px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 1150px; }
+        th, td { border: 1px solid #444; padding: 12px 8px; text-align: center; vertical-align: middle; }
         th { background-color: #3f3f4e; color: #d4af37; white-space: nowrap; }
-        
-        /* 下拉選單與輸入框 */
-        select { width: 100%; padding: 10px 5px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 5px; outline: none; font-size: 1em; cursor: pointer; min-height: 44px; }
-        .error { border: 2px solid #ff4d4d !important; background-color: #4a1c1c !important; }
+        select.char-select { width: 100%; padding: 10px 5px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 5px; outline: none; font-size: 1em; cursor: pointer; min-height: 44px; }
         option.recommended { color: #d4af37; font-weight: bold; background-color: #3f3f4e; }
         option:disabled { color: #888; font-style: italic; background-color: #2b2b36; }
-        .score-input { width: 90px; padding: 6px; background: #1e1e24; color: #d4af37; border: 1px solid #555; border-radius: 4px; font-weight: bold; text-align: center; margin-top: 4px; margin-bottom: 4px; }
         
-        /* 追蹤面板樣式 */
-        .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
-        .count-badge { background: #4caf50; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85em; white-space: nowrap; }
-        .count-empty { background: #ff4d4d; color: white; opacity: 0.6; }
-        .type-title { color: #d4af37; margin-top: 15px; margin-bottom: 10px; font-size: 1.1em; font-weight: bold; border-bottom: 1px solid #555; padding-bottom: 5px; position: sticky; top: 0; background: #2b2b36; z-index: 10; }
+        /* 輸入框與按鈕 */
+        .score-input { width: 100%; padding: 6px; background: #1e1e24; color: #d4af37; border: 1px solid #d4af37; border-radius: 4px; font-weight: bold; text-align: center; margin-bottom: 5px; }
+        .hp-calc-input { width: 55px; padding: 4px; background: #1e2b24; color: #00ffaa; border: 1px solid #00ffaa; border-radius: 4px; font-size: 0.85em; text-align: center; outline: none; }
+        .hp-calc-select { padding: 4px; background: #1e2b24; color: #00ffaa; border: 1px solid #00ffaa; border-radius: 4px; font-size: 0.85em; text-align: center; cursor: pointer; outline: none; }
+        .res-chk-group { display: flex; justify-content: center; gap: 4px; margin-top: 5px; font-size: 0.85em; color: #aaa; }
+        .env-input { width: 85px; padding: 6px; background: #1e1e24; color: #00ffaa; border: 1px solid #555; border-radius: 4px; font-weight: bold; text-align: center; }
         
-        /* 按鈕視覺狀態 */
+        .btn-reset-dps { background-color: #444; color: #fff; border: 1px solid #888; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 5px; }
+        .btn-reset-dps:hover { background-color: #d9534f; border-color: #d9534f; }
+        
         .header-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .btn-reset { background-color: #d9534f; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
-        .btn-apply { background-color: #4caf50; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
-        .btn-export { background-color: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
-        .btn-report { background-color: #ff9800; color: #1e1e24; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; box-shadow: 0 0 8px rgba(255,152,0,0.4); }
+        .btn-reset { background-color: #d9534f; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; }
+        .btn-apply { background-color: #4caf50; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; }
+        .btn-export { background-color: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; }
+        .btn-report { background-color: #ff9800; color: #1e1e24; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; }
         
-        /* 篩選按鈕 */
+        /* 篩選與過濾按鈕 */
         .btn-filter { border: none; border-radius: 5px; padding: 8px 12px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #777; border: 1px solid #444; }
         .btn-filter.active-5star { background: #d4af37; color: #1e1e24; border: 1px solid #d4af37; }
         .btn-filter.active-4star { background: #9b59b6; color: #fff; border: 1px solid #9b59b6; }
         .btn-filter.active-gen { background: #34495e; color: #fff; border: 1px solid #34495e; }
-
         .btn-diff { border: none; border-radius: 5px; padding: 8px 12px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #777; border: 1px solid #444; }
         .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; }
         .btn-diff.active-diff-2 { background: #2196f3; color: white; border-color: #2196f3; }
@@ -74,7 +79,6 @@
         .btn-diff.active-diff-4 { background: #d32f2f; color: white; border-color: #d32f2f; }
         .btn-diff.active-diff-5 { background: #8e44ad; color: white; border-color: #8e44ad; }
 
-        /* 快速填入專屬過濾器 */
         .preset-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; border-bottom: 1px dashed #555; padding-bottom: 12px; }
         .btn-preset-filter { border: 1px solid #444; border-radius: 5px; padding: 6px 10px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #777; }
         .btn-preset-filter:hover { filter: brightness(1.2); }
@@ -85,27 +89,32 @@
         .btn-preset-filter.active-attr-衍射 { background: #ffc107; color: #1e1e24; border-color: #ffc107; }
         .btn-preset-filter.active-attr-湮滅 { background: #e91e63; color: #fff; border-color: #e91e63; }
         .btn-preset-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
-
+        
         .preset-box { background: #3f3f4e; padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #555; }
         .preset-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .preset-controls select { flex: 1; min-width: 250px; width: auto; }
+        .preset-controls select { flex: 1; min-width: 250px; width: auto; padding: 8px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 4px; }
 
-        /* 優化放大的語言切換按鈕 */
+        /* 狀態列標籤 */
+        .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
+        .count-badge { background: #4caf50; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85em; white-space: nowrap; }
+        .count-empty { background: #ff4d4d; color: white; opacity: 0.6; }
+        .type-title { color: #d4af37; margin-top: 15px; margin-bottom: 10px; font-size: 1.1em; font-weight: bold; border-bottom: 1px solid #555; padding-bottom: 5px; position: sticky; top: 0; background: #2b2b36; z-index: 10; }
+
+        /* 隱藏元素與動畫 */
         #lang-toggle { position: absolute; top: 25px; right: 25px; background: #d4af37; color: #1e1e24; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.4); z-index: 100; }
         #lang-toggle:hover { filter: brightness(1.1); transform: scale(1.05); }
-
-        /* 滑桿樣式 */
+        
         input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
         input[type="range"]::-webkit-slider-runnable-track { background: #444; height: 6px; border-radius: 3px; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -6px; background-color: #cf00ff; height: 18px; width: 18px; border-radius: 50%; box-shadow: 0 0 10px rgba(207,0,255,0.8); }
-        
-        .env-input { width: 85px; padding: 6px; background: #1e1e24; color: #00ffaa; border: 1px solid #555; border-radius: 4px; font-weight: bold; text-align: center; }
         
         .hp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; padding: 15px; background: #1e2b24; border-radius: 8px; border: 1px dashed #00ffaa; }
         .hp-item { display: flex; flex-direction: column; gap: 4px; }
         .hp-label { font-size: 0.85em; color: #aaa; }
         .hp-input { padding: 4px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 4px; text-align: center; font-family: monospace; }
         .calibrated { color: #ffaa00 !important; border-color: #ffaa00 !important; }
+        .btn-calib { background: #d9534f; color: white; border: 1px solid #ff4d4d; border-radius: 4px; font-size: 0.7em; cursor: pointer; padding: 4px; margin-top: 2px; animation: blink 1.5s infinite; font-weight: bold; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #1e1e24; }
@@ -122,263 +131,277 @@
 <body>
 
     <button id="lang-toggle" onclick="toggleLang()">简 / 繁</button>
-    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: #cf00ff;">v4.7.3</span></h2>
+    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: #cf00ff;">v4.7.4</span></h2>
     
-    <div class="data-source" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px;">
-        <span>📊 數據庫設計與邏輯：AI架構 / 數據提供：QuichilOvO、南邊 / 整理：Kolton / 流量統計：Google Analytics</span>
+    <div class="data-source">
+        <span>📊 數據庫設計與邏輯：AI架構 / 整理：Kolton / UI 分離重構與無損洗牌升級版</span>
         <a href="https://github.com/IndyChen/DPM-Team-Builder/issues" target="_blank" style="display: inline-block; background: #333; color: #fff; text-decoration: none; padding: 4px 10px; border-radius: 5px; border: 1px solid #555; font-size: 0.9em; transition: 0.2s;">
             🐛 報錯與意見回饋 (GitHub Issues)
         </a>
     </div>
 
-<details style="background: #1e2b24; padding: 10px 15px; border-radius: 8px; border: 1px solid #2e5c3e; margin-bottom: 10px; cursor: pointer;">
-    <summary style="color: #4caf50; font-weight: bold; outline: none;">📖 點此查看 v4.7.3 工具使用說明</summary>
-    <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #2e5c3e; padding-top: 10px;">
-        <strong>【第一步：一般自動編隊】</strong> 
-        勾選擁有的角色與會打的排軸，點擊右下角「🔥 一鍵編制」，系統會依據理論最高分，自動幫你從滿編位置往回排。<br><br>
-        <strong>【第二步：實戰反推最佳化與數據貢獻 (硬核玩家專屬)】</strong> 
-        <ul style="margin: 5px 0 10px 20px; padding: 0;">
-            <li>按照你遊戲中打矩陣的順序，將隊伍排在表格上。在「矩陣環境設定」中設定好這期的抗性減傷 %。</li>
-            <li>在表格右側的<strong>「實戰得分」</strong>欄位，填入該隊單場得分 (例如 188363)，並勾選該隊遭遇抗性的是第幾隻王 `[1] [2] [3] [4]`。</li>
-            <li>點擊 <strong>「🔄 依實戰得分反推與重排」</strong>，系統會精準扣除轉場動畫延遲與抗性干擾，反推你這隊純粹的真實 DPS。若發現王血量偏差大於 5%，系統會自動在「個別血量面板」中以<span style="color:#ffaa00;">橘字</span>校正。最後會自動將隊伍<strong>大洗牌重排</strong>！</li>
-            <li>最後，點擊右下角 <strong>「📤 貢獻實戰數據」</strong>，將你的真實戰果與遭遇的抗性匿名傳送，幫助我們透過線上問卷建立大數據池，精準校正下一版的預設血量與抗性公式！</li>
-        </ul>
-    </div>
-</details>
-<details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
-    <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新說明 (當前: v4.7.3)</summary>
-    <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #555; padding-top: 10px;">
-        <strong style="color:#cf00ff;">【v4.7.3 實戰反推校正版】</strong><br>
-        - 🔄 <strong>實戰反推最佳化</strong>：玩家可在表格輸入遊戲真實得分，系統將逆向工程扣除「轉場動畫」與「指定抗性王」，推算純粹真實火力並自動重排隊伍最優解！<br>
-        - 🛡️ <strong>獨立抗性指定系統</strong>：可為每一隊單獨指定遭遇抗性的是「該波次的第幾隻王」，精準還原傷害折損。<br>
-        - 🦍 <strong>序列王血量引擎</strong>：後台精確模擬 R1-1 到 R10-4 獨立序列，猩猩精準落於 R2-1。<br>
-        - 📤 <strong>大數據貢獻問卷</strong>：新增一鍵貢獻按鈕，自動抓取實戰推演數據並產生 Google 表單預填連結，助力社群共同校正王血量公式。<br>
-        <br>
-        <strong style="color:#888;">【v4.7.0 ~ 4.7.2 近期版本更新概略】</strong><br>
-        <span style="color:#777;">
-        - 實裝「動態壓軸」一鍵編制邏輯，精準從當前最多可編制隊伍數往回排。<br>
-        - 新增「內建軸穩定性計算器」，支援實測耗時統計分析與一鍵套用評分。<br>
-        - 實裝「手法折損全局與微調拉桿」，動態計算失誤對不同難度排軸的 DPS 懲罰。<br>
-        - 支援無預設 DPS 自訂覆寫與當前編隊總 DPS 範圍估算功能。<br>
-        </span>
-    </div>
-</details>    
-    <div class="panel">
-        <details open>
-            <summary style="font-size: 1.17em; font-weight: bold; color: #fff; cursor: pointer; border-bottom: 2px solid #d4af37; padding-bottom: 10px; outline: none;">
-                1. 勾選擁有的角色
-            </summary>
-            <div style="margin-top: 15px;">
-                <div class="header-actions" style="margin-bottom: 10px; justify-content: flex-start; gap: 10px;">
-                    <button id="roster-switch" class="btn-reset" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
-                    <div style="display: flex; gap: 5px;">
-                        <button id="btn-5star" class="btn-filter active-5star" onclick="toggleRarity(5)">🌟 5星</button>
-                        <button id="btn-4star" class="btn-filter active-4star" onclick="toggleRarity(4)">⭐ 4星</button>
-                    </div>
-                    <div style="display: flex; gap: 5px;">
-                        <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X版</button>
-                        <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X版</button>
-                        <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
-                    </div>
-                    <input type="text" id="char-search" placeholder="🔍 搜尋擁有角色..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; flex: 1; outline: none; margin-left: auto; max-width: 200px;">
-                </div>
-                <div id="roster-setup"></div>
-            </div>
-        </details>
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('page1', this)">📄 第一步：角色與排軸設定</button>
+        <button class="tab-btn" onclick="switchTab('page2', this)">📄 第二步：矩陣編隊與實戰推演</button>
     </div>
 
-    <div class="panel">
-        <details open>
-            <summary style="font-size: 1.17em; font-weight: bold; color: #fff; cursor: pointer; border-bottom: 2px solid #d4af37; padding-bottom: 10px; outline: none;">
-                2. 配置實戰排軸 (僅顯示可組建的隊伍)
-            </summary>
-            <div class="header-actions" style="margin: 15px 0; justify-content: flex-start; gap: 15px;">
-                <button id="rot-all-btn" class="btn-reset" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button id="btn-diff-1" class="btn-diff active-diff-1" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
-                    <button id="btn-diff-2" class="btn-diff active-diff-2" onclick="toggleDifficulty('🔵')">🔵 中等</button>
-                    <button id="btn-diff-3" class="btn-diff active-diff-3" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
-                    <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
-                    <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
-                </div>
-                <input type="text" id="rot-search" placeholder="🔍 搜尋排軸角色..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; flex: 1; outline: none; max-width: 250px;">
-            </div>
-
-            <div style="margin-bottom: 15px; width: 100%; display: flex; flex-direction: column; background: #2b2b36; padding: 15px 20px; border-radius: 8px; border: 1px solid #555; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
-                    <span style="color: #d4af37; font-weight: bold; font-size: 1.1em;">🎯 全局操作達成率 (自動依難度換算折損)</span>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <button onclick="openCalcModal()" style="background:#cf00ff; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-weight:bold; box-shadow:0 0 8px rgba(207,0,255,0.5);">⏱️ 內建軸穩定性計算器</button>
-                        <span id="skill-display" style="color: #cf00ff; font-weight: bold; font-size: 1.2em; text-shadow: 0 0 5px rgba(207,0,255,0.5);">100%</span>
-                    </div>
-                </div>
-                <input type="range" id="skill-slider" min="50" max="100" value="100" style="width: 100%; margin: 10px 0;" oninput="updateMasterSkill()">
-                
-                <details style="margin-top: 10px; width: 100%;">
-                    <summary style="color: #aaa; cursor: pointer; font-size: 0.9em; outline: none; user-select: none;">⚙️ 依排軸難度微調各別穩定性 (點擊展開)</summary>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; padding: 15px; background: #1e1e24; border-radius: 8px; border: 1px solid #444;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 70px; color: #d32f2f; font-weight: bold;">⚠️ 極難:</span>
-                            <input type="range" id="slider-diff-4" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('⚠️', 'slider-diff-4', 'val-diff-4')">
-                            <span id="val-diff-4" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 70px; color: #ffb300; font-weight: bold;">⭐ 進階:</span>
-                            <input type="range" id="slider-diff-3" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('⭐', 'slider-diff-3', 'val-diff-3')">
-                            <span id="val-diff-3" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 70px; color: #2196f3; font-weight: bold;">🔵 中等:</span>
-                            <input type="range" id="slider-diff-2" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🔵', 'slider-diff-2', 'val-diff-2')">
-                            <span id="val-diff-2" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 70px; color: #4caf50; font-weight: bold;">🟩 輪椅:</span>
-                            <input type="range" id="slider-diff-1" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🟩', 'slider-diff-1', 'val-diff-1')">
-                            <span id="val-diff-1" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 70px; color: #8e44ad; font-weight: bold;">🧩 非主流:</span>
-                            <input type="range" id="slider-diff-5" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🧩', 'slider-diff-5', 'val-diff-5')">
-                            <span id="val-diff-5" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
-                        </div>
-                    </div>
-                </details>
-
-                <span style="color: #aaa; font-size: 0.85em; margin-top: 15px; line-height: 1.4;">
-                    * 您可以點擊下方列表各排軸的數值，直接填入您在「檢測報告」中測出的真實 DPS、穩定性，並設定矩陣專屬環境加成。
+    <div id="page1" class="page-content active">
+        
+        <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
+            <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新說明 (當前: v4.7.4)</summary>
+            <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #555; padding-top: 10px;">
+                <strong style="color:#cf00ff;">【v4.7.4 無損洗牌與防呆升級版】</strong><br>
+                - 🔄 <strong>無損實戰洗牌</strong>：完全記憶表單隊員，推算真實 DPS 後無損重排，絕不覆寫或清空原隊伍！<br>
+                - 🎯 <strong>防呆選單與血量鎖定</strong>：終點王改為下拉選單，殘血輸入強制鎖定 0.01% ~ 100% 防呆修正。<br>
+                - 🔙 <strong>一鍵重設預設 DPS</strong>：新增按鈕可快速清除分數覆寫，復原排軸的系統預設值。<br>
+                - 🗂️ <strong>雙檔分離與分頁 UI</strong>：將畫面與邏輯徹底分離，大幅提升效能與介面清爽度。<br>
+                <br>
+                <strong style="color:#00ffaa;">【v4.7.3 實戰反推校正版】</strong><br>
+                - 實戰反推最佳化與獨立抗性指定系統。<br>
+                - 序列王血量引擎與大數據貢獻問卷實裝。<br>
+                <br>
+                <strong style="color:#888;">【v4.7.0 ~ 4.7.2 近期版本更新概略】</strong><br>
+                <span style="color:#777;">
+                - 實裝「動態壓軸」一鍵編制邏輯。<br>
+                - 新增「內建軸穩定性計算器」。<br>
+                - 實裝「手法折損全局與微調拉桿」。<br>
+                - 支援無預設 DPS 自訂覆寫與範圍估算功能。<br>
                 </span>
             </div>
-
-            <div id="rotation-setup" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
         </details>
+
+        <div class="panel">
+            <details open>
+                <summary style="font-size: 1.17em; font-weight: bold; color: #fff; cursor: pointer; border-bottom: 2px solid #d4af37; padding-bottom: 10px; outline: none;">
+                    1. 勾選擁有的角色
+                </summary>
+                <div style="margin-top: 15px;">
+                    <div class="header-actions" style="margin-bottom: 10px; justify-content: flex-start; gap: 10px;">
+                        <button id="roster-switch" class="btn-reset" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
+                        <div style="display: flex; gap: 5px;">
+                            <button id="btn-5star" class="btn-filter active-5star" onclick="toggleRarity(5)">🌟 5星</button>
+                            <button id="btn-4star" class="btn-filter active-4star" onclick="toggleRarity(4)">⭐ 4星</button>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X版</button>
+                            <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X版</button>
+                            <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
+                        </div>
+                        <input type="text" id="char-search" placeholder="🔍 搜尋擁有角色..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; flex: 1; outline: none; margin-left: auto; max-width: 200px;">
+                    </div>
+                    <div id="roster-setup"></div>
+                </div>
+            </details>
+        </div>
+
+        <div class="panel">
+            <details open>
+                <summary style="font-size: 1.17em; font-weight: bold; color: #fff; cursor: pointer; border-bottom: 2px solid #d4af37; padding-bottom: 10px; outline: none;">
+                    2. 配置實戰排軸 (僅顯示可組建的隊伍)
+                </summary>
+                <div class="header-actions" style="margin: 15px 0; justify-content: flex-start; gap: 15px;">
+                    <button id="rot-all-btn" class="btn-reset" onclick="toggleAllRotations()">🗑️ 清空所有排軸</button>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button id="btn-diff-1" class="btn-diff active-diff-1" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
+                        <button id="btn-diff-2" class="btn-diff active-diff-2" onclick="toggleDifficulty('🔵')">🔵 中等</button>
+                        <button id="btn-diff-3" class="btn-diff active-diff-3" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
+                        <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
+                        <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
+                    </div>
+                    <input type="text" id="rot-search" placeholder="🔍 搜尋排軸角色..." oninput="filterRotations()" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #555; background: #1e1e24; color: #fff; flex: 1; outline: none; max-width: 250px;">
+                </div>
+
+                <div style="margin-bottom: 15px; width: 100%; display: flex; flex-direction: column; background: #2b2b36; padding: 15px 20px; border-radius: 8px; border: 1px solid #555;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                        <span style="color: #d4af37; font-weight: bold; font-size: 1.1em;">🎯 全局操作達成率 (自動依難度換算折損)</span>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <button onclick="openCalcModal()" style="background:#cf00ff; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-weight:bold; box-shadow:0 0 8px rgba(207,0,255,0.5);">⏱️ 內建軸穩定性計算器</button>
+                            <span id="skill-display" style="color: #cf00ff; font-weight: bold; font-size: 1.2em;">100%</span>
+                        </div>
+                    </div>
+                    <input type="range" id="skill-slider" min="50" max="100" value="100" style="width: 100%; margin: 10px 0;" oninput="updateMasterSkill()">
+                    
+                    <details style="margin-top: 10px; width: 100%;">
+                        <summary style="color: #aaa; cursor: pointer; font-size: 0.9em; outline: none;">⚙️ 依排軸難度微調各別穩定性 (點擊展開)</summary>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; padding: 15px; background: #1e1e24; border-radius: 8px; border: 1px solid #444;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="width: 70px; color: #d32f2f; font-weight: bold;">⚠️ 極難:</span>
+                                <input type="range" id="slider-diff-4" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('⚠️', 'slider-diff-4', 'val-diff-4')">
+                                <span id="val-diff-4" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="width: 70px; color: #ffb300; font-weight: bold;">⭐ 進階:</span>
+                                <input type="range" id="slider-diff-3" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('⭐', 'slider-diff-3', 'val-diff-3')">
+                                <span id="val-diff-3" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="width: 70px; color: #2196f3; font-weight: bold;">🔵 中等:</span>
+                                <input type="range" id="slider-diff-2" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🔵', 'slider-diff-2', 'val-diff-2')">
+                                <span id="val-diff-2" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="width: 70px; color: #4caf50; font-weight: bold;">🟩 輪椅:</span>
+                                <input type="range" id="slider-diff-1" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🟩', 'slider-diff-1', 'val-diff-1')">
+                                <span id="val-diff-1" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="width: 70px; color: #8e44ad; font-weight: bold;">🧩 非主流:</span>
+                                <input type="range" id="slider-diff-5" min="0" max="100" value="100" style="flex: 1;" oninput="updateSubSkill('🧩', 'slider-diff-5', 'val-diff-5')">
+                                <span id="val-diff-5" style="width: 45px; text-align: right; color: #fff; font-weight: bold;">100%</span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div id="rotation-setup" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
+            </details>
+        </div>
+        <div style="text-align: right;">
+            <button class="btn-apply" onclick="switchTab('page2', document.querySelectorAll('.tab-btn')[1])" style="font-size: 1.2em; padding: 15px 30px;">前往下一步：編隊與推演 ➡️</button>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="panel pool-panel">
-            <h3>3. 剩餘可用次數</h3>
-            <div id="tracker"></div>
-        </div>
-        <div class="panel team-panel">
+    <div id="page2" class="page-content">
+        <details style="background: #1e2b24; padding: 10px 15px; border-radius: 8px; border: 1px solid #2e5c3e; margin-bottom: 20px; cursor: pointer;">
+            <summary style="color: #4caf50; font-weight: bold; outline: none;">📖 點此查看核心功能使用說明</summary>
+            <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #2e5c3e; padding-top: 10px;">
+                <strong>【無損實戰洗牌】</strong>：填寫分數並點擊反推後，系統會<strong>完全記憶您表單上的隊員</strong>，推算真實 DPS 後從第一隊開始往下無損重排，不會清空您組好的配隊！<br>
+                <strong>【一鍵重設預設 DPS】</strong>：在每一隊的選單下方有<strong>「🔄 重設預設 DPS」</strong>按鈕，方便您在反推覆寫後快速復原排軸的系統預設值。
+            </div>
+        </details>
+
+        <div class="container">
+            <div class="panel pool-panel">
+                <h3>3. 剩餘可用次數</h3>
+                <div id="tracker"></div>
+            </div>
             
-            <div class="header-actions" style="margin-bottom: 15px; flex-direction: column; align-items: flex-start; gap: 15px;">
-                <h3 style="margin: 0; width: 100%;">4. 隊伍編排 (極限上限16隊)</h3>
-                
-                <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; align-items: flex-start;">
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start; background: #3f3f4e; padding: 12px; border-radius: 8px; border: 1px solid #555;">
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <button class="btn-apply" onclick="autoBuildMaxDpsTeams()" style="background: #cf00ff; box-shadow: 0 0 10px rgba(207,0,255,0.4); padding: 10px 20px;">🔥 一鍵編制 (理論推演)</button>
-                            <span style="color: #aaa; font-size: 0.75em; max-width: 180px;">*依據您設定的 DPS 與加權，自動挑選最佳陣容並壓軸</span>
-                        </div>
-                        
-                        <div style="width: 1px; background: #555; height: 50px; margin: 0 5px;"></div>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <button class="btn-apply" onclick="reverseInferAndOptimize()" style="background: #00ffaa; box-shadow: 0 0 10px rgba(0,255,170,0.4); padding: 10px 20px; color: #1e1e24;">🔄 依實戰得分反推與重排</button>
-                            <span style="color: #aaa; font-size: 0.75em; max-width: 250px;">*根據表格內您輸入的「遊戲實戰得分」，推算被吃掉的轉場並反推真實 DPS，自動將<strong>現有隊伍</strong>洗牌為最高分組合</span>
-                        </div>
-                    </div>
+            <div class="panel team-panel">
+                <div class="header-actions" style="margin-bottom: 15px; flex-direction: column; align-items: flex-start; gap: 15px;">
+                    <h3 style="margin: 0; width: 100%;">4. 隊伍編排 (極限上限16隊)</h3>
                     
-                    <div style="flex-grow: 1;"></div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-reset" onclick="resetTeams()" style="height: fit-content; padding: 8px 15px;">🗑️ 重設編制</button>
-                            <button class="btn-export" onclick="exportImage()" style="height: fit-content; padding: 8px 15px;">📷 截圖分享</button>
-                        </div>
-                        <button class="btn-report" onclick="submitToGoogleForm()" title="將您本次排出的矩陣波次與分數傳送給開發者，協助校正王血量公式！">📤 貢獻實戰大數據</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="preset-box" style="border: 1px solid #00ffaa; box-shadow: inset 0 2px 10px rgba(0,255,170,0.1);">
-                <details open>
-                    <summary style="color:#00ffaa; font-weight:bold; font-size:1.1em; cursor:pointer; outline:none; margin-bottom: 10px;">
-                        🌌 矩陣實戰接力推演與環境設定 (影響分數與轉場計算)
-                    </summary>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px; padding-top: 10px; border-top: 1px dashed #555; font-size: 0.9em;">
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>R1 均血(萬):</label>
-                            <input type="number" id="env-r1" class="env-input" value="400.89" step="10" oninput="resetIndividualHP(); updateTracker();">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>R2 均血(萬):</label>
-                            <input type="number" id="env-r2" class="env-input" value="783.56" step="10" title="R2-1猩猩系統內建特例判定546.67萬" oninput="resetIndividualHP(); updateTracker();">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>R3 均血(萬):</label>
-                            <input type="number" id="env-r3" class="env-input" value="1384.9" step="10" oninput="resetIndividualHP(); updateTracker();">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>後續成長(%):</label>
-                            <input type="number" id="env-growth" class="env-input" value="5" step="1" title="R4以後每階血量成長率" oninput="resetIndividualHP(); updateTracker();">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>抗性減傷(%):</label>
-                            <input type="number" id="env-res" class="env-input" style="color:#ffaa00; border-color:#ffaa00;" value="40" step="5" title="當隊伍遭遇抗性王時，降低的DPS百分比" oninput="updateTracker()">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>轉場耗時(秒):</label>
-                            <input type="number" id="env-trans" class="env-input" value="1.5" step="0.1" title="擊殺BOSS後的出場動畫延遲" oninput="updateTracker()">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <label>單隊時限(秒):</label>
-                            <input type="number" id="env-time" class="env-input" style="color:#cf00ff; border-color:#cf00ff;" value="120" step="10" oninput="updateTracker()">
-                        </div>
-                    </div>
-                    
-                    <details style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 10px;">
-                        <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">🧮 進階：個別 BOSS 血量覆寫與自機校正面板 (點擊展開)</summary>
-                        <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
-                            * 以下為系統底層計算時使用的真實王血量。您可手動修改。若「實戰反推」發現誤差 > 5%，系統將自動以此面板的橘色數值進行校正。
-                        </div>
-                        <div id="individual-hp-container" class="hp-grid">
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; align-items: flex-start;">
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start; background: #3f3f4e; padding: 12px; border-radius: 8px; border: 1px solid #555;">
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button class="btn-apply" onclick="autoBuildMaxDpsTeams()" style="background: #cf00ff; box-shadow: 0 0 10px rgba(207,0,255,0.4); padding: 10px 20px;">🔥 一鍵編制 (理論推演)</button>
+                                <span style="color: #aaa; font-size: 0.75em; max-width: 180px;">*依據理論最高 DPS，自動為您滿編</span>
                             </div>
+                            
+                            <div style="width: 1px; background: #555; height: 50px; margin: 0 5px;"></div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button class="btn-apply" onclick="reverseInferAndOptimize()" style="background: #00ffaa; box-shadow: 0 0 10px rgba(0,255,170,0.4); padding: 10px 20px; color: #1e1e24;">🔄 依實戰得分反推與無損重排</button>
+                                <span style="color: #aaa; font-size: 0.75em; max-width: 260px;">*根據表格分數反推真實 DPS 後，將<strong>現有隊伍無損洗牌</strong>為最優順序！</span>
+                            </div>
+                        </div>
+                        
+                        <div style="flex-grow: 1;"></div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-reset" onclick="resetTeams()" style="height: fit-content; padding: 8px 15px;">🗑️ 重設編制</button>
+                                <button class="btn-export" onclick="exportImage()" style="height: fit-content; padding: 8px 15px;">📷 截圖分享</button>
+                            </div>
+                            <button class="btn-report" onclick="submitToGoogleForm()" title="將您本次排出的矩陣波次與分數傳送給開發者，協助校正王血量公式！">📤 貢獻實戰大數據</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preset-box" style="border: 1px solid #00ffaa; box-shadow: inset 0 2px 10px rgba(0,255,170,0.1);">
+                    <details open>
+                        <summary style="color:#00ffaa; font-weight:bold; font-size:1.1em; cursor:pointer; outline:none; margin-bottom: 10px;">
+                            🌌 矩陣實戰接力推演與環境設定 (影響分數與轉場計算)
+                        </summary>
+                        <div style="display: flex; flex-wrap: wrap; gap: 15px; padding-top: 10px; border-top: 1px dashed #555; font-size: 0.9em;">
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>計分比例(分/萬):</label>
+                                <input type="number" id="env-ratio" class="env-input" style="color:#d4af37; border-color:#d4af37;" value="10" step="1" title="每 1 萬傷害等於多少分數 (預設 10 = 0.1萬得1分)" oninput="updateTracker()">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>R1 均血(萬):</label>
+                                <input type="number" id="env-r1" class="env-input" value="400.89" step="10" oninput="resetIndividualHP(); updateTracker();">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>R2 均血(萬):</label>
+                                <input type="number" id="env-r2" class="env-input" value="783.56" step="10" title="R2-1猩猩系統內建特例判定546.67萬" oninput="resetIndividualHP(); updateTracker();">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>R3 均血(萬):</label>
+                                <input type="number" id="env-r3" class="env-input" value="1384.9" step="10" oninput="resetIndividualHP(); updateTracker();">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>後續成長(%):</label>
+                                <input type="number" id="env-growth" class="env-input" value="5" step="1" title="R4以後每階血量成長率" oninput="resetIndividualHP(); updateTracker();">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>抗性減傷(%):</label>
+                                <input type="number" id="env-res" class="env-input" style="color:#ffaa00; border-color:#ffaa00;" value="40" step="5" title="當隊伍遭遇抗性王時，降低的DPS百分比" oninput="updateTracker()">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>轉場耗時(秒):</label>
+                                <input type="number" id="env-trans" class="env-input" value="1.5" step="0.1" title="擊殺BOSS後的出場動畫延遲" oninput="updateTracker()">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label>單隊時限(秒):</label>
+                                <input type="number" id="env-time" class="env-input" style="color:#cf00ff; border-color:#cf00ff;" value="120" step="10" oninput="updateTracker()">
+                            </div>
+                        </div>
+                        
+                        <details style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 10px;">
+                            <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">🧮 進階：個別 BOSS 血量覆寫與代數反解校正面板 (點擊展開)</summary>
+                            <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
+                                * 當您填寫表格中的「終點王殘血反解」與分數後，系統會統計並代數反解出真實血量。若單隻王收集滿 3 筆樣本，且與預設血量偏差 > 3% (置信度 < 97%)，將會於下方提示供您一鍵校正。
+                            </div>
+                            <div id="individual-hp-container" class="hp-grid"></div>
+                        </details>
                     </details>
-                </details>
-            </div>
-
-            <div class="preset-box">
-                <div class="preset-filters">
-                    <span style="color:#d4af37; font-weight:bold; margin-right:5px;">🔍 主輸出篩選：</span>
-                    <button class="btn-preset-filter" data-attr="冷凝" onclick="togglePresetAttr('冷凝')">❄️ 冷凝</button>
-                    <button class="btn-preset-filter" data-attr="熱熔" onclick="togglePresetAttr('熱熔')">🔥 熱熔</button>
-                    <button class="btn-preset-filter" data-attr="導電" onclick="togglePresetAttr('導電')">⚡ 導電</button>
-                    <button class="btn-preset-filter" data-attr="氣動" onclick="togglePresetAttr('氣動')">🌪️ 氣動</button>
-                    <button class="btn-preset-filter" data-attr="衍射" onclick="togglePresetAttr('衍射')">✨ 衍射</button>
-                    <button class="btn-preset-filter" data-attr="湮滅" onclick="togglePresetAttr('湮滅')">🌑 湮滅</button>
-                    <span style="color:#aaa; font-size:0.9em; margin-left:10px;">世代：</span>
-                    <button class="btn-preset-filter" data-gen="1" onclick="togglePresetGen('1')">1.X</button>
-                    <button class="btn-preset-filter" data-gen="2" onclick="togglePresetGen('2')">2.X</button>
-                    <button class="btn-preset-filter" data-gen="3" onclick="togglePresetGen('3')">3.X</button>
                 </div>
-                <div class="preset-controls">
-                    <label>🔥 推薦配隊快速填入：</label>
-                    <select id="preset-select"></select>
-                    <button class="btn-apply" onclick="applyPreset()">➕ 填入下一空位</button>
-                </div>
-            </div>
 
-            <div style="background:#2b2b36; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #444; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
-                    <span style="color:#00ffaa; font-weight:bold; font-size:1.1em;">⚔️ 當前編隊 矩陣接力推演總分：</span>
-                    <span id="matrix-total-score" style="color:#cf00ff; font-weight:bold; font-size:1.4em; text-shadow:0 0 8px rgba(207,0,255,0.6);">0 分</span>
+                <div class="preset-box">
+                    <div class="preset-filters">
+                        <span style="color:#d4af37; font-weight:bold; margin-right:5px;">🔍 主輸出篩選：</span>
+                        <button class="btn-preset-filter" data-attr="冷凝" onclick="togglePresetAttr('冷凝')">❄️ 冷凝</button>
+                        <button class="btn-preset-filter" data-attr="熱熔" onclick="togglePresetAttr('熱熔')">🔥 熱熔</button>
+                        <button class="btn-preset-filter" data-attr="導電" onclick="togglePresetAttr('導電')">⚡ 導電</button>
+                        <button class="btn-preset-filter" data-attr="氣動" onclick="togglePresetAttr('氣動')">🌪️ 氣動</button>
+                        <button class="btn-preset-filter" data-attr="衍射" onclick="togglePresetAttr('衍射')">✨ 衍射</button>
+                        <button class="btn-preset-filter" data-attr="湮滅" onclick="togglePresetAttr('湮滅')">🌑 湮滅</button>
+                        <span style="color:#aaa; font-size:0.9em; margin-left:10px;">世代：</span>
+                        <button class="btn-preset-filter" data-gen="1" onclick="togglePresetGen('1')">1.X</button>
+                        <button class="btn-preset-filter" data-gen="2" onclick="togglePresetGen('2')">2.X</button>
+                        <button class="btn-preset-filter" data-gen="3" onclick="togglePresetGen('3')">3.X</button>
+                    </div>
+                    <div class="preset-controls">
+                        <label>🔥 推薦配隊快速填入：</label>
+                        <select id="preset-select"></select>
+                        <button class="btn-apply" onclick="applyPreset()">➕ 填入下一空位</button>
+                    </div>
                 </div>
-                <div style="color:#aaa; font-size:0.85em; margin-top:5px;">*依據手法穩定性折損、環境加權、溢出傷害耗時與轉場延遲，動態模擬計算 120 秒接力總分。(雙軌預測：【手殘下限分數 ~ 完美發揮上限】)</div>
-            </div>
 
-            <div class="table-responsive">
-                <table>
-                    <thead><tr>
-                        <th width="6%">隊伍</th>
-                        <th width="15%">位置 1 (主C)</th>
-                        <th width="15%">位置 2 (副C)</th>
-                        <th width="15%">位置 3 (生存)</th>
-                        <th width="18%" style="color:#d4af37;">實戰得分與指定抗性</th>
-                        <th width="31%" style="background:#1e2b24; color:#00ffaa; letter-spacing: 1px;">推演戰果 (接力波次進度)</th>
-                    </tr></thead>
-                    <tbody id="team-board"></tbody>
-                </table>
+                <div style="background:#2b2b36; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #444; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
+                        <span style="color:#00ffaa; font-weight:bold; font-size:1.1em;">⚔️ 當前編隊 矩陣接力推演總分：</span>
+                        <span id="matrix-total-score" style="color:#cf00ff; font-weight:bold; font-size:1.4em; text-shadow:0 0 8px rgba(207,0,255,0.6);">0 分</span>
+                    </div>
+                </div>
+                
+                <div style="font-size: 0.9em; color: #ffaa00; margin-bottom: 10px; font-weight: bold; background: rgba(255, 170, 0, 0.1); padding: 8px; border-radius: 5px; border-left: 4px solid #ffaa00;">
+                    ⚠️ 提示：在表格內填寫【實戰得分】並點擊反推，系統會自動修改該隊伍的「自訂 DPS」。若要還原，請點擊該隊伍下方的「🔄 重設預設 DPS」。
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr>
+                            <th width="4%">隊伍</th>
+                            <th width="14%">位置 1 (主C)</th>
+                            <th width="14%">位置 2 (副C)</th>
+                            <th width="14%">位置 3 (生存)</th>
+                            <th width="24%" style="color:#d4af37;">實戰得分 / 殘血反解與抗性</th>
+                            <th width="30%" style="background:#1e2b24; color:#00ffaa; letter-spacing: 1px;">推演戰果 (接力波次進度)</th>
+                        </tr></thead>
+                        <tbody id="team-board"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -387,20 +410,15 @@
         <div style="background:#2b2b36; padding:25px; border-radius:10px; border:1px solid #d4af37; width:340px; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
             <h3 style="margin-top:0; color:#d4af37; font-size:1.2em; text-align:center;">📊 填寫檢測數據與環境加權</h3>
             <p id="stats-modal-rot" style="color:#aaa; font-size:0.9em; text-align:center; margin-bottom: 20px; border-bottom: 1px dashed #555; padding-bottom: 10px;"></p>
-            
             <label style="display:block; margin-bottom:12px; font-weight:bold;">⚔️ 真實 DPS (萬): 
-                <input type="number" id="stats-dps" step="0.01" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;" placeholder="例如: 10.85">
+                <input type="number" id="stats-dps" step="0.01" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;">
             </label>
-            
             <label style="display:block; margin-bottom:12px; font-weight:bold;">⚖️ 穩定性 (%): 
-                <input type="number" id="stats-stab" min="0" max="100" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;" placeholder="例如: 95">
-                <div style="font-size:0.8em; color:#888; margin-top:4px; font-weight:normal;">*決定該排軸的實戰保底傷害下限</div>
+                <input type="number" id="stats-stab" min="0" max="100" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;">
             </label>
-            
             <label style="display:block; margin-bottom:20px; font-weight:bold; color:#00ffaa;">🌟 當期屬性增傷加權 (%): 
-                <input type="number" id="stats-buff" step="1" style="width:100%; padding:8px; background:#1e2b24; color:#00ffaa; border:1px solid #00ffaa; border-radius:4px; margin-top:5px;" placeholder="例如: 20 (代表吃滿20%增傷)">
+                <input type="number" id="stats-buff" step="1" style="width:100%; padding:8px; background:#1e2b24; color:#00ffaa; border:1px solid #00ffaa; border-radius:4px; margin-top:5px;">
             </label>
-
             <div style="display:flex; justify-content:space-between; gap: 10px;">
                 <button onclick="closeStatsModal()" style="flex:1; padding:8px; background:#555; color:#fff; border:none; border-radius:4px; cursor:pointer;">取消</button>
                 <button onclick="clearStatsModal()" style="flex:1; padding:8px; background:#d9534f; color:#fff; border:none; border-radius:4px; cursor:pointer;">清除自訂</button>
@@ -412,26 +430,18 @@
     <div id="calc-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; align-items:center; justify-content:center;">
         <div style="background:#1e1e24; padding:25px; border-radius:10px; border:2px solid #cf00ff; width:400px; box-shadow: 0 0 30px rgba(207,0,255,0.4);">
             <h3 style="margin-top:0; color:#cf00ff; font-size:1.3em; text-align:center;">⏱️ 實戰手法穩定性檢測</h3>
-            <p style="color:#aaa; font-size:0.85em; text-align:center; margin-bottom: 15px;">輸入您多次打樁(啟動+循環)的真實耗時，系統將運用統計學為您診斷手法穩定度。</p>
-            
             <label style="display:block; margin-bottom:10px; font-weight:bold; color:#d4af37;">📏 基準理論耗時 (秒): 
                 <input type="number" id="calc-base-time" step="0.1" value="25" style="width:100%; padding:8px; background:#2b2b36; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;">
             </label>
             <label style="display:block; margin-bottom:15px; font-weight:bold; color:#d4af37;">📝 實測耗時紀錄 (秒): 
-                <textarea id="calc-times" rows="3" style="width:100%; padding:8px; background:#2b2b36; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px; resize:none;" placeholder="請以逗號或換行分隔，例如:\n25.5, 26.1, 25.8, 29.0"></textarea>
+                <textarea id="calc-times" rows="3" style="width:100%; padding:8px; background:#2b2b36; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px; resize:none;" placeholder="以逗號分隔"></textarea>
             </label>
-
             <button onclick="calculateStability()" style="width:100%; padding:10px; background:#cf00ff; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:1.1em; margin-bottom:15px;">執行檢測分析</button>
-
             <div id="calc-result" style="display:none; background:#2b2b36; padding:15px; border-radius:8px; border:1px dashed #cf00ff; margin-bottom:15px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>平均耗時:</span> <strong id="calc-res-mean" style="color:#fff;">0.00 秒</strong></div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>節奏標準差 (σ):</span> <strong id="calc-res-std" style="color:#ffb300;">0.00 秒</strong></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>回歸擬合估算 (R²):</span> <strong id="calc-res-r2" style="color:#00ffaa;">0.0 %</strong></div>
-                <div style="border-top:1px solid #444; margin:10px 0;"></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:1.1em;"><span>綜合穩定性評分:</span> <strong id="calc-res-stab" style="color:#cf00ff;">0 %</strong></div>
-                <div style="display:flex; justify-content:space-between; font-size:1.1em;"><span>實戰評級:</span> <strong id="calc-res-rating">S</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>綜合穩定性:</span> <strong id="calc-res-stab" style="color:#cf00ff;">0 %</strong></div>
             </div>
-
             <div style="display:flex; justify-content:space-between; gap: 10px;">
                 <button onclick="closeCalcModal()" style="flex:1; padding:8px; background:#555; color:#fff; border:none; border-radius:4px; cursor:pointer;">關閉</button>
                 <button onclick="applyCalculatedStability()" style="flex:2; padding:8px; background:#4caf50; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">套用至全局拉桿</button>
@@ -439,1394 +449,6 @@
         </div>
     </div>
 
-<script>
-    // 🌍 完美精準繁簡翻譯引擎 (Dictionary Mapping)
-    const dict = {
-        "鳴":"鸣","陣":"阵","編":"编","隊":"队","實":"实","戰":"战","排":"排","軸":"轴","剩":"剩","餘":"余","數":"数","推":"推","薦":"荐","設":"设","匯":"汇","圖":"图","輸":"输","輔":"辅","輪":"轮","進":"进","階":"阶","極":"极","難":"难","導":"导","電":"电","氣":"气","動":"动","滅":"灭","尋":"寻","擁":"拥","隱":"隐","盡":"尽","屬":"属","語":"语","換":"换","陽":"阳","華":"华","鑒":"鉴","熾":"炽","離":"离","淵":"渊","萊":"莱","蘭":"兰","蕾":"蕾","贊":"赞","婭":"娅","奧":"奥","諾":"诺","貝":"贝","莉":"莉","遠":"远","靈":"灵","寧":"宁","陸":"陆","愛":"爱","彌":"弥","錯":"错","亂":"乱","鏈":"链","單":"单","雙":"双","劍":"剑","處":"处","轉":"转","適":"适","論":"论","確":"确","滿":"满","濾":"滤","這":"这","還":"还","沒":"没","湊":"凑","齊":"齐","頂":"顶","級":"级","資":"资","訊":"讯","擾":"扰","顯":"显","創":"创","應":"应","說":"说","漏":"漏","洞":"洞","修":"修","復":"复","產":"产","無":"无","縫":"缝","預":"预","測":"测","標":"标","籤":"签","視":"视","覺":"觉","強":"强","過":"过","與":"与","從":"从","為":"为","僅":"仅","網":"网","頁":"页","紀":"记","憶":"忆","類":"类","構":"构","簡":"简","繁":"繁","庫":"库","將":"将","機":"机","環":"环","境":"境","差":"差","異":"异","檢":"检","報":"报","鍵":"键","效":"效","指":"指","腦":"脑","邏":"逻","輯":"辑","據":"据","見":"见","條":"条","件":"件","東":"东","西":"西","問":"问","題":"题","關":"关","麼":"么","嗎":"吗","點":"点","擊":"击","裡":"里","會":"会","態":"态","則":"则","驗":"验","決":"决","劃":"划","結":"结","總":"总","對":"对","於":"于","誤":"误","認":"认","表":"表","伍":"伍","時":"时","間":"间","選":"选","覽":"览","閱":"阅","載":"载","軟":"软","體":"体","閉":"闭","開":"开","啟":"启","發":"发","佈":"布","現":"现","場":"场","試":"试","裝":"装","備":"备","請":"请","擇":"择","更":"更","離":"离","測":"测","準":"准","標":"标","擬":"拟","合":"合","估":"估","算":"算","綜":"综","評":"评","級":"级","執":"执","行":"行","析":"析"
-    };
-    
-    let isSimp = false;
-
-    function t(str) {
-        if (!isSimp || !str || typeof str !== 'string') return str;
-        return str.split('').map(c => dict[c] || c).join('');
-    }
-
-    function translateDOM(node) {
-        let walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
-        let n;
-        while(n = walker.nextNode()) {
-            if (n.parentNode.tagName === 'SCRIPT' || n.parentNode.tagName === 'STYLE') continue;
-            if (n.nodeValue.trim() !== '') {
-                if (n.originalValue === undefined) n.originalValue = n.nodeValue;
-                n.nodeValue = isSimp ? t(n.originalValue) : n.originalValue;
-            }
-        }
-        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
-            if (el.originalPlaceholder === undefined) el.originalPlaceholder = el.placeholder;
-            el.placeholder = isSimp ? t(el.originalPlaceholder) : el.originalPlaceholder;
-        });
-    }
-
-    function toggleLang() {
-        isSimp = !isSimp;
-        document.getElementById('lang-toggle').innerText = isSimp ? "繁" : "简";
-        try { localStorage.setItem('ww_lang', isSimp ? 'zh-CN' : 'zh-TW'); } catch(e){}
-        
-        renderCheckboxes();
-        renderRotations();
-        updateTracker();
-        translateDOM(document.body);
-    }
-
-    // 角色基本資料庫與屬性對照
-    const charData = {
-        "漂泊者": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "維里奈": { max: 2, rarity: 5, gen: 1, type: "生存位 (可用 2 次)" }, 
-        "守岸人": { max: 2, rarity: 5, gen: 1, type: "生存位 (可用 2 次)" }, "今汐": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "長離": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "忌炎": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" },
-        "相里要": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "椿": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "折枝": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "吟霖": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "卡卡羅": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "安可": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" },
-        "凌陽": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "鑒心": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "白芷": { max: 2, rarity: 4, gen: 1, type: "生存位 (可用 2 次)" }, "散華": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "熾霞": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "秧秧": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" },
-        "丹瑾": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "釉瑚": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "桃祈": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "秋水": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-        "莫特斐": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "淵武": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" },
-        "燈燈": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-
-        "珂萊塔": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "洛可可": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "菲比": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "布蘭特": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "坎特蕾拉": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "贊妮": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" },
-        "夏空": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "卡提希婭": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "露帕": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "弗洛洛": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "奧古斯塔": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "尤諾": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "嘉貝莉娜": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "仇遠": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-        "千咲": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "卜靈": { max: 2, rarity: 4, gen: 2, type: "生存位 (可用 2 次)" }, 
-
-        "琳奈": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }, "莫寧": { max: 2, rarity: 5, gen: 3, type: "生存位 (可用 2 次)" }, 
-        "陸·赫斯": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }, "愛彌斯": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" },
-        "西格莉卡": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }
-    };
-    
-    const charAttrMap = {
-        "凌陽": "冷凝", "散華": "冷凝", "白芷": "冷凝", "折枝": "冷凝", "釉瑚": "冷凝", "珂萊塔": "冷凝",
-        "熾霞": "熱熔", "安可": "熱熔", "莫特斐": "熱熔", "長離": "熱熔", "布蘭特": "熱熔", "露帕": "熱熔", "嘉貝莉娜": "熱熔", "莫寧": "熱熔", "愛彌斯": "熱熔",
-        "卡卡羅": "導電", "吟霖": "導電", "淵武": "導電", "相里要": "導電", "燈燈": "導電", "奧古斯塔": "導電", "卜靈": "導電",
-        "風主": "氣動", "秧秧": "氣動", "忌炎": "氣動", "鑒心": "氣動", "秋水": "氣動", "夏空": "氣動", "卡提希婭": "氣動", "尤諾": "氣動", "仇遠": "氣動", "西格莉卡": "氣動",
-        "光主": "衍射", "維里奈": "衍射", "今汐": "衍射", "守岸人": "衍射", "贊妮": "衍射", "菲比": "衍射", "琳奈": "衍射", "陸·赫斯": "衍射",
-        "暗主": "湮滅", "丹瑾": "湮滅", "桃祈": "湮滅", "椿": "湮滅", "洛可可": "湮滅", "坎特蕾拉": "湮滅", "弗洛洛": "湮滅", "千咲": "湮滅"
-    };
-
-    const characterOrder = ["漂泊者", "秧秧", "熾霞", "白芷", "散華", "桃祈", "丹瑾", "秋水", "莫特斐", "淵武", "維里奈", "安可", "卡卡羅", "凌陽", "鑒心", "忌炎", "吟霖", "今汐", "長離", "折枝", "相里要", "守岸人", "釉瑚", "椿", "燈燈", "珂萊塔", "洛可可", "菲比", "布蘭特", "坎特蕾拉", "贊妮", "夏空", "卡提希婭", "露帕", "弗洛洛", "奧古斯塔", "尤諾", "嘉貝莉娜", "仇遠", "千咲", "卜靈", "琳奈", "莫寧", "陸·赫斯", "愛彌斯", "西格莉卡"];
-
-    // 🛠️ 樹狀核心資料庫
-    const teamDB = {
-        "椿": [
-            { c2:"散華", c3:"守岸人", dps:5.59, rot:"常規", diff:"🟩" }, { c2:"洛可可", c3:"守岸人", dps:6.35, rot:"上限", diff:"⭐" }, { c2:"洛可可", c3:"守岸人", dps:5.95, rot:"常規", diff:"🔵" },
-            { c2:"丹瑾", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"丹瑾", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "暗主": [
-            { c2:"琳奈", c3:"守岸人", dps:7.10, rot:"錯亂2min軸", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:6.77, rot:"錯輪", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:5.48, rot:"常規", diff:"🟩" },
-            { c2:"散華", c3:"守岸人", dps:6.16, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.40, rot:"常規", diff:"🟩" },
-            { c2:"洛可可", c3:"守岸人", dps:6.48, rot:"常規", diff:"🔵" }, { c2:"洛可可", c3:"守岸人", dps:5.60, rot:"常規", diff:"🟩" },
-            { c2:"丹瑾", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"丹瑾", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "今汐": [
-            { c2:"坎特蕾拉", c3:"守岸人", dps:6.07, rot:"常規", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:6.38, rot:"常規", diff:"⭐" }, { c2:"折枝", c3:"守岸人", dps:5.85, rot:"常規", diff:"🔵" },
-            { c2:"折枝", c3:"卜靈", dps:5.77, rot:"常規", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:6.45, rot:"錯輪", diff:"⭐" }, { c2:"吟霖", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵" },
-            { c2:"莫特斐", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"莫特斐", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"布蘭特", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"布蘭特", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"莫特斐", c3:"卜靈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"淵武", c3:"卜靈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"燈燈", c3:"淵武", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"桃祈", c3:"淵武", dps:0, rot:"非主流", diff:"🧩" }, { c2:"淵武", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"淵武", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "安可": [
-            { c2:"露帕", c3:"莫寧", dps:6.47, rot:"常規上限", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:6.25, rot:"6鏈", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:5.79, rot:"常規", diff:"🔵" },
-            { c2:"散華", c3:"守岸人", dps:5.50, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.00, rot:"常規", diff:"🟩" },
-            { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"露帕", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"熾霞", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"熾霞", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "長離": [
-            { c2:"露帕", c3:"莫寧", dps:7.20, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:6.90, rot:"錯輪", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:6.40, rot:"常規", diff:"🔵" },
-            { c2:"露帕", c3:"守岸人", dps:6.01, rot:"7離火", diff:"⭐" }, { c2:"露帕", c3:"守岸人", dps:5.83, rot:"6離火", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:5.63, rot:"5離火", diff:"🟩" },
-            { c2:"散華", c3:"守岸人", dps:4.81, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.20, rot:"常規", diff:"🟩" },
-            { c2:"布蘭特", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"布蘭特", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"吟霖", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"吟霖", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"暗主", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"暗主", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"秧秧", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"秧秧", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"秧秧", c3:"卜靈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "忌炎": [
-            { c2:"夏空", c3:"守岸人", dps:7.81, rot:"龍切", diff:"⭐" }, { c2:"夏空", c3:"守岸人", dps:6.79, rot:"常規", diff:"⭐" }, { c2:"夏空", c3:"尤諾", dps:6.55, rot:"常規", diff:"🔵" },
-            { c2:"莫特斐", c3:"守岸人", dps:5.85, rot:"常規", diff:"⭐" }, { c2:"莫特斐", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵" },
-            { c2:"莫特斐", c3:"釉瑚", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "相里要": [
-            { c2:"琳奈", c3:"守岸人", dps:6.28, rot:"常規", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.58, rot:"錯輪", diff:"🔵" },
-            { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "卡卡羅": [
-            { c2:"琳奈", c3:"守岸人", dps:7.65, rot:"6鏈死告", diff:"⚠️" }, { c2:"琳奈", c3:"守岸人", dps:7.53, rot:"6鏈死告", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:7.20, rot:"6鏈死告", diff:"🔵" },
-            { c2:"琳奈", c3:"守岸人", dps:6.40, rot:"4死告", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:6.10, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:5.80, rot:"基礎", diff:"🟩" },
-            { c2:"吟霖", c3:"守岸人", dps:6.10, rot:"6鏈", diff:"⭐" }, { c2:"吟霖", c3:"守岸人", dps:5.72, rot:"6鏈", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:5.07, rot:"4死告", diff:"⭐" },
-            { c2:"吟霖", c3:"守岸人", dps:4.65, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.13, rot:"常規", diff:"🔵" },
-            { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"莫特斐", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"莫特斐", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "凌陽": [
-            { c2:"琳奈", c3:"守岸人", dps:5.18, rot:"常規", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:5.08, rot:"6鏈", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:4.32, rot:"常規", diff:"🔵" },
-            { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"白芷", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "弗洛洛": [
-            { c2:"坎特蕾拉", c3:"莫寧", dps:9.02, rot:"1鏈", diff:"🔵" }, { c2:"坎特蕾拉", c3:"莫寧", dps:8.57, rot:"常規", diff:"🔵" }, { c2:"嘉貝莉娜", c3:"仇遠", dps:8.55, rot:"極限", diff:"⭐" },
-            { c2:"坎特蕾拉", c3:"守岸人", dps:8.00, rot:"常規", diff:"🔵" }, { c2:"坎特蕾拉", c3:"仇遠", dps:7.96, rot:"常規", diff:"🔵" }, { c2:"坎特蕾拉", c3:"洛可可", dps:7.51, rot:"常規", diff:"🔵" },
-            { c2:"仇遠", c3:"守岸人", dps:7.86, rot:"常規", diff:"🔵" }, { c2:"卜靈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵" }, { c2:"燈燈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵" }
-        ],
-        "坎特蕾拉": [
-            { c2:"散華", c3:"守岸人", dps:5.73, rot:"1鏈", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.37, rot:"錯輪", diff:"🔵" }
-        ],
-        "千咲": [
-            { c2:"琳奈", c3:"守岸人", dps:6.40, rot:"常規", diff:"🔵" }, { c2:"洛可可", c3:"守岸人", dps:4.51, rot:"常規", diff:"🔵" }
-        ],
-        "贊妮": [
-            { c2:"菲比", c3:"光主", dps:9.15, rot:"極限", diff:"⭐" }, { c2:"菲比", c3:"光主", dps:8.39, rot:"常規", diff:"🔵" }, { c2:"菲比", c3:"千咲", dps:8.34, rot:"奶套", diff:"🔵" },
-            { c2:"菲比", c3:"守岸人", dps:7.95, rot:"常規", diff:"🔵" }, { c2:"菲比", c3:"守岸人", dps:7.18, rot:"基礎", diff:"🟩" }, { c2:"光主", c3:"守岸人", dps:4.78, rot:"常規", diff:"🔵" }
-        ],
-        "菲比": [
-            { c2:"光主", c3:"琳奈", dps:6.52, rot:"常規", diff:"🔵" }, { c2:"光主", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵" }
-        ],
-        "嘉貝莉娜": [
-            { c2:"露帕", c3:"莫寧", dps:8.56, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:7.84, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:8.26, rot:"常規", diff:"🔵" },
-            { c2:"露帕", c3:"布蘭特", dps:9.15, rot:"雙錨錯延", diff:"⚠️" }, { c2:"露帕", c3:"布蘭特", dps:8.80, rot:"雙錨", diff:"⭐" }, { c2:"露帕", c3:"布蘭特", dps:8.31, rot:"單錨", diff:"⚠️" },
-            { c2:"露帕", c3:"布蘭特", dps:7.67, rot:"常規", diff:"🔵" }, { c2:"仇遠", c3:"守岸人", dps:8.68, rot:"4旋踢", diff:"⚠️" }, { c2:"仇遠", c3:"守岸人", dps:8.11, rot:"極限", diff:"⭐" },
-            { c2:"仇遠", c3:"守岸人", dps:7.77, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:8.02, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"守岸人", dps:7.35, rot:"常規", diff:"🔵" },
-            { c2:"露帕", c3:"長離", dps:7.67, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:6.72, rot:"常規", diff:"🔵" }, { c2:"莫特斐", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵" }
-        ],
-        "布蘭特": [
-            { c2:"露帕", c3:"莫寧", dps:8.35, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:7.53, rot:"下限", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:7.20, rot:"基礎", diff:"🟩" },
-            { c2:"露帕", c3:"長離", dps:7.74, rot:"雙錨", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:7.57, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:7.05, rot:"單錨", diff:"🔵" },
-            { c2:"露帕", c3:"守岸人", dps:7.73, rot:"改軸", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.43, rot:"常規", diff:"🔵" }
-        ],
-        "露帕": [
-            { c2:"琳奈", c3:"守岸人", dps:5.68, rot:"常規", diff:"🔵" }
-        ],
-        "卡提希婭": [
-            { c2:"夏空", c3:"千咲", dps:11.00, rot:"劍切", diff:"⚠️" }, { c2:"夏空", c3:"千咲", dps:9.72, rot:"極限", diff:"⭐" }, { c2:"夏空", c3:"千咲", dps:9.01, rot:"常規", diff:"🔵" },
-            { c2:"夏空", c3:"風主", dps:9.30, rot:"劍切", diff:"⭐" }, { c2:"夏空", c3:"風主", dps:8.47, rot:"雙下", diff:"⭐" }, { c2:"夏空", c3:"風主", dps:8.20, rot:"常規", diff:"🔵" },
-            { c2:"散華", c3:"風主", dps:6.39, rot:"常規", diff:"🔵" }, { c2:"風主", c3:"卜靈", dps:6.39, rot:"常規", diff:"🔵" }
-        ],
-        "尤諾": [
-            { c2:"琳奈", c3:"夏空", dps:8.67, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:9.20, rot:"極限", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:8.41, rot:"常規", diff:"🔵" },
-            { c2:"琳奈", c3:"莫寧", dps:8.47, rot:"極限", diff:"⭐" }, { c2:"琳奈", c3:"莫寧", dps:8.10, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:7.90, rot:"基礎", diff:"🟩" },
-            { c2:"夏空", c3:"守岸人", dps:7.92, rot:"極限", diff:"⭐" }, { c2:"夏空", c3:"守岸人", dps:7.45, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.03, rot:"常規", diff:"🔵" }
-        ],
-        "夏空": [
-            { c2:"千咲", c3:"守岸人", dps:7.64, rot:"極限", diff:"⭐" }, { c2:"千咲", c3:"守岸人", dps:7.38, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:6.23, rot:"錯輪", diff:"🔵" },
-            { c2:"散華", c3:"守岸人", dps:5.53, rot:"基礎", diff:"🟩" }
-        ],
-        "仇遠": [
-            { c2:"弗洛洛", c3:"守岸人", dps:8.34, rot:"仇3鏈", diff:"🔵" }, { c2:"夏空", c3:"守岸人", dps:5.65, rot:"夏雙延", diff:"🔵" }, { c2:"夏空", c3:"守岸人", dps:5.54, rot:"仇雙延", diff:"🔵" },
-            { c2:"莫特斐", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵" }
-        ],
-        "奧古斯塔": [
-            { c2:"尤諾", c3:"琳奈", dps:8.50, rot:"2旋1升", diff:"🔵" }, { c2:"尤諾", c3:"守岸人", dps:9.05, rot:"2旋4升", diff:"⭐" }, { c2:"尤諾", c3:"守岸人", dps:8.79, rot:"2旋3升", diff:"⭐" },
-            { c2:"尤諾", c3:"守岸人", dps:8.28, rot:"2旋1升", diff:"🔵" }, { c2:"尤諾", c3:"守岸人", dps:7.67, rot:"2旋", diff:"🟩" }, { c2:"莫特斐", c3:"守岸人", dps:7.35, rot:"4旋1升", diff:"⭐" },
-            { c2:"莫特斐", c3:"守岸人", dps:7.00, rot:"3旋1升", diff:"🔵" }
-        ],
-        "珂萊塔": [
-            { c2:"琳奈", c3:"莫寧", dps:6.98, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:7.08, rot:"常規", diff:"🔵" }, { c2:"布蘭特", c3:"守岸人", dps:6.71, rot:"極限", diff:"⭐" },
-            { c2:"折枝", c3:"守岸人", dps:6.45, rot:"常規", diff:"🔵" }, { c2:"燈燈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵" }, { c2:"卜靈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵" },
-            { c2:"散華", c3:"守岸人", dps:5.53, rot:"錯輪", diff:"🔵" }
-        ],
-        "陸·赫斯": [
-            { c2:"琳奈", c3:"莫寧", dps:8.55, rot:"1鏈", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:8.37, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"莫寧", dps:6.32, rot:"1鏈", diff:"🔵" },
-            { c2:"散華", c3:"守岸人", dps:6.19, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"維里奈", dps:5.33, rot:"常規", diff:"🔵" }
-        ],
-        "琳奈": [
-            { c2:"散華", c3:"守岸人", dps:5.46, rot:"極限", diff:"⭐" }, { c2:"散華", c3:"守岸人", dps:4.30, rot:"常規", diff:"🔵" }
-        ],
-        "愛彌斯": [
-            { c2:"琳奈", c3:"莫寧", dps:10.50, rot:"雙處", diff:"⭐" }, { c2:"琳奈", c3:"莫寧", dps:9.50, rot:"常規", diff:"🔵" }, { c2:"弗洛洛", c3:"莫寧", dps:9.04, rot:"1鏈", diff:"🔵" },
-            { c2:"琳奈", c3:"守岸人", dps:8.35, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"千咲", dps:8.15, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:8.72, rot:"常規", diff:"🔵" },
-            { c2:"露帕", c3:"千咲", dps:7.89, rot:"極限", diff:"⭐" }, { c2:"千咲", c3:"莫寧", dps:7.68, rot:"轉聚暴", diff:"🔵" }, { c2:"千咲", c3:"莫寧", dps:7.28, rot:"常規", diff:"🔵" },
-            { c2:"露帕", c3:"嘉貝莉娜", dps:8.62, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"布蘭特", dps:8.56, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"長離", dps:7.76, rot:"常規", diff:"🔵" },
-            { c2:"長離", c3:"莫寧", dps:7.04, rot:"極限", diff:"⭐" }, { c2:"長離", c3:"莫寧", dps:6.11, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:7.48, rot:"常規", diff:"🔵" },
-            { c2:"鑒心", c3:"莫寧", dps:5.08, rot:"2鏈", diff:"🔵" }, { c2:"鑒心", c3:"守岸人", dps:5.08, rot:"2鏈", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.62, rot:"常規", diff:"🔵" }
-        ],
-        "光主": [
-            { c2:"秧秧", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"秧秧", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"吟霖", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"吟霖", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"莫特斐", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"莫特斐", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "熾霞": [
-            { c2:"長離", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"長離", c3:"露帕", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "秋水": [
-            { c2:"夏空", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"夏空", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"夏空", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "燈燈": [
-            { c2:"吟霖", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"吟霖", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"秧秧", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"秧秧", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "丹瑾": [
-            { c2:"莫特斐", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"莫特斐", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"暗主", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" },
-            { c2:"暗主", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "折枝": [
-            { c2:"散華", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"散華", c3:"白芷", dps:0, rot:"非主流", diff:"🧩" }
-        ],
-        "散華": [
-            { c2:"折枝", c3:"守岸人", dps:0, rot:"非主流", diff:"🧩" }, { c2:"折枝", c3:"維里奈", dps:0, rot:"非主流", diff:"🧩" }, { c2:"折枝", c3:"白芷", dps:0, rot:"非主流", diff:"🧩" }
-        ]
-    };
-
-    // 系統啟動時扁平化資料庫
-    const dpsData = [];
-    let rotIdCounter = 0;
-    for (let c1 in teamDB) {
-        teamDB[c1].forEach(tData => {
-            dpsData.push({
-                id: 'rot_' + rotIdCounter++, c1: c1, c2: tData.c2, c3: tData.c3, dps: tData.dps, rot: tData.rot, diff: tData.diff,
-                gen: charData[c1] ? charData[c1].gen : 1
-            });
-        });
-    }
-
-    let ownedCharacters = new Set();
-    let checkedRotations = new Set();
-    let show5Star = true, show4Star = true, showG1 = true, showG2 = true, showG3 = true;
-    
-    // 黑名單
-    const noRecChars = new Set(["莫特斐", "秧秧", "桃祈", "淵武", "釉瑚"]);
-
-    function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedCharacters.has('漂泊者') : ownedCharacters.has(n); }
-    function getBase(n) { return ['光主', '暗主', '風主'].includes(n) ? '漂泊者' : n; }
-
-    function toggleRarity(s) { 
-        s == 5 ? show5Star = !show5Star : show4Star = !show4Star; 
-        document.getElementById(`btn-${s}star`).classList.toggle(`active-${s}star`, s==5?show5Star:show4Star);
-        filterCharacters(); 
-    }
-    function toggleGen(g) { 
-        if(g==1) showG1=!showG1; if(g==2) showG2=!showG2; if(g==3) showG3=!showG3;
-        document.getElementById(`btn-g${g}`).classList.toggle('active-gen', g==1?showG1:g==2?showG2:showG3);
-        filterCharacters(); 
-    }
-
-    function renderCheckboxes() {
-        const grid = document.getElementById('roster-setup');
-        grid.innerHTML = '<div id="roster-grid"></div>';
-        const container = document.getElementById('roster-grid');
-        characterOrder.forEach(name => {
-            let label = document.createElement('label');
-            label.className = 'checkbox-item';
-            label.style.borderLeft = charData[name].rarity === 5 ? '4px solid #d4af37' : '4px solid #9b59b6';
-            label.innerHTML = `<input type="checkbox" value="${name}" ${ownedCharacters.has(name)?'checked':''} onchange="updateOwnedCharacters()"> ${t(name)}`;
-            container.appendChild(label);
-        });
-        filterCharacters();
-    }
-
-    function filterCharacters() {
-        let q = document.getElementById('char-search').value.toLowerCase();
-        let qTrad = q; 
-        document.querySelectorAll('.checkbox-item').forEach(l => {
-            let name = l.querySelector('input').value, d = charData[name];
-            let searchTarget = name.toLowerCase() + t(name).toLowerCase();
-            if (searchTarget.includes('漂泊者') || searchTarget.includes('漂泊者')) searchTarget += ' 光主 暗主 風主 光主 暗主 风主';
-            let m = searchTarget.includes(qTrad) && 
-                    ((d.rarity==5 && show5Star) || (d.rarity==4 && show4Star)) &&
-                    ((d.gen==1 && showG1) || (d.gen==2 && showG2) || (d.gen==3 && showG3));
-            l.style.display = m ? 'flex' : 'none';
-        });
-        syncRosterBtnState();
-    }
-
-    function rosterCheckboxButton() {
-        const visibleBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
-        if(!visibleBoxes.length) return;
-        const anyChecked = visibleBoxes.some(i => i.checked);
-        visibleBoxes.forEach(i => i.checked = !anyChecked);
-        updateOwnedCharacters();
-    }
-
-    function syncRosterBtnState() {
-        const btn = document.getElementById('roster-switch');
-        if (!btn) return;
-        const visibleBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
-        if (visibleBoxes.length === 0) return;
-        let noneChecked = visibleBoxes.every(i => !i.checked);
-        btn.innerText = noneChecked ? t("➕ 全選可見角色") : t("🗑️ 清空可見角色");
-        btn.className = noneChecked ? "btn-apply" : "btn-reset";
-    }
-
-    function updateOwnedCharacters() {
-        ownedCharacters.clear();
-        document.querySelectorAll('#roster-setup input:checked').forEach(i => ownedCharacters.add(i.value));
-        syncRosterBtnState();
-        updateTracker();
-    }
-
-    // 🎯 依據難度的各自穩定性設定
-    let diffStability = { '⚠️': 100, '⭐': 100, '🔵': 100, '🟩': 100, '🧩': 100 };
-
-    function updateMasterSkill() {
-        let val = parseInt(document.getElementById('skill-slider').value);
-        document.getElementById('skill-display').innerText = val + '%';
-        
-        diffStability['⚠️'] = Math.max(0, 100 - (100 - val) * 1.8);
-        diffStability['⭐'] = Math.max(0, 100 - (100 - val) * 1.4);
-        diffStability['🔵'] = Math.max(0, 100 - (100 - val) * 1.1);
-        diffStability['🟩'] = Math.max(0, 100 - (100 - val) * 0.8);
-        diffStability['🧩'] = Math.max(0, 100 - (100 - val) * 1.0);
-
-        document.getElementById('slider-diff-4').value = diffStability['⚠️'];
-        document.getElementById('val-diff-4').innerText = diffStability['⚠️'].toFixed(0) + '%';
-        
-        document.getElementById('slider-diff-3').value = diffStability['⭐'];
-        document.getElementById('val-diff-3').innerText = diffStability['⭐'].toFixed(0) + '%';
-        
-        document.getElementById('slider-diff-2').value = diffStability['🔵'];
-        document.getElementById('val-diff-2').innerText = diffStability['🔵'].toFixed(0) + '%';
-        
-        document.getElementById('slider-diff-1').value = diffStability['🟩'];
-        document.getElementById('val-diff-1').innerText = diffStability['🟩'].toFixed(0) + '%';
-
-        document.getElementById('slider-diff-5').value = diffStability['🧩'];
-        document.getElementById('val-diff-5').innerText = diffStability['🧩'].toFixed(0) + '%';
-
-        renderRotations();
-        updateTracker();
-    }
-
-    function updateSubSkill(diffKey, sliderId, valId) {
-        let val = parseInt(document.getElementById(sliderId).value);
-        diffStability[diffKey] = val;
-        document.getElementById(valId).innerText = val + '%';
-        
-        renderRotations();
-        updateTracker();
-    }
-
-    // 🎯 實戰數據與穩定性記憶 Modal 系統
-    let customStatsMap = {};
-    let currentEditRotId = null;
-
-    try {
-        let stored = localStorage.getItem('ww_custom_stats');
-        if (stored) customStatsMap = JSON.parse(stored);
-    } catch(e) {}
-
-    function getRotDpsRange(d) {
-        let buffMult = 1;
-        if (customStatsMap[d.id] && customStatsMap[d.id].buff) {
-            buffMult = 1 + (customStatsMap[d.id].buff / 100);
-        }
-
-        if (customStatsMap[d.id]) {
-            let s = customStatsMap[d.id];
-            let max = s.dps * buffMult;
-            let min = max * (s.stability / 100);
-            return { min: Math.max(0, min), max: max, isCustom: true };
-        } else {
-            let max = d.dps * buffMult;
-            if (max === 0) return { min: 0, max: 0, isCustom: false };
-
-            let diffKey = '🧩';
-            if (d.diff.includes('⚠️')) diffKey = '⚠️';
-            else if (d.diff.includes('⭐')) diffKey = '⭐';
-            else if (d.diff.includes('🔵')) diffKey = '🔵';
-            else if (d.diff.includes('🟩')) diffKey = '🟩';
-
-            let stab = diffStability[diffKey] !== undefined ? diffStability[diffKey] : 100;
-            let min = max * (stab / 100);
-            return { min: Math.max(0, min), max: max, isCustom: false };
-        }
-    }
-
-    function openStatsModal(e, rotId) {
-        e.preventDefault(); e.stopPropagation();
-        currentEditRotId = rotId;
-        let d = dpsData.find(x => x.id === rotId);
-        document.getElementById('stats-modal-rot').innerText = `${t(d.c1)} + ${t(d.c2)} + ${t(d.c3)} (${t(d.rot)})`;
-        
-        let stats = customStatsMap[rotId];
-        if (stats) {
-            document.getElementById('stats-dps').value = stats.dps;
-            document.getElementById('stats-stab').value = stats.stability;
-            document.getElementById('stats-buff').value = stats.buff || 0;
-        } else {
-            document.getElementById('stats-dps').value = d.dps > 0 ? d.dps : '';
-            
-            let diffKey = '🧩';
-            if (d.diff.includes('⚠️')) diffKey = '⚠️';
-            else if (d.diff.includes('⭐')) diffKey = '⭐';
-            else if (d.diff.includes('🔵')) diffKey = '🔵';
-            else if (d.diff.includes('🟩')) diffKey = '🟩';
-            
-            document.getElementById('stats-stab').value = diffStability[diffKey].toFixed(0);
-            document.getElementById('stats-buff').value = 0;
-        }
-        document.getElementById('stats-modal').style.display = 'flex';
-    }
-
-    function closeStatsModal() {
-        document.getElementById('stats-modal').style.display = 'none';
-        currentEditRotId = null;
-    }
-
-    function clearStatsModal() {
-        if (currentEditRotId) {
-            delete customStatsMap[currentEditRotId];
-            try { localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); } catch(e) {}
-            renderRotations();
-            updateTracker();
-        }
-        closeStatsModal();
-    }
-
-    function saveStatsModal() {
-        let dpsVal = parseFloat(document.getElementById('stats-dps').value);
-        let stabVal = parseFloat(document.getElementById('stats-stab').value);
-        let buffVal = parseFloat(document.getElementById('stats-buff').value) || 0;
-        if (isNaN(dpsVal) || isNaN(stabVal)) {
-            alert(t("請輸入有效的數字！")); return;
-        }
-        if (currentEditRotId) {
-            customStatsMap[currentEditRotId] = { 
-                dps: dpsVal, 
-                stability: Math.min(100, Math.max(0, stabVal)),
-                buff: buffVal
-            };
-            try { localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); } catch(e) {}
-            renderRotations();
-            updateTracker();
-        }
-        closeStatsModal();
-    }
-
-    // ⏱️ 內建軸穩定性計算器邏輯
-    let lastCalculatedStability = 100;
-
-    function openCalcModal() {
-        document.getElementById('calc-modal').style.display = 'flex';
-        document.getElementById('calc-result').style.display = 'none';
-    }
-
-    function closeCalcModal() {
-        document.getElementById('calc-modal').style.display = 'none';
-    }
-
-    function calculateStability() {
-        let baseStr = document.getElementById('calc-base-time').value;
-        let timesStr = document.getElementById('calc-times').value;
-        let baseTime = parseFloat(baseStr);
-        if (isNaN(baseTime) || baseTime <= 0) { alert(t("請輸入有效的基準理論耗時！")); return; }
-        
-        let times = timesStr.split(/[\n,]+/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n) && n > 0);
-        if (times.length < 2) { alert(t("請至少輸入兩筆實測耗時紀錄以進行統計分析！")); return; }
-
-        let n = times.length;
-        let sum = times.reduce((a, b) => a + b, 0);
-        let mean = sum / n;
-        let variance = times.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
-        let stdDev = Math.sqrt(variance);
-
-        // 模擬 R^2 擬合率 (以穩定度波動幅度估算)
-        let r2 = Math.max(0, 100 - (variance / mean) * 20); 
-
-        // 綜合穩定性 (%)：受平均超時懲罰與標準差波動雙重影響
-        let timeEfficiency = (baseTime / mean) * 100;
-        let stability = Math.max(0, Math.min(100, timeEfficiency - (stdDev * 1.5)));
-        lastCalculatedStability = Math.round(stability);
-
-        let rating = 'C (極不穩定)';
-        let rColor = '#d32f2f';
-        if (stability >= 95) { rating = 'SSS (完美機器人)'; rColor = '#ffb300'; }
-        else if (stability >= 90) { rating = 'S (極度穩定)'; rColor = '#00ffaa'; }
-        else if (stability >= 80) { rating = 'A (實戰合格)'; rColor = '#4caf50'; }
-        else if (stability >= 70) { rating = 'B (略有顛簸)'; rColor = '#2196f3'; }
-
-        document.getElementById('calc-res-mean').innerText = mean.toFixed(2) + ' 秒';
-        document.getElementById('calc-res-std').innerText = stdDev.toFixed(2) + ' 秒';
-        document.getElementById('calc-res-r2').innerText = r2.toFixed(1) + ' %';
-        document.getElementById('calc-res-stab').innerText = lastCalculatedStability + ' %';
-        document.getElementById('calc-res-rating').innerText = rating;
-        document.getElementById('calc-res-rating').style.color = rColor;
-
-        document.getElementById('calc-result').style.display = 'block';
-    }
-
-    function applyCalculatedStability() {
-        document.getElementById('skill-slider').value = lastCalculatedStability;
-        updateMasterSkill();
-        closeCalcModal();
-        alert(t("已將計算出的穩定性套用至全局拉桿！"));
-    }
-
-    function renderRotations() {
-        const container = document.getElementById('rotation-setup');
-        const valid = dpsData.filter(d => isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3));
-        if(!valid.length) { container.innerHTML = `<p style="color:#888; font-style:italic;">${t("請先在上方勾選擁有的角色，以解鎖可組建的排軸...")}</p>`; return; }
-        let groups = {};
-        valid.forEach(d => { if(!groups[d.c1]) groups[d.c1] = []; groups[d.c1].push(d); });
-        let html = '';
-        for(let c1 in groups) {
-            html += `<div style="margin-bottom:15px; padding:12px; background:#1e1e24; border-radius:5px; border-left: 3px solid #d4af37;"><strong style="color: #d4af37;">🎯 ${t("主輸出")}：${t(c1)}</strong><div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">`;
-            
-            groups[c1].sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min).forEach(d => {
-                let r = getRotDpsRange(d);
-                let dpsStr = (r.max > 0 || r.isCustom) ? `[${r.min.toFixed(2)}~${r.max.toFixed(2)}w]` : t('[無預設/點擊自訂]'); 
-                let colorStyle = r.isCustom ? 'color: #00ffaa; text-decoration: underline; text-decoration-style: dashed;' : (r.min < r.max ? 'color: #ffaa00;' : 'color: #fff;');
-                if(r.max === 0 && !r.isCustom) colorStyle = 'color: #888; text-decoration: underline; text-decoration-style: dashed;';
-                
-                html += `<div style="background:#2b2b36; padding:6px 10px; border-radius:4px; font-size:0.9em; border: 1px solid #444; display:inline-flex; align-items:center; gap:5px;">
-                            <input type="checkbox" id="chk_${d.id}" value="${d.id}" ${checkedRotations.has(d.id)?'checked':''} onchange="updateRotationState()">
-                            <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${d.diff}</label>
-                            <span onclick="openStatsModal(event, '${d.id}')" style="cursor:pointer; font-weight:bold; ${colorStyle}; padding:0 4px;" title="${t('點擊輸入數據或加權')}">${dpsStr}</span>
-                            <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${t(d.c2)} / ${t(d.c3)} (${t(d.rot)})</label>
-                        </div>`;
-            });
-            html += `</div></div>`;
-        }
-        container.innerHTML = html;
-        syncRotBtnState();
-    }
-
-    function filterRotations() {
-        let q = document.getElementById('rot-search').value.toLowerCase();
-        let qTrad = q;
-        document.querySelectorAll('#rotation-setup input[type="checkbox"]').forEach(i => {
-            let container = i.closest('div');
-            let matches = container.innerText.toLowerCase().includes(qTrad) || container.innerText.toLowerCase().includes(q);
-            container.style.display = matches ? 'inline-flex' : 'none';
-        });
-        document.querySelectorAll('#rotation-setup > div').forEach(group => {
-            let hasVis = Array.from(group.querySelectorAll('div > div')).some(l => l.style.display !== 'none');
-            group.style.display = hasVis ? 'block' : 'none';
-        });
-        syncRotBtnState();
-    }
-
-    function toggleAllRotations() {
-        const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
-        if(!visibleBoxes.length) return;
-        const anyChecked = visibleBoxes.some(i => i.checked);
-        visibleBoxes.forEach(i => i.checked = !anyChecked);
-        updateRotationState();
-    }
-
-    function toggleDifficulty(diff) {
-        const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none' && i.closest('div').innerText.includes(diff));
-        if(!visibleBoxes.length) return;
-        const allChecked = visibleBoxes.every(i => i.checked);
-        visibleBoxes.forEach(i => i.checked = !allChecked);
-        updateRotationState();
-    }
-
-    function syncRotBtnState() {
-        const btn = document.getElementById('rot-all-btn');
-        if (!btn) return;
-        const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
-        
-        if (visibleBoxes.length > 0) {
-            let noneChecked = visibleBoxes.every(i => !i.checked);
-            btn.innerText = noneChecked ? t("➕ 全選可見排軸") : t("🗑️ 清空可見排軸");
-            btn.className = noneChecked ? "btn-apply" : "btn-reset";
-        }
-
-        const diffMap = [
-            { id: 1, symbol: '🟩' }, { id: 2, symbol: '🔵' }, { id: 3, symbol: '⭐' },
-            { id: 4, symbol: '⚠️' }, { id: 5, symbol: '🧩' }
-        ];
-        
-        diffMap.forEach(d => {
-            const diffBtn = document.getElementById(`btn-diff-${d.id}`);
-            if (diffBtn) {
-                const diffBoxes = visibleBoxes.filter(i => i.closest('div').innerText.includes(d.symbol));
-                if (diffBoxes.length > 0) {
-                    const anyChecked = diffBoxes.some(i => i.checked);
-                    diffBtn.classList.toggle(`active-diff-${d.id}`, anyChecked);
-                } else {
-                    diffBtn.classList.remove(`active-diff-${d.id}`);
-                }
-            }
-        });
-    }
-
-    function updateRotationState() {
-        checkedRotations.clear();
-        document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value));
-        syncRotBtnState();
-        updateTracker();
-    }
-
-    let activePresetAttrs = new Set();
-    let activePresetGens = new Set();
-
-    function togglePresetAttr(attr) {
-        if(activePresetAttrs.has(attr)) activePresetAttrs.delete(attr);
-        else activePresetAttrs.add(attr);
-        document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`);
-        updateTracker();
-    }
-
-    function togglePresetGen(gen) {
-        if(activePresetGens.has(gen)) activePresetGens.delete(gen);
-        else activePresetGens.add(gen);
-        document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`);
-        updateTracker();
-    }
-
-    function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
-        let html = `<option value="">-- ${slotType==1 ? t('主輸出') : slotType==2 ? t('副C/輔助') : t('生存/輔助')} --</option>`;
-        let recs = new Map();
-        
-        let hasContext = false;
-        if (slotType === 1 && (v2 || v3)) hasContext = true;
-        if (slotType === 2 && (v1 || v3)) hasContext = true;
-        if (slotType === 3 && (v1 || v2)) hasContext = true;
-
-        let availableDisplayChars = [];
-        for (let name of ownedCharacters) {
-            if (name === '漂泊者') {
-                availableDisplayChars.push('光主', '暗主', '風主');
-            } else {
-                availableDisplayChars.push(name);
-            }
-        }
-
-        dpsData.forEach(d => {
-            let match = false;
-            
-            if (hasContext) {
-                match = true;
-                if (slotType !== 1 && v1 && d.c1 !== v1) match = false;
-                if (slotType !== 2 && v2 && d.c2 !== v2) match = false;
-                if (slotType !== 3 && v3 && d.c3 !== v3) match = false;
-            } else {
-                if (slotType === 1 && checkedRotations.has(d.id)) match = true;
-                if (slotType !== 1 && checkedRotations.has(d.id)) match = true;
-            }
-
-            if(match) {
-                let target = slotType==1 ? d.c1 : slotType==2 ? d.c2 : d.c3;
-                let isBlacklisted = (slotType === 1) && noRecChars.has(target);
-                
-                if(availableDisplayChars.includes(target) && !isBlacklisted) {
-                    let c1Avail = (slotType === 1) ? true : (d.c1 === v1 || (used[getBase(d.c1)]||0) < (charData[getBase(d.c1)]?.max||1));
-                    let c2Avail = (slotType === 2) ? true : (d.c2 === v2 || (used[getBase(d.c2)]||0) < (charData[getBase(d.c2)]?.max||1));
-                    let c3Avail = (slotType === 3) ? true : (d.c3 === v3 || (used[getBase(d.c3)]||0) < (charData[getBase(d.c3)]?.max||1));
-                    
-                    let isBuildable = c1Avail && c2Avail && c3Avail;
-
-                    if (!recs.has(target)) {
-                        recs.set(target, { maxDPS: 0, buildable: false });
-                    }
-                    
-                    let data = recs.get(target);
-                    if (isBuildable) {
-                        data.buildable = true;
-                        let r = getRotDpsRange(d); 
-                        if (r.min > data.maxDPS) data.maxDPS = r.min;
-                    }
-                }
-            }
-        });
-
-        if(recs.size > 0) {
-            html += `<optgroup label="🔥 ${t('適配推薦')}">`;
-            Array.from(recs.entries()).sort((a,b)=>b[1].maxDPS - a[1].maxDPS).forEach(([name, data]) => {
-                let b = getBase(name), u = used[b]||0, m = charData[b]?.max||1;
-                let isEx = u >= m && getBase(curRaw)!==b;
-                if(slotType==1 && isEx) return; 
-                
-                let dpsStr = (data.buildable && data.maxDPS > 0) ? `(${t('保底')} ${data.maxDPS.toFixed(2)}w)` : '';
-                let tag = isEx ? ` 🛑[${t('耗盡')}]` : teamBases.has(b) && getBase(curRaw)!==b ? ` 🛑[${t('在隊')}]` : "";
-                html += `<option value="${name}" ${tag?"disabled":""}>⭐ ${t(name)} ${dpsStr}${tag}</option>`;
-            });
-            html += '</optgroup>';
-        }
-        
-        html += `<optgroup label="🔸 ${t('其他角色')}">`;
-        let validOthers = availableDisplayChars.filter(name => {
-            if (recs.has(name)) return false; 
-            let b = getBase(name);
-            let u = used[b] || 0;
-            let m = charData[b]?.max || 1;
-            let isEx = u >= m && getBase(curRaw) !== b;
-            return !isEx; 
-        });
-
-        validOthers.sort((a, b) => {
-            if (slotType === 3) {
-                let typeA = charData[getBase(a)]?.type || "";
-                let typeB = charData[getBase(b)]?.type || "";
-                let isSurvA = typeA.includes("生存位") ? 1 : 0;
-                let isSurvB = typeB.includes("生存位") ? 1 : 0;
-                if (isSurvA !== isSurvB) return isSurvB - isSurvA;
-            }
-            return characterOrder.indexOf(getBase(a)) - characterOrder.indexOf(getBase(b));
-        });
-
-        validOthers.forEach(name => {
-            let b = getBase(name);
-            let inTeam = teamBases.has(b) && getBase(curRaw)!==b;
-            html += `<option value="${name}" ${inTeam?'disabled':''}>${t(name)}${inTeam?` 🛑[${t('在隊')}]`:''}</option>`;
-        });
-        html += '</optgroup>';
-        return html;
-    }
-
-    function getMaxTeams(usedObj) {
-        let baseRemains = {};
-        for(let name of ownedCharacters) {
-            let b = getBase(name);
-            if(charData[b] && baseRemains[b]===undefined) {
-                let r = charData[b].max - (usedObj[b]||0);
-                if(r>0) baseRemains[b] = r;
-            }
-        }
-        let counts = Object.values(baseRemains); let teams = 0;
-        while(counts.length >= 3) {
-            counts.sort((a,b)=>b-a); counts[0]--; counts[1]--; counts[2]--;
-            teams++; counts = counts.filter(c=>c>0);
-        }
-        return Math.min(16, teams);
-    }
-
-    // 🌟 全域序列血量資料庫 (R1-1 to R10-4)
-    let bossHPMap = {};
-    
-    function initBossHPMap() {
-        let env = {
-            r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89,
-            r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
-            r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9,
-            growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100
-        };
-        
-        try {
-            let stored = localStorage.getItem('ww_boss_hp');
-            if (stored) bossHPMap = JSON.parse(stored);
-        } catch(e) {}
-
-        for (let r = 1; r <= 10; r++) {
-            for (let i = 1; i <= 4; i++) {
-                let key = `R${r}-${i}`;
-                if (!bossHPMap[key] || bossHPMap[key].isDefault) {
-                    let hp = 0;
-                    if (r === 1) hp = env.r1_hp;
-                    else if (r === 2) hp = (i === 1) ? 546.67 : env.r2_hp; // 猩猩固定 R2-1
-                    else if (r === 3) hp = env.r3_hp;
-                    else {
-                        let n = (r - 4) * 4 + i;
-                        hp = env.r3_hp * (1 + env.growth * n);
-                    }
-                    bossHPMap[key] = { value: hp, isDefault: true };
-                }
-            }
-        }
-        renderIndividualHPPanel();
-    }
-
-    function renderIndividualHPPanel() {
-        let container = document.getElementById('individual-hp-container');
-        if (!container) return;
-        let html = '';
-        for (let r = 1; r <= 10; r++) {
-            for (let i = 1; i <= 4; i++) {
-                let key = `R${r}-${i}`;
-                let data = bossHPMap[key];
-                let isCalib = !data.isDefault;
-                let cClass = isCalib ? 'calibrated' : '';
-                let title = isCalib ? "經實戰反推校正或手動覆寫的血量" : "系統預設常規血量";
-                html += `
-                    <div class="hp-item">
-                        <span class="hp-label">${key}</span>
-                        <input type="number" class="hp-input ${cClass}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" title="${title}" onchange="manualUpdateHP('${key}')">
-                    </div>
-                `;
-            }
-        }
-        container.innerHTML = html;
-    }
-
-    function manualUpdateHP(key) {
-        let val = parseFloat(document.getElementById(`hp_${key}`).value);
-        if (!isNaN(val) && val > 0) {
-            bossHPMap[key] = { value: val, isDefault: false };
-            try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
-            renderIndividualHPPanel();
-            updateTracker();
-        }
-    }
-
-    function resetIndividualHP() {
-        bossHPMap = {};
-        try { localStorage.removeItem('ww_boss_hp'); } catch(e) {}
-        initBossHPMap();
-    }
-
-    function getBossMaxHP(r, index) {
-        let key = `R${r}-${index}`;
-        return bossHPMap[key] ? bossHPMap[key].value : 400; // Fallback
-    }
-
-    function getEnvSettings() {
-        return {
-            transTime: parseFloat(document.getElementById('env-trans').value) || 1.5,
-            battleTime: parseFloat(document.getElementById('env-time').value) || 120,
-            resPenalty: parseFloat(document.getElementById('env-res').value) || 40
-        };
-    }
-
-    function updateTracker() {
-        initBossHPMap(); // 確保血量庫初始化
-        
-        let used = {}; for(let n in charData) used[n] = 0;
-        document.querySelectorAll('.char-select').forEach(s => { if(s.value) used[getBase(s.value)]++; });
-        
-        document.querySelectorAll('#team-board tr').forEach(row => {
-            let ss = row.querySelectorAll('select'), v1=ss[0].value, v2=ss[1].value, v3=ss[2].value;
-            let bases = new Set([v1,v2,v3].filter(x=>x).map(x=>getBase(x)));
-            ss.forEach((s, i) => {
-                let h = buildOptionsHTML(i+1, v1, v2, v3, s.value, used, bases);
-                if(s.innerHTML !== h) { let old = s.value; s.innerHTML = h; s.value = old; }
-                s.classList.toggle('error', s.value && used[getBase(s.value)] > charData[getBase(s.value)].max);
-            });
-        });
-
-        const tracker = document.getElementById('tracker');
-        tracker.innerHTML = `<div style="background:#3f3f4e;padding:12px;border-radius:8px;margin-bottom:15px;border:1px solid #d4af37;text-align:center;">
-            📊 ${t("理論最大")}：<span style="color:#4caf50;font-weight:bold;font-size:1.2em;">${getMaxTeams({})}</span> <span style="color:#aaa;">${t("隊")}</span> | ⏳ ${t("剩餘可排")}：<span style="color:#ffb300;font-weight:bold;font-size:1.2em;">${getMaxTeams(used)}</span> <span style="color:#aaa;">${t("隊")}</span>
-        </div>`;
-
-        let groups = { "生存位 (可用 2 次)": [], "一般角色 (可用 1 次)": [] };
-        ownedCharacters.forEach(name => {
-            let base = getBase(name);
-            if(charData[base]) groups[charData[base].type].push(name);
-        });
-
-        for(let type in groups) {
-            if(groups[type].length === 0) continue;
-            tracker.innerHTML += `<div class="type-title">${t(type.split(" ")[0])} <span style="font-size:0.8em; color:#888;">${t(type.substring(type.indexOf("(")))}</span></div>`;
-            groups[type].sort((a,b) => {
-                let rA = charData[getBase(a)].max - (used[getBase(a)]||0);
-                let rB = charData[getBase(b)].max - (used[getBase(b)]||0);
-                if(rA > 0 && rB <= 0) return -1;
-                if(rA <= 0 && rB > 0) return 1;
-                return characterOrder.indexOf(a) - characterOrder.indexOf(b);
-            });
-            groups[type].forEach(name => {
-                let max = charData[getBase(name)].max; let rem = max - (used[getBase(name)]||0);
-                tracker.innerHTML += `<div class="char-row"><span>${t(name)}</span><span class="count-badge ${rem<=0?'count-empty':''}">${rem<=0?t('耗盡'):rem}</span></div>`;
-            });
-        }
-
-        const ps = document.getElementById('preset-select');
-        let ph = `<option value="">-- ${t("選擇推薦配隊")} --</option>`;
-        
-        dpsData.filter(d => {
-            if (!checkedRotations.has(d.id) || !isOwned(d.c1) || !isOwned(d.c2) || !isOwned(d.c3)) return false;
-            let mainAttr = charAttrMap[d.c1] || "未知";
-            if (activePresetAttrs.size > 0 && !activePresetAttrs.has(mainAttr)) return false;
-            if (activePresetGens.size > 0 && !activePresetGens.has(d.gen.toString())) return false;
-            return true;
-        }).forEach(d => {
-            let r = getRotDpsRange(d);
-            let dpsStr = (r.max > 0 || r.isCustom) ? `${r.min.toFixed(2)}~${r.max.toFixed(2)}w` : t('無DPS');
-            ph += `<option value="${d.c1},${d.c2},${d.c3}">${t(d.c1)} + ${t(d.c2)} + ${t(d.c3)} (${dpsStr})</option>`;
-        });
-        
-        ps.innerHTML = ph;
-
-        // 🌌 雙軌推演引擎 (Min & Max Relay Simulation)
-        let env = getEnvSettings();
-        
-        let current_r_min = 1, current_index_min = 1, current_hp_min = getBossMaxHP(1, 1);
-        let current_r_max = 1, current_index_max = 1, current_hp_max = getBossMaxHP(1, 1);
-        
-        let totalMatrixScoreMin = 0;
-        let totalMatrixScoreMax = 0;
-
-        document.querySelectorAll('#team-board tr').forEach((row, i) => {
-            let ss = row.querySelectorAll('select');
-            let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
-            let resTd = row.querySelector('.relay-result');
-            
-            let chk_res = [
-                row.querySelector('.res-chk-1').checked,
-                row.querySelector('.res-chk-2').checked,
-                row.querySelector('.res-chk-3').checked,
-                row.querySelector('.res-chk-4').checked
-            ];
-
-            if (c1 && c2 && c3) {
-                let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
-                if (possibleRots.length > 0) {
-                    possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
-                    let bestRot = possibleRots[0];
-                    let dpsRange = getRotDpsRange(bestRot);
-
-                    if (dpsRange.max <= 0) { resTd.innerHTML = `<span style="color:#d32f2f;">${t("DPS過低")}<br>${t("無法推演")}</span>`; return; }
-
-                    // --- 模擬 MIN 狀態 ---
-                    let t_left_min = env.battleTime;
-                    let dmg_dealt_min = 0;
-                    let s_max_min = getBossMaxHP(current_r_min, current_index_min);
-                    let s_pct_min = (current_hp_min / s_max_min * 100).toFixed(0);
-                    let startStrMin = `R${current_r_min}-${current_index_min}(${s_pct_min}%)`;
-
-                    while (t_left_min > 0) {
-                        let activeRes = chk_res[current_index_min - 1] ? (1 - env.resPenalty / 100) : 1;
-                        let eff_dps_min = dpsRange.min * activeRes;
-                        if (eff_dps_min <= 0) break;
-
-                        let ttk = current_hp_min / eff_dps_min;
-                        if (ttk <= t_left_min) {
-                            dmg_dealt_min += current_hp_min;
-                            t_left_min -= ttk;
-                            t_left_min -= env.transTime;
-                            current_index_min++;
-                            if (current_index_min > 4) { current_r_min++; current_index_min = 1; }
-                            current_hp_min = getBossMaxHP(current_r_min, current_index_min);
-                        } else {
-                            let partial = eff_dps_min * t_left_min;
-                            dmg_dealt_min += partial;
-                            current_hp_min -= partial;
-                            t_left_min = 0;
-                        }
-                    }
-                    let e_max_min = getBossMaxHP(current_r_min, current_index_min);
-                    let e_pct_min = (current_hp_min / e_max_min * 100).toFixed(0);
-                    let endStrMin = `R${current_r_min}-${current_index_min}(${e_pct_min}%)`;
-
-                    // --- 模擬 MAX 狀態 ---
-                    let t_left_max = env.battleTime;
-                    let dmg_dealt_max = 0;
-                    let s_max_max = getBossMaxHP(current_r_max, current_index_max);
-                    let s_pct_max = (current_hp_max / s_max_max * 100).toFixed(0);
-                    let startStrMax = `R${current_r_max}-${current_index_max}(${s_pct_max}%)`;
-
-                    while (t_left_max > 0) {
-                        let activeRes = chk_res[current_index_max - 1] ? (1 - env.resPenalty / 100) : 1;
-                        let eff_dps_max = dpsRange.max * activeRes;
-                        if (eff_dps_max <= 0) break;
-
-                        let ttk = current_hp_max / eff_dps_max;
-                        if (ttk <= t_left_max) {
-                            dmg_dealt_max += current_hp_max;
-                            t_left_max -= ttk;
-                            t_left_max -= env.transTime;
-                            current_index_max++;
-                            if (current_index_max > 4) { current_r_max++; current_index_max = 1; }
-                            current_hp_max = getBossMaxHP(current_r_max, current_index_max);
-                        } else {
-                            let partial = eff_dps_max * t_left_max;
-                            dmg_dealt_max += partial;
-                            current_hp_max -= partial;
-                            t_left_max = 0;
-                        }
-                    }
-                    let e_max_max = getBossMaxHP(current_r_max, current_index_max);
-                    let e_pct_max = (current_hp_max / e_max_max * 100).toFixed(0);
-                    let endStrMax = `R${current_r_max}-${current_index_max}(${e_pct_max}%)`;
-
-                    let scoreMin = dmg_dealt_min * 10; 
-                    let scoreMax = dmg_dealt_max * 10;
-                    totalMatrixScoreMin += scoreMin;
-                    totalMatrixScoreMax += scoreMax;
-
-                    resTd.innerHTML = `
-                        <div style="line-height:1.4;">
-                            <span style="color:#aaa;">下限:</span> <span style="color:#ffaa00;">${startStrMin} ➔ ${endStrMin}</span><br>
-                            <span style="color:#aaa;">上限:</span> <span style="color:#00ffaa;">${startStrMax} ➔ ${endStrMax}</span><br>
-                            <span style="color:#cf00ff; font-weight:bold;">${Math.floor(scoreMin).toLocaleString()} ~ ${Math.floor(scoreMax).toLocaleString()} 分</span>
-                        </div>
-                    `;
-                } else {
-                    resTd.innerHTML = "-";
-                }
-            } else {
-                resTd.innerHTML = "-";
-            }
-        });
-
-        document.getElementById('matrix-total-score').innerText = `${Math.floor(totalMatrixScoreMin).toLocaleString()} ~ ${Math.floor(totalMatrixScoreMax).toLocaleString()} ` + t("分");
-
-        saveData();
-    }
-
-    // 🔄 實戰反推、5% 誤差自動校正與最佳化重排
-    function reverseInferAndOptimize() {
-        initBossHPMap();
-        let env = getEnvSettings();
-        let teamsToProcess = [];
-        let rows = document.querySelectorAll('#team-board tr');
-        
-        let start_r = 1, start_idx = 1, start_hp = getBossMaxHP(1, 1);
-
-        rows.forEach((row, idx) => {
-            let ss = row.querySelectorAll('select');
-            let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
-            let scoreInput = row.querySelector('.score-input').value;
-            let chk_res = [
-                row.querySelector('.res-chk-1').checked,
-                row.querySelector('.res-chk-2').checked,
-                row.querySelector('.res-chk-3').checked,
-                row.querySelector('.res-chk-4').checked
-            ];
-
-            if (c1 && c2 && c3) {
-                let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
-                if (possibleRots.length > 0) {
-                    possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
-                    let rotId = possibleRots[0].id;
-                    let theoryDps = possibleRots[0].dps;
-                    
-                    let actualScore = parseFloat(scoreInput);
-                    if (!isNaN(actualScore) && actualScore > 0) {
-                        let dmg_left = actualScore / 10; 
-                        let kills = 0;
-                        let effective_time = env.battleTime;
-                        let effective_dmg_sum = 0;
-                        
-                        let tmp_r = start_r, tmp_idx = start_idx, tmp_hp = start_hp;
-
-                        while (dmg_left > 0) {
-                            let r_factor = chk_res[tmp_idx - 1] ? (1 - env.resPenalty / 100) : 1;
-                            if (r_factor <= 0) r_factor = 0.1; 
-
-                            if (dmg_left >= tmp_hp) {
-                                dmg_left -= tmp_hp;
-                                effective_dmg_sum += (tmp_hp / r_factor);
-                                kills++;
-                                tmp_idx++;
-                                if (tmp_idx > 4) { tmp_r++; tmp_idx = 1; }
-                                tmp_hp = getBossMaxHP(tmp_r, tmp_idx);
-                            } else {
-                                effective_dmg_sum += (dmg_left / r_factor);
-                                tmp_hp -= dmg_left;
-                                dmg_left = 0;
-                            }
-                        }
-                        
-                        effective_time -= (kills * env.transTime);
-                        let trueBaseDps = 0;
-                        if (effective_time > 0) {
-                            trueBaseDps = effective_dmg_sum / effective_time;
-                        }
-
-                        // 🔍 自動校正機制 (誤差 > 5% 時，嘗試修正剛才打的王)
-                        if (trueBaseDps > 0 && theoryDps > 0) {
-                            let deviation = Math.abs(trueBaseDps - theoryDps) / theoryDps;
-                            if (deviation > 0.05) {
-                                // 偏離過大，假設是王血量有問題。我們把真實 DPS 當作 theoryDps，反推應該的血量
-                                // 這裡先簡單用比例修正該區段的王血量
-                                let correctionFactor = theoryDps / trueBaseDps;
-                                let r_fix = start_r, idx_fix = start_idx;
-                                let fixKey = `R${r_fix}-${idx_fix}`;
-                                if (bossHPMap[fixKey] && bossHPMap[fixKey].isDefault) {
-                                    bossHPMap[fixKey].value = bossHPMap[fixKey].value * correctionFactor;
-                                    bossHPMap[fixKey].isDefault = false;
-                                }
-                            }
-                            
-                            // 將推算出來的 DPS 寫入本機覆寫 (保持原本的穩定度設定)
-                            let currStats = customStatsMap[rotId] || { stability: 100, buff: 0 };
-                            customStatsMap[rotId] = { dps: trueBaseDps, stability: currStats.stability, buff: currStats.buff };
-                        }
-                        
-                        start_r = tmp_r; start_idx = tmp_idx; start_hp = tmp_hp;
-                    }
-                    
-                    teamsToProcess.push(possibleRots[0]);
-                }
-            }
-        });
-        
-        try { 
-            localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); 
-            localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap));
-        } catch(e) {}
-        
-        renderIndividualHPPanel();
-
-        // --- 重新排序 (低傷扛轉場，高傷壓軸) ---
-        if (teamsToProcess.length > 0) {
-            teamsToProcess.sort((a, b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
-            teamsToProcess.reverse();
-
-            document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
-            document.querySelectorAll('.score-input').forEach(i => {i.value="";});
-            
-            let maxPossibleTeams = Math.min(16, getMaxTeams({}));
-            let startIndex = Math.max(0, maxPossibleTeams - teamsToProcess.length);
-            
-            teamsToProcess.forEach((tData, index) => {
-                let rowIdx = startIndex + index;
-                if(rows[rowIdx]) {
-                    let ss = rows[rowIdx].querySelectorAll('select');
-                    ss[0].innerHTML = `<option value="${tData.c1}">${tData.c1}</option>`;
-                    ss[1].innerHTML = `<option value="${tData.c2}">${tData.c2}</option>`;
-                    ss[2].innerHTML = `<option value="${tData.c3}">${tData.c3}</option>`;
-                    ss[0].value = tData.c1;
-                    ss[1].value = tData.c2;
-                    ss[2].value = tData.c3;
-                }
-            });
-
-            alert(t("✅ 實戰反推與校正完成！\n系統已扣除轉場與抗性影響，推算真實DPS。若預設血量偏差 > 5%，已自動在面板校正。\n目前已自動將隊伍洗牌至最優順序！"));
-        }
-        
-        updateTracker();
-    }
-
-    function autoBuildMaxDpsTeams() {
-        if(!confirm(t("將會清空當前編隊並自動生成極限陣容，確定執行？"))) return;
-        
-        let validTeams = dpsData.filter(d => 
-            checkedRotations.has(d.id) && 
-            isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3)
-        );
-
-        validTeams.sort((a, b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
-
-        let charUsageCount = {};
-        for(let n in charData) charUsageCount[n] = 0;
-        
-        let finalOptimizedTeams = [];
-
-        for (let team of validTeams) {
-            let b1 = getBase(team.c1);
-            let b2 = getBase(team.c2);
-            let b3 = getBase(team.c3);
-            
-            let max1 = charData[b1]?.max || 1;
-            let max2 = charData[b2]?.max || 1;
-            let max3 = charData[b3]?.max || 1;
-
-            let u1 = charUsageCount[b1] || 0;
-            let u2 = charUsageCount[b2] || 0;
-            let u3 = charUsageCount[b3] || 0;
-
-            if (u1 < max1 && u2 < max2 && u3 < max3) {
-                if (b1 === b2 || b1 === b3 || b2 === b3) continue;
-
-                finalOptimizedTeams.push(team);
-                charUsageCount[b1] = u1 + 1;
-                charUsageCount[b2] = u2 + 1;
-                charUsageCount[b3] = u3 + 1;
-            }
-
-            if (finalOptimizedTeams.length >= 16) break;
-        }
-
-        finalOptimizedTeams.reverse();
-
-        document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
-        document.querySelectorAll('.score-input').forEach(i => {i.value="";});
-        
-        let rows = document.querySelectorAll('#team-board tr');
-        let maxPossibleTeams = Math.min(16, getMaxTeams({}));
-        let startIndex = Math.max(0, maxPossibleTeams - finalOptimizedTeams.length);
-        
-        finalOptimizedTeams.forEach((tData, index) => {
-            let rowIdx = startIndex + index;
-            if(rows[rowIdx]) {
-                let ss = rows[rowIdx].querySelectorAll('select');
-                ss[0].innerHTML = `<option value="${tData.c1}">${tData.c1}</option>`;
-                ss[1].innerHTML = `<option value="${tData.c2}">${tData.c2}</option>`;
-                ss[2].innerHTML = `<option value="${tData.c3}">${tData.c3}</option>`;
-                ss[0].value = tData.c1;
-                ss[1].value = tData.c2;
-                ss[2].value = tData.c3;
-            }
-        });
-
-        updateTracker();
-        alert(t(`✅ 一鍵配置與推演完成！\n共組建 ${finalOptimizedTeams.length} 隊，系統已將高DPS陣容安排於壓軸。`));
-    }
-
-    function applyPreset() {
-        let val = document.getElementById('preset-select').value; if(!val) return;
-        let cs = val.split(','), rows = document.querySelectorAll('#team-board tr');
-        let applied = false;
-        for(let r of rows) {
-            let ss = r.querySelectorAll('select');
-            if(!ss[0].value && !ss[1].value && !ss[2].value) { 
-                ss[0].value=cs[0]; ss[1].value=cs[1]; ss[2].value=cs[2]; 
-                applied = true; break; 
-            }
-        }
-        if(!applied) alert(t("沒有空白隊伍了！"));
-        updateTracker();
-    }
-    
-    function resetTeams() { 
-        if(!confirm(t("確定清空編隊表嗎？"))) return;
-        document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
-        document.querySelectorAll('.score-input').forEach(i => {i.value="";});
-        updateTracker(); 
-    }
-
-    function saveData() {
-        try {
-            localStorage.setItem('ww_roster', JSON.stringify([...ownedCharacters]));
-            localStorage.setItem('ww_rotations', JSON.stringify([...checkedRotations]));
-            let teams = []; document.querySelectorAll('#team-board tr').forEach(r => teams.push([...r.querySelectorAll('select')].map(s=>s.value)));
-            localStorage.setItem('ww_teams', JSON.stringify(teams));
-        } catch(e) {}
-    }
-
-    function initBoard() {
-        const b = document.getElementById('team-board');
-        for(let i=1; i<=16; i++) {
-            let tr = document.createElement('tr');
-            tr.innerHTML = `<td style="font-weight:bold; color:#d4af37;">${t("第")}${i}${t("隊")}</td>
-                            <td><select class="char-select" onchange="updateTracker()"></select></td>
-                            <td><select class="char-select" onchange="updateTracker()"></select></td>
-                            <td><select class="char-select" onchange="updateTracker()"></select></td>
-                            <td style="font-size:0.85em; text-align:center;">
-                                <input type="number" class="score-input" placeholder="${t('實戰得分')}" title="${t('打完結算給的總分')}"><br>
-                                <div style="display:flex; justify-content:center; gap:3px; margin-top:2px;">
-                                    <label title="${t('第1隻王有抗性')}"><input type="checkbox" class="res-chk-1" onchange="updateTracker()">[1]</label>
-                                    <label title="${t('第2隻王有抗性')}"><input type="checkbox" class="res-chk-2" onchange="updateTracker()">[2]</label>
-                                    <label title="${t('第3隻王有抗性')}"><input type="checkbox" class="res-chk-3" onchange="updateTracker()">[3]</label>
-                                    <label title="${t('第4隻王有抗性')}"><input type="checkbox" class="res-chk-4" onchange="updateTracker()">[4]</label>
-                                </div>
-                            </td>
-                            <td class="relay-result" style="font-size:0.85em; text-align:left; padding-left:15px; border-left:2px solid #00ffaa;">-</td>`;
-            b.appendChild(tr);
-        }
-    }
-
-    // 📤 大數據貢獻問卷系統 (Google 表單 CSV 格式版)
-    function submitToGoogleForm() {
-        if(!confirm(t("您即將匿名提交當前表單上的【隊伍陣容、遭遇抗性與實戰得分】。\n這將幫助我們建立線上數據池，更精確地校正王血量與抗性公式！\n\n是否同意前往 Google 提交數據？"))) return;
-
-        let dataParams = [];
-        let rows = document.querySelectorAll('#team-board tr');
-        
-        // 寫入 CSV 標頭
-        dataParams.push("主C,副C,生存,實戰分數,王1抗,王2抗,王3抗,王4抗");
-        
-        rows.forEach((r) => {
-            let ss = r.querySelectorAll('select');
-            let score = r.querySelector('.score-input').value;
-            if(ss[0].value && ss[1].value && ss[2].value && score) {
-                let res1 = r.querySelector('.res-chk-1').checked ? 1 : 0;
-                let res2 = r.querySelector('.res-chk-2').checked ? 1 : 0;
-                let res3 = r.querySelector('.res-chk-3').checked ? 1 : 0;
-                let res4 = r.querySelector('.res-chk-4').checked ? 1 : 0;
-                dataParams.push(`${ss[0].value},${ss[1].value},${ss[2].value},${score},${res1},${res2},${res3},${res4}`);
-            }
-        });
-
-        if (dataParams.length === 1) {
-            alert(t("沒有找到任何填有「實戰得分」的有效隊伍！\n請先填寫得分再提交。"));
-            return;
-        }
-
-        let csvReport = dataParams.join('\n');
-        
-        // ⚠️【開發者注意】：請將 1FAIpQLSf... 換成你的真實表單ID，entry.12345 換成你表單多行文字框的ID
-        let formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLS_替換成你的真實表單ID/viewform";
-        let entryId = "entry.123456789"; 
-        
-        let finalUrl = `${formBaseUrl}?usp=pp_url&${entryId}=${encodeURIComponent(csvReport)}`;
-        window.open(finalUrl, '_blank');
-    }
-
-    function exportImage() {
-        const rows = document.querySelectorAll('#team-board tr');
-        let completed = [];
-        rows.forEach((r, i) => {
-            let ss = r.querySelectorAll('select');
-            let resTd = r.querySelector('.relay-result');
-            let score = r.querySelector('.score-input').value;
-            if(ss[0].value && ss[1].value && ss[2].value) {
-                let resText = resTd.innerText.replace(/\n/g, ' | '); 
-                let finalScore = score ? `實得分: ${score}` : resText;
-                completed.push({id: i+1, c1: ss[0].value, c2: ss[1].value, c3: ss[2].value, res: finalScore});
-            }
-        });
-        if(!completed.length) return alert(t("請先完成至少一支滿編 3 人的隊伍！"));
-        
-        let box = document.createElement('div');
-        box.style = "position:absolute; left:-9999px; background:#1e1e24; color:#fff; padding:30px; border-radius:15px; width:1000px; font-family:'Segoe UI',sans-serif;";
-        let h = `<h2 style="color:#d4af37; text-align:center; border-bottom:2px solid #d4af37; padding-bottom:10px;">${t("鳴潮矩陣實戰推演編隊表")}</h2><table style="width:100%; border-collapse:collapse; margin-top:20px; text-align:center; font-size:1.1em;">`;
-        h += `<tr style="background:#3f3f4e; color:#d4af37;"><th>${t("關卡")}</th><th>${t("主輸出")}</th><th>${t("副C/輔助")}</th><th>${t("生存/輔助")}</th><th style="color:#00ffaa;">${t("推演戰果 / 實戰得分")}</th></tr>`;
-        completed.forEach(tData => h += `<tr><td style="border:1px solid #555; padding:15px; font-weight:bold; color:#4caf50;">${t("第")} ${tData.id} ${t("隊")}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c1)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c2)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c3)}</td><td style="border:1px solid #555; padding:15px; font-size:0.85em; text-align:left;">${tData.res}</td></tr>`);
-        box.innerHTML = h + `</table><div style="margin-top:20px; text-align:right; color:#888; font-size:0.9em;">${t("總分預估")}：${document.getElementById('matrix-total-score').innerText} | ${t("生成時間")}：${new Date().toLocaleString()}</div>`;
-        document.body.appendChild(box);
-        html2canvas(box, { backgroundColor: '#1e1e24', scale: 2 }).then(c => {
-            let l = document.createElement('a'); l.download = '鳴潮矩陣推演編隊表.png'; l.href = c.toDataURL('image/png'); l.click();
-            document.body.removeChild(box);
-        });
-    }
-
-    function initializeApp() {
-        initBoard();
-        try { isSimp = localStorage.getItem('ww_lang') === 'zh-CN'; } catch(e){}
-        if (isSimp) document.getElementById('lang-toggle').innerText = "繁";
-        
-        try {
-            const sr = localStorage.getItem('ww_roster');
-            if (sr) {
-                let parsed = JSON.parse(sr);
-                if (Array.isArray(parsed)) {
-                    parsed.forEach(name => { 
-                        if (charData[name] || ['光主','暗主','風主'].includes(name)) ownedCharacters.add(name); 
-                    });
-                }
-            } else {
-                ownedCharacters = new Set(Object.keys(charData));
-            }
-            
-            const srot = localStorage.getItem('ww_rotations');
-            if (srot) {
-                let parsed = JSON.parse(srot);
-                if (Array.isArray(parsed)) {
-                    const validIds = new Set(dpsData.map(d => d.id));
-                    parsed.forEach(id => {
-                        if (validIds.has(id)) checkedRotations.add(id);
-                    });
-                }
-            } else {
-                checkedRotations = new Set(dpsData.map(d => d.id));
-            }
-        } catch(e) {
-            console.error("LocalStorage parsing error, resetting to defaults.");
-            ownedCharacters = new Set(Object.keys(charData));
-            checkedRotations = new Set(dpsData.map(d => d.id));
-        }
-
-        document.getElementById('skill-slider').value = 100;
-        updateMasterSkill();
-        
-        renderCheckboxes();
-        
-        try {
-            const st = localStorage.getItem('ww_teams');
-            if (st) {
-                const pt = JSON.parse(st);
-                document.querySelectorAll('#team-board tr').forEach((r, i) => {
-                    if (pt[i]) {
-                        let ss = r.querySelectorAll('select');
-                        if (pt[i][0]) { ss[0].innerHTML = `<option value="${pt[i][0]}"></option>`; ss[0].value = pt[i][0]; }
-                        if (pt[i][1]) { ss[1].innerHTML = `<option value="${pt[i][1]}"></option>`; ss[1].value = pt[i][1]; }
-                        if (pt[i][2]) { ss[2].innerHTML = `<option value="${pt[i][2]}"></option>`; ss[2].value = pt[i][2]; }
-                    }
-                });
-            }
-        } catch(e) {}
-        
-        updateTracker(); 
-        translateDOM(document.body);
-    }
-
-    initializeApp();
-</script>
+    <script src="app.js"></script>
 </body>
+</html>
