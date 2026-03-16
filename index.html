@@ -111,7 +111,7 @@
 <body>
 
     <button id="lang-toggle" onclick="toggleLang()">简 / 繁</button>
-    <h2>鳴潮矩陣編隊工具 v4.7.0</h2>
+    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: #cf00ff;">v4.7.1</span></h2>
     
     <div class="data-source" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px;">
         <span>📊 數據庫設計與邏輯：AI架構 / 數據提供：QuichilOvO、南邊 / 整理：Kolton / 流量統計：Google Analytics</span>
@@ -120,13 +120,34 @@
         </a>
     </div>
 
+<details style="background: #1e2b24; padding: 10px 15px; border-radius: 8px; border: 1px solid #2e5c3e; margin-bottom: 10px; cursor: pointer;">
+    <summary style="color: #4caf50; font-weight: bold; outline: none;">📖 點此查看 v4.7.1 工具使用說明 (新手必讀)</summary>
+    <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #2e5c3e; padding-top: 10px;">
+        <strong>【第一步：勾選角色】</strong> 在上方清單點選你擁有的角色，解鎖相關排軸。<br>
+        <strong>【第二步：設定排軸與穩定性】</strong> 
+        <ul style="margin: 5px 0 10px 20px; padding: 0;">
+            <li>勾選你會打的排軸，系統才能用它們來組隊。</li>
+            <li>使用<strong>「全局操作達成率」</strong>拉桿，或點擊<strong>「⏱️ 內建軸穩定性計算器」</strong>，科學計算你的實戰折損。</li>
+            <li>想自訂傷害？點擊列表排軸旁的 <strong>[數值]</strong> 即可直接覆寫專屬 DPS 與穩定性！</li>
+        </ul>
+        <strong>【第三步：智能一鍵編隊】</strong> 在右下方點擊 <strong>「🔥 一鍵編制」</strong>，系統將依據折損後的「真實保底 DPS」執行貪婪演算，為你配置容錯率最高、極限傷害壓軸的最優爬塔陣容！
+    </div>
+</details>
+
 <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
-    <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本說明 (v4.7.0 實戰手法折損連動版)</summary>
-    <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6;">
-        - 🔥 <strong>DPS 最佳化編隊</strong>：新增「一鍵編制」功能，自動貪婪配置最高DPS並壓軸置底。<br>
-        - 🎯 <strong>手法穩定性折損</strong>：新增全局與分級拉桿，動態計算失誤對不同難度排軸的 DPS 懲罰。<br>
-        - ✍️ <strong>檢測報告與無預設 DPS 自訂</strong>：點擊排軸旁邊的數值（包含0傷害無預設軸），可直接輸入「實測 DPS」與「穩定性 %」，系統將本機記憶並依此最佳化排隊。<br>
-        - 📈 <strong>隊伍總 DPS 估算</strong>：自動加總計算當前表單內隊伍的【失誤保底總傷 ~ 完美極限總傷】範圍。<br>
+    <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新說明 (當前: v4.7.1)</summary>
+    <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #555; padding-top: 10px;">
+        <strong style="color:#cf00ff;">【v4.7.1 最新更新】</strong><br>
+        - ⏱️ <strong>內建軸穩定性計算器 (New)</strong>：可輸入你實測的多次「啟動軸+循環軸」耗時，自動執行標準差與擬合率檢測，並一鍵套用評分至全局！<br>
+        - 📖 <strong>動態使用說明</strong>：新增與版本同步的新手引導區塊。<br>
+        - 📜 <strong>歷史更新封存</strong>：優化更新日誌排版，保留過往改版歷程。<br>
+        <br>
+        <strong style="color:#888;">【v4.7.0 歷史更新概略】</strong><br>
+        <span style="color:#777;">
+        - 新增「一鍵編制」演算法，自動依據保底 DPS 貪婪配置並壓軸。<br>
+        - 新增手法折損拉桿，智能計算失誤對不同難度排軸的 DPS 懲罰。<br>
+        - 支援無預設 DPS 自訂覆寫與隊伍總 DPS 範圍估算。<br>
+        </span>
     </div>
 </details>
     
@@ -172,14 +193,17 @@
             </div>
 
             <div style="margin-bottom: 15px; width: 100%; display: flex; flex-direction: column; background: #2b2b36; padding: 15px 20px; border-radius: 8px; border: 1px solid #555; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                     <span style="color: #d4af37; font-weight: bold; font-size: 1.1em;">🎯 全局操作達成率 (自動依難度換算折損)</span>
-                    <span id="skill-display" style="color: #cf00ff; font-weight: bold; font-size: 1.2em; text-shadow: 0 0 5px rgba(207,0,255,0.5);">100%</span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="openCalcModal()" style="background:#cf00ff; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-weight:bold; box-shadow:0 0 8px rgba(207,0,255,0.5);">⏱️ 內建軸穩定性計算器</button>
+                        <span id="skill-display" style="color: #cf00ff; font-weight: bold; font-size: 1.2em; text-shadow: 0 0 5px rgba(207,0,255,0.5);">100%</span>
+                    </div>
                 </div>
                 <input type="range" id="skill-slider" min="50" max="100" value="100" style="width: 100%; margin: 10px 0;" oninput="updateMasterSkill()">
                 
                 <details style="margin-top: 10px; width: 100%;">
-                    <summary style="color: #aaa; cursor: pointer; font-size: 0.9em; outline: none; user-select: none;">⚙️ 依排軸難度微調個別穩定性 (點擊展開)</summary>
+                    <summary style="color: #aaa; cursor: pointer; font-size: 0.9em; outline: none; user-select: none;">⚙️ 依排軸難度微調各別穩定性 (點擊展開)</summary>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; padding: 15px; background: #1e1e24; border-radius: 8px; border: 1px solid #444;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span style="width: 70px; color: #d32f2f; font-weight: bold;">⚠️ 極難:</span>
@@ -232,7 +256,7 @@
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start; background: #3f3f4e; padding: 12px; border-radius: 8px; border: 1px solid #555;">
                         <div style="display: flex; flex-direction: column; gap: 6px;">
                             <button class="btn-apply" onclick="autoBuildMaxDpsTeams()" style="background: #cf00ff; box-shadow: 0 0 10px rgba(207,0,255,0.4); padding: 10px 20px;">🔥 一鍵編制</button>
-                            <span style="color: #aaa; font-size: 0.75em; max-width: 250px;">*自動依據手法折損保底，高DPS壓軸，尚未針對矩陣最佳化（如抗性，殘血之利用，各軸的出傷速度分配）</span>
+                            <span style="color: #aaa; font-size: 0.75em; max-width: 250px;">*自動依據手法折損保底，高DPS壓軸，尚未針對矩陣最佳化（如抗性，殘血之利用，各軸的出傷速度分配)</span>
                         </div>
                         <button class="btn-reset" onclick="resetTeams()" style="height: fit-content; padding: 10px 15px;">🗑️ 重設編制</button>
                     </div>
@@ -300,10 +324,40 @@
         </div>
     </div>
 
+    <div id="calc-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#1e1e24; padding:25px; border-radius:10px; border:2px solid #cf00ff; width:400px; box-shadow: 0 0 30px rgba(207,0,255,0.4);">
+            <h3 style="margin-top:0; color:#cf00ff; font-size:1.3em; text-align:center;">⏱️ 實戰手法穩定性檢測</h3>
+            <p style="color:#aaa; font-size:0.85em; text-align:center; margin-bottom: 15px;">輸入您多次打樁(啟動+循環)的真實耗時，系統將運用統計學為您診斷手法穩定度。</p>
+            
+            <label style="display:block; margin-bottom:10px; font-weight:bold; color:#d4af37;">📏 基準理論耗時 (秒): 
+                <input type="number" id="calc-base-time" step="0.1" value="25" style="width:100%; padding:8px; background:#2b2b36; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;">
+            </label>
+            <label style="display:block; margin-bottom:15px; font-weight:bold; color:#d4af37;">📝 實測耗時紀錄 (秒): 
+                <textarea id="calc-times" rows="3" style="width:100%; padding:8px; background:#2b2b36; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px; resize:none;" placeholder="請以逗號或換行分隔，例如:\n25.5, 26.1, 25.8, 29.0"></textarea>
+            </label>
+
+            <button onclick="calculateStability()" style="width:100%; padding:10px; background:#cf00ff; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:1.1em; margin-bottom:15px;">執行檢測分析</button>
+
+            <div id="calc-result" style="display:none; background:#2b2b36; padding:15px; border-radius:8px; border:1px dashed #cf00ff; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>平均耗時:</span> <strong id="calc-res-mean" style="color:#fff;">0.00 秒</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>節奏標準差 (σ):</span> <strong id="calc-res-std" style="color:#ffb300;">0.00 秒</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>回歸擬合估算 (R²):</span> <strong id="calc-res-r2" style="color:#00ffaa;">0.0 %</strong></div>
+                <div style="border-top:1px solid #444; margin:10px 0;"></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:1.1em;"><span>綜合穩定性評分:</span> <strong id="calc-res-stab" style="color:#cf00ff;">0 %</strong></div>
+                <div style="display:flex; justify-content:space-between; font-size:1.1em;"><span>實戰評級:</span> <strong id="calc-res-rating">S</strong></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; gap: 10px;">
+                <button onclick="closeCalcModal()" style="flex:1; padding:8px; background:#555; color:#fff; border:none; border-radius:4px; cursor:pointer;">關閉</button>
+                <button onclick="applyCalculatedStability()" style="flex:2; padding:8px; background:#4caf50; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">套用至全局拉桿</button>
+            </div>
+        </div>
+    </div>
+
 <script>
     // 🌍 完美精準繁簡翻譯引擎 (Dictionary Mapping)
     const dict = {
-        "鳴":"鸣","陣":"阵","編":"编","隊":"队","實":"实","戰":"战","排":"排","軸":"轴","剩":"剩","餘":"余","數":"数","推":"推","薦":"荐","設":"设","匯":"汇","圖":"图","輸":"输","輔":"辅","輪":"轮","進":"进","階":"阶","極":"极","難":"难","導":"导","電":"电","氣":"气","動":"动","滅":"灭","尋":"寻","擁":"拥","隱":"隐","盡":"尽","屬":"属","語":"语","換":"换","陽":"阳","華":"华","鑒":"鉴","熾":"炽","離":"离","淵":"渊","萊":"莱","蘭":"兰","蕾":"蕾","贊":"赞","婭":"娅","奧":"奥","諾":"诺","貝":"贝","莉":"莉","遠":"远","靈":"灵","寧":"宁","陸":"陆","愛":"爱","彌":"弥","錯":"错","亂":"乱","鏈":"链","單":"单","雙":"双","劍":"剑","處":"处","轉":"转","適":"适","論":"论","確":"确","滿":"满","濾":"滤","這":"这","還":"还","沒":"没","湊":"凑","齊":"齐","頂":"顶","級":"级","資":"资","訊":"讯","擾":"扰","顯":"显","創":"创","應":"应","說":"说","漏":"漏","洞":"洞","修":"修","復":"复","產":"产","無":"无","縫":"缝","預":"预","測":"测","標":"标","籤":"签","視":"视","覺":"觉","強":"强","過":"过","與":"与","從":"从","為":"为","僅":"仅","網":"网","頁":"页","紀":"记","憶":"忆","類":"类","構":"构","簡":"简","繁":"繁","庫":"库","將":"将","機":"机","環":"环","境":"境","差":"差","異":"异","檢":"检","報":"报","鍵":"键","效":"效","指":"指","腦":"脑","邏":"逻","輯":"辑","據":"据","見":"见","條":"条","件":"件","東":"东","西":"西","問":"问","題":"题","關":"关","麼":"么","嗎":"吗","點":"点","擊":"击","裡":"里","會":"会","態":"态","則":"则","驗":"验","決":"决","劃":"划","結":"结","總":"总","對":"对","於":"于","誤":"误","認":"认","表":"表","伍":"伍","時":"时","間":"间","選":"选","覽":"览","閱":"阅","載":"载","軟":"软","體":"体","閉":"闭","開":"开","啟":"启","發":"发","佈":"布","現":"现","場":"场","試":"试","裝":"装","備":"备","請":"请","擇":"择","更":"更","離":"离"
+        "鳴":"鸣","陣":"阵","編":"编","隊":"队","實":"实","戰":"战","排":"排","軸":"轴","剩":"剩","餘":"余","數":"数","推":"推","薦":"荐","設":"设","匯":"汇","圖":"图","輸":"输","輔":"辅","輪":"轮","進":"进","階":"阶","極":"极","難":"难","導":"导","電":"电","氣":"气","動":"动","滅":"灭","尋":"寻","擁":"拥","隱":"隐","盡":"尽","屬":"属","語":"语","換":"换","陽":"阳","華":"华","鑒":"鉴","熾":"炽","離":"离","淵":"渊","萊":"莱","蘭":"兰","蕾":"蕾","贊":"赞","婭":"娅","奧":"奥","諾":"诺","貝":"贝","莉":"莉","遠":"远","靈":"灵","寧":"宁","陸":"陆","愛":"爱","彌":"弥","錯":"错","亂":"乱","鏈":"链","單":"单","雙":"双","劍":"剑","處":"处","轉":"转","適":"适","論":"论","確":"确","滿":"满","濾":"滤","這":"这","還":"还","沒":"没","湊":"凑","齊":"齐","頂":"顶","級":"级","資":"资","訊":"讯","擾":"扰","顯":"显","創":"创","應":"应","說":"说","漏":"漏","洞":"洞","修":"修","復":"复","產":"产","無":"无","縫":"缝","預":"预","測":"测","標":"标","籤":"签","視":"视","覺":"觉","強":"强","過":"过","與":"与","從":"从","為":"为","僅":"仅","網":"网","頁":"页","紀":"记","憶":"忆","類":"类","構":"构","簡":"简","繁":"繁","庫":"库","將":"将","機":"机","環":"环","境":"境","差":"差","異":"异","檢":"检","報":"报","鍵":"键","效":"效","指":"指","腦":"脑","邏":"逻","輯":"辑","據":"据","見":"见","條":"条","件":"件","東":"东","西":"西","問":"问","題":"题","關":"关","麼":"么","嗎":"吗","點":"点","擊":"击","裡":"里","會":"会","態":"态","則":"则","驗":"验","決":"决","劃":"划","結":"结","總":"总","對":"对","於":"于","誤":"误","認":"认","表":"表","伍":"伍","時":"时","間":"间","選":"选","覽":"览","閱":"阅","載":"载","軟":"软","體":"体","閉":"闭","開":"开","啟":"启","發":"发","佈":"布","現":"现","場":"场","試":"试","裝":"装","備":"备","請":"请","擇":"择","更":"更","離":"离","測":"测","準":"准","標":"标","擬":"拟","合":"合","估":"估","算":"算","綜":"综","評":"评","級":"级","執":"执","行":"行","析":"析"
     };
     
     let isSimp = false;
@@ -323,7 +377,7 @@
                 n.nodeValue = isSimp ? t(n.originalValue) : n.originalValue;
             }
         }
-        document.querySelectorAll('input[placeholder]').forEach(el => {
+        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
             if (el.originalPlaceholder === undefined) el.originalPlaceholder = el.placeholder;
             el.placeholder = isSimp ? t(el.originalPlaceholder) : el.originalPlaceholder;
         });
@@ -752,6 +806,65 @@
             updateTracker();
         }
         closeStatsModal();
+    }
+
+    // ⏱️ 內建軸穩定性計算器邏輯
+    let lastCalculatedStability = 100;
+
+    function openCalcModal() {
+        document.getElementById('calc-modal').style.display = 'flex';
+        document.getElementById('calc-result').style.display = 'none';
+    }
+
+    function closeCalcModal() {
+        document.getElementById('calc-modal').style.display = 'none';
+    }
+
+    function calculateStability() {
+        let baseStr = document.getElementById('calc-base-time').value;
+        let timesStr = document.getElementById('calc-times').value;
+        let baseTime = parseFloat(baseStr);
+        if (isNaN(baseTime) || baseTime <= 0) { alert(t("請輸入有效的基準理論耗時！")); return; }
+        
+        let times = timesStr.split(/[\n,]+/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n) && n > 0);
+        if (times.length < 2) { alert(t("請至少輸入兩筆實測耗時紀錄以進行統計分析！")); return; }
+
+        let n = times.length;
+        let sum = times.reduce((a, b) => a + b, 0);
+        let mean = sum / n;
+        let variance = times.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+        let stdDev = Math.sqrt(variance);
+
+        // 模擬 R^2 擬合率 (以穩定度波動幅度估算)
+        let r2 = Math.max(0, 100 - (variance / mean) * 20); 
+
+        // 綜合穩定性 (%)：受平均超時懲罰與標準差波動雙重影響
+        let timeEfficiency = (baseTime / mean) * 100;
+        let stability = Math.max(0, Math.min(100, timeEfficiency - (stdDev * 1.5)));
+        lastCalculatedStability = Math.round(stability);
+
+        let rating = 'C (極不穩定)';
+        let rColor = '#d32f2f';
+        if (stability >= 95) { rating = 'SSS (完美機器人)'; rColor = '#ffb300'; }
+        else if (stability >= 90) { rating = 'S (極度穩定)'; rColor = '#00ffaa'; }
+        else if (stability >= 80) { rating = 'A (實戰合格)'; rColor = '#4caf50'; }
+        else if (stability >= 70) { rating = 'B (略有顛簸)'; rColor = '#2196f3'; }
+
+        document.getElementById('calc-res-mean').innerText = mean.toFixed(2) + ' 秒';
+        document.getElementById('calc-res-std').innerText = stdDev.toFixed(2) + ' 秒';
+        document.getElementById('calc-res-r2').innerText = r2.toFixed(1) + ' %';
+        document.getElementById('calc-res-stab').innerText = lastCalculatedStability + ' %';
+        document.getElementById('calc-res-rating').innerText = rating;
+        document.getElementById('calc-res-rating').style.color = rColor;
+
+        document.getElementById('calc-result').style.display = 'block';
+    }
+
+    function applyCalculatedStability() {
+        document.getElementById('skill-slider').value = lastCalculatedStability;
+        updateMasterSkill();
+        closeCalcModal();
+        alert(t("已將計算出的穩定性套用至全局拉桿！"));
     }
 
     function renderRotations() {
