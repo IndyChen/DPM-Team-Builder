@@ -1,4 +1,6 @@
-// --- 1. 介面與高精度逐詞翻譯引擎 ---
+// ==========================================
+// 1. 介面導航與高精度逐詞翻譯引擎 (效能優化版)
+// ==========================================
 function switchTab(pageId, btnElement) {
     document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -6,13 +8,10 @@ function switchTab(pageId, btnElement) {
     btnElement.classList.add('active');
 }
 
-// 採用你建議的「逐詞替換」方法！建立精準的詞彙對應表，徹底解決錯位問題。
-const translationList = [
-    ["鳴潮矩陣編隊工具", "鸣潮矩阵编队工具"],
-    ["數據庫設計與邏輯", "数据库设计与逻辑"],
-    ["報錯與意見回饋", "报错与意见反馈"],
-    ["第一步：角色與排軸設定", "第一步：角色与排轴设定"],
-    ["第二步：矩陣編隊與實戰推演", "第二步：矩阵编队与实战推演"],
+// 採用高精度「詞彙替換」，徹底杜絕單一字元錯位造成的火星文
+const phraseDict = [
+    ["鳴潮矩陣編隊工具", "鸣潮矩阵编队工具"], ["數據庫設計與邏輯", "数据库设计与逻辑"], ["報錯與意見回饋", "报错与意见反馈"],
+    ["第一步：角色與排軸設定", "第一步：角色与排轴设定"], ["第二步：矩陣編隊與實戰推演", "第二步：矩阵编队与实战推演"],
     ["歡迎使用！點此查看「頁面操作指南」與「未來展望」", "欢迎使用！点此查看「页面操作指南」与「未来展望」"],
     ["當前頁面：角色與排軸設定", "当前页面：角色与排轴设定"],
     ["選擇角色：請在下方勾選您目前擁有的角色，系統會自動計算您可用的組隊次數。", "选择角色：请在下方勾选您目前拥有的角色，系统会自动计算您可用的组队次数。"],
@@ -23,161 +22,83 @@ const translationList = [
     ["完成設定後，點擊右下角按鈕前往下一頁。", "完成设定后，点击右下角按钮前往下一页。"],
     ["您可以在該頁面進行「一鍵自動編隊」，或是手動排兵布陣。", "您可以在该页面进行「一键自动编队」，或是手动排兵布阵。"],
     ["該頁面亦提供硬核的「實戰分數反推與無損洗牌重排」功能，幫助您找出最優的出戰順序。", "该页面亦提供硬核的「实战分数反推与无损洗牌重排」功能，帮助您找出最优的出战顺序。"],
-    ["開發者備註 & 下期預告 (v4.8 展望)：", "开发者备注 & 下期预告 (v4.8 展望)："],
+    ["開發者備註 & 下期預告", "开发者备注 & 下期预告"], ["展望", "展望"],
     ["因目前系統尚缺乏精確的「動態傷害曲線」數據，當前版本的一鍵編制與實戰重排，是採用相對傻瓜式的「平滑均傷」演算法。", "因目前系统尚缺乏精确的「动态伤害曲线」数据，当前版本的一键编制与实战重排，是采用相对傻瓜式的「平滑均伤」演算法。"],
-    ["我們深知實戰中「爆發前置」與「平滑出傷」在殘血收尾時的巨大差異。因此，我們將在下個大版本 (v4.8) 嘗試實裝：", "我们深知实战中「爆发前置」与「平滑出伤」在残血收尾时的巨大差异。因此，我们将在下个大版本 (v4.8) 尝试实装："],
-    ["1. 【自訂各軸傷害折線】：允許您自訂排軸的傷害模型（例如：按照每秒產生多少百分比的「累加曲線」去拉動，或是設定「第幾秒會產生幾 % 的總傷」的爆發模型）。", "1. 【自订各轴伤害折线】：允许您自订排轴的伤害模型（例如：按照每秒产生多少百分比的「累加曲线」去拉动，或是设定「第几秒会产生几 % 的总伤」的爆发模型）。"],
-    ["2. 【自訂循環次數】：讓傷害與耗時計算以完整的 Rotation 循環為單位。", "2. 【自订循环次数】：让伤害与耗时计算以完整的 Rotation 循环为单位。"],
+    ["我們深知實戰中「爆發前置」與「平滑出傷」在殘血收尾時的巨大差異。因此，我們將在下個大版本", "我们深知实战中「爆发前置」与「平滑出伤」在残血收尾时的巨大差异。因此，我们将在下个大版本"],
+    ["嘗試實裝：", "尝试实装："],
+    ["【自訂各軸傷害折線】：允許您自訂排軸的傷害模型（例如：按照每秒產生多少百分比的「累加曲線」去拉動，或是設定「第幾秒會產生幾 % 的總傷」的爆發模型）。", "【自订各轴伤害折线】：允许您自订排轴的伤害模型（例如：按照每秒产生多少百分比的「累加曲线」去拉动，或是设定「第几秒会产生几 % 的总伤」的爆发模型）。"],
+    ["【自訂循環次數】：讓傷害與耗時計算以完整的", "【自订循环次数】：让伤害与耗时计算以完整的"], ["循環為單位。", "循环为单位。"],
     ["這將讓編隊與殘血推演的精準度產生質的飛躍，敬請期待！", "这会让编队与残血推演的精准度产生质的飞跃，敬请期待！"],
-    ["點此查看版本更新說明", "点此查看版本更新说明"],
-    ["【v4.7.4 無損洗牌與防呆升級版】", "【v4.7.4 无损洗牌与防呆升级版】"],
+    ["點此查看版本更新說明", "点此查看版本更新说明"], ["當前", "当前"],
     ["無損實戰洗牌：完全記憶表單隊員，推算真實 DPS 後無損重排，絕不覆寫或清空原隊伍！", "无损实战洗牌：完全记忆表单队员，推算真实 DPS 后无损重排，绝不覆写或清空原队伍！"],
     ["防呆選單與血量鎖定：終點王改為下拉選單，殘血輸入強制鎖定 0.01% ~ 100% 防呆修正。", "防呆选单与血量锁定：终点王改为下拉选单，残血输入强制锁定 0.01% ~ 100% 防呆修正。"],
-    ["一鍵重設預設 DPS：新增按鈕可快速清除分數覆寫，復原排軸的系統預設值。", "一键重设预设 DPS：新增按钮可快速清除分数覆写，复原排轴的系统预设值。"],
+    ["一鍵重設預設", "一键重设预设"], ["新增按鈕可快速清除分數覆寫，復原排軸的系統預設值。", "新增按钮可快速清除分数覆写，复原排轴的系统预设值。"],
     ["雙檔分離與分頁 UI：將畫面與邏輯徹底分離，大幅提升效能與介面清爽度。", "双档分离与分页 UI：将画面与逻辑彻底分离，大幅提升效能与介面清爽度。"],
-    ["【v4.7.0 ~ 4.7.3 近期版本更新概略】", "【v4.7.0 ~ 4.7.3 近期版本更新概略】"],
-    ["(4.7.3) 實裝實戰反推最佳化、序列王血量代數反解引擎與大數據貢獻問卷。", "(4.7.3) 实装实战反推最佳化、序列王血量代数反解引擎与大数据贡献问卷。"],
-    ["(4.7.2) 實裝「動態壓軸」一鍵編制邏輯。", "(4.7.2) 实装「动态压轴」一键编制逻辑。"],
-    ["(4.7.1) 新增「內建軸穩定性計算器」，支援實測耗時統計分析。", "(4.7.1) 新增「内建轴稳定性计算器」，支援实测耗时统计分析。"],
-    ["(4.7.0) 實裝「手法折損全局與微調拉桿」及無預設 DPS 自訂覆寫功能。", "(4.7.0) 实装「手法折损全局与微调拉杆」及无预设 DPS 自订覆写功能。"],
+    ["近期版本更新概略", "近期版本更新概略"],
+    ["實裝實戰反推最佳化、序列王血量代數反解引擎與大數據貢獻問卷。", "实装实战反推最佳化、序列王血量代数反解引擎与大数据贡献问卷。"],
+    ["實裝「動態壓軸」一鍵編制邏輯。", "实装「动态压轴」一键编制逻辑。"],
+    ["新增「內建軸穩定性計算器」，支援實測耗時統計分析。", "新增「内建轴稳定性计算器」，支援实测耗时统计分析。"],
+    ["實裝「手法折損全局與微調拉桿」及無預設 DPS 自訂覆寫功能。", "实装「手法折损全局与微调拉杆」及无预设 DPS 自订覆写功能。"],
     ["如果您只是想知道手邊的角色能組出什麼最高分的隊伍，請直接點擊表格上方的", "如果您只是想知道手边的角色能组出什么最高分的队伍，请直接点击表格上方的"],
     ["系統會自動幫您配好隊伍。", "系统会自动帮您配好队伍。"],
-    ["【第二步：實戰反推與無損洗牌 (進階功能)】", "【第二步：实战反推与无损洗牌 (进阶功能)】"],
+    ["實戰反推與無損洗牌", "实战反推与无损洗牌"], ["進階功能", "进阶功能"],
     ["請先按照您在遊戲中實際出戰的順序，將隊伍排在表格上。", "请先按照您在游戏中实际出战的顺序，将队伍排在表格上。"],
     ["在表格內的「實戰得分」欄位，填入該隊打完結算的總分。", "在表格内的「实战得分」栏位，填入该队打完结算的总分。"],
     ["勾選該隊伍遭遇抗性的是第幾隻王", "勾选该队伍遭遇抗性的是第几只王"],
     ["若該隊伍沒把王打死，請在「🎯終:」下拉選單選擇終點王", "若该队伍没把王打死，请在「🎯终:」下拉选单选择终点王"],
     ["並在「🩸剩:」輸入剩餘血量 %。系統會自動將其加入代數校正池。", "并在「🩸剩:」输入剩余血量 %。系统会自动将其加入代数校正池。"],
     ["系統會精準扣除轉場動畫延遲與抗性干擾，推算真實", "系统会精准扣除转场动画延迟与抗性干扰，推算真实"],
-    ["最重要的是：系統會「完全記憶」您表單上的隊伍成員，並依據算出的真實 DPS，為您無損地重新排序最佳出戰順序！", "最重要的是：系统会「完全记忆」您表单上的队伍成员，并依据算出的真实 DPS，为您无损地重新排序最佳出战顺序！"],
+    ["最重要的是：系統會「完全記憶」您表單上的隊伍成員，並依據算出的真實", "最重要的是：系统会「完全记忆」您表单上的队伍成员，并依据算出的真实"], ["為您無損地重新排序最佳出戰順序！", "为您无损地重新排序最佳出战顺序！"],
     ["若想還原實戰反推造成的分數覆寫，可點擊該隊伍選單下方的", "若想还原实战反推造成的分数覆写，可点击该队伍选单下方的"],
     ["將您本次排出的矩陣波次與分數傳送給開發者，協助校正王血量公式！", "将您本次排出的矩阵波次与分数传送给开发者，协助校正王血量公式！"],
     ["當您填寫表格中的「終點王殘血反解」與分數後，系統會統計並代數反解出真實血量。若單隻王收集滿 3 筆樣本，且與預設血量偏差 > 3% (置信度 < 97%)，將會於下方提示供您一鍵校正。", "当您填写表格中的「终点王残血反解」与分数后，系统会统计并代数反解出真实血量。若单只王收集满 3 笔样本，且与预设血量偏差 > 3% (置信度 < 97%)，将会于下方提示供您一键校正。"],
     ["提示：在表格內填寫【實戰得分】並點擊反推，系統會自動修改該隊伍的「自訂 DPS」。若要還原，請點擊該隊伍下方的「🔄 重設預設 DPS」。", "提示：在表格内填写【实战得分】并点击反推，系统会自动修改该队伍的「自订 DPS」。若要还原，请点击该队伍下方的「🔄 重设预设 DPS」。"],
     ["點此查看「實戰編隊與推演功能」操作指南", "点此查看「实战编队与推演功能」操作指南"],
-    ["點擊展開", "点击展开"],
-    ["前往下一步：編隊與推演", "前往下一步：编队与推演"],
-    ["【第一步：一鍵理論編隊】", "【第一步：一键理论编队】"],
-    ["依排軸難度微調各別穩定性", "依排轴难度微调各别稳定性"],
-    ["全局操作達成率", "全局操作达成率"],
-    ["自動依難度換算折損", "自动依难度换算折损"],
-    ["搜尋擁有角色", "搜寻拥有角色"],
-    ["搜尋排軸角色", "搜寻排轴角色"],
-    ["清空角色勾選", "清空角色勾选"],
-    ["清空所有排軸", "清空所有排轴"],
-    ["依據理論最高", "依据理论最高"],
-    ["自動為您滿編", "自动为您满编"],
-    ["根據表格分數反推真實", "根据表格分数反推真实"],
-    ["現有隊伍無損洗牌", "现有队伍无损洗牌"],
-    ["為最優順序！", "为最优顺序！"],
-    ["一鍵編制", "一键编制"],
-    ["理論推演", "理论推演"],
-    ["依實戰得分反推與無損重排", "依实战得分反推与无损重排"],
-    ["重設編制", "重设编制"],
-    ["截圖分享", "截图分享"],
-    ["貢獻實戰大數據", "贡献实战大数据"],
-    ["剩餘可用次數", "剩余可用次数"],
-    ["隊伍編排", "队伍编排"],
-    ["極限上限16隊", "极限上限16队"],
-    ["矩陣實戰接力推演與環境設定", "矩阵实战接力推演与环境设定"],
-    ["影響分數與轉場計算", "影响分数与转场计算"],
-    ["計分比例(分/萬)", "计分比例(分/万)"],
-    ["每 1 萬傷害等於多少分數", "每 1 万伤害等于多少分数"],
-    ["預設", "预设"],
-    ["得1分", "得1分"],
-    ["均血(萬)", "均血(万)"],
-    ["後續成長(%)", "后续成长(%)"],
-    ["以後每階血量成長率", "以后每阶血量成长率"],
-    ["抗性減傷(%)", "抗性减伤(%)"],
+    ["點擊展開", "点击展开"], ["前往下一步：編隊與推演", "前往下一步：编队与推演"],
+    ["一鍵理論編隊", "一键理论编队"], ["依排軸難度微調各別穩定性", "依排轴难度微调各别稳定性"],
+    ["全局操作達成率", "全局操作达成率"], ["自動依難度換算折損", "自动依难度换算折损"],
+    ["搜尋擁有角色", "搜寻拥有角色"], ["搜尋排軸角色", "搜寻排轴角色"],
+    ["清空角色勾選", "清空角色勾选"], ["清空所有排軸", "清空所有排轴"],
+    ["依據理論最高", "依据理论最高"], ["自動為您滿編", "自动为您满编"],
+    ["根據表格分數反推真實", "根据表格分数反推真实"], ["現有隊伍無損洗牌", "现有队伍无损洗牌"],
+    ["為最優順序！", "为最优顺序！"], ["一鍵編制", "一键编制"], ["理論推演", "理论推演"],
+    ["依實戰得分反推與無損重排", "依实战得分反推与无损重排"], ["重設編制", "重设编制"],
+    ["截圖分享", "截图分享"], ["貢獻實戰大數據", "贡献实战大数据"],
+    ["剩餘可用次數", "剩余可用次数"], ["隊伍編排", "队伍编排"], ["極限上限16隊", "极限上限16队"],
+    ["矩陣實戰接力推演與環境設定", "矩阵实战接力推演与环境设定"], ["影響分數與轉場計算", "影响分数与转场计算"],
+    ["計分比例(分/萬)", "计分比例(分/万)"], ["每 1 萬傷害等於多少分數", "每 1 万伤害等于多少分数"],
+    ["預設", "预设"], ["得1分", "得1分"], ["均血(萬)", "均血(万)"], ["後續成長(%)", "后续成长(%)"],
+    ["以後每階血量成長率", "以后每阶血量成长率"], ["抗性減傷(%)", "抗性减伤(%)"],
     ["當隊伍遭遇抗性王時，降低的DPS百分比", "当队伍遭遇抗性王时，降低的DPS百分比"],
-    ["轉場耗時(秒)", "转场耗时(秒)"],
-    ["擊殺BOSS後的出場動畫延遲", "击杀BOSS后的出场动画延迟"],
-    ["單隊時限(秒)", "单队时限(秒)"],
-    ["進階：個別 BOSS 血量覆寫與代數反解校正面板", "进阶：个别 BOSS 血量覆写与代数反解校正面板"],
-    ["主輸出篩選", "主输出筛选"],
-    ["世代", "世代"],
-    ["推薦配隊快速填入", "推荐配队快速填入"],
-    ["填入下一空位", "填入下一空位"],
-    ["當前編隊 矩陣接力推演總分", "当前编队 矩阵接力推演总分"],
-    ["隊伍", "队伍"],
-    ["位置 1 (主C)", "位置 1 (主C)"],
-    ["位置 2 (副C)", "位置 2 (副C)"],
-    ["位置 3 (生存)", "位置 3 (生存)"],
-    ["實戰得分 / 殘血反解與抗性", "实战得分 / 残血反解与抗性"],
-    ["推演戰果 (接力波次進度)", "推演战果 (接力波次进度)"],
-    ["填寫檢測數據與環境加權", "填写检测数据与环境加权"],
-    ["真實", "真实"],
-    ["當期屬性增傷加權", "当期属性增伤加权"],
-    ["取消", "取消"],
-    ["清除自訂", "清除自订"],
-    ["儲存", "储存"],
-    ["實戰手法穩定性檢測", "实战手法稳定性检测"],
-    ["基準理論耗時", "基准理论耗时"],
-    ["實測耗時紀錄", "实测耗时纪录"],
-    ["以逗號分隔", "以逗号分隔"],
-    ["執行檢測分析", "执行检测分析"],
-    ["平均耗時", "平均耗时"],
-    ["節奏標準差", "节奏标准差"],
-    ["綜合穩定性", "综合稳定性"],
-    ["關閉", "关闭"],
-    ["套用至全局拉桿", "套用至全局拉杆"],
-    ["數據提供", "数据提供"],
-    ["整理", "整理"],
-    ["流量統計", "流量统计"],
-    ["第一步", "第一步"],
-    ["角色", "角色"],
-    ["排軸", "排轴"],
-    ["設定", "设定"],
-    ["第二步", "第二步"],
-    ["實戰", "实战"],
-    ["推演", "推演"],
-    ["全局", "全局"],
-    ["輪椅", "轮椅"],
-    ["進階", "进阶"],
-    ["中等", "中等"],
-    ["極難", "极难"],
-    ["非主流", "非主流"],
-    ["一般角色", "一般角色"],
-    ["生存位", "生存位"],
-    ["主輸出", "主输出"],
-    ["副C/輔助", "副C/辅助"],
-    ["生存/輔助", "生存/辅助"],
-    ["適配推薦", "适配推荐"],
-    ["其他角色", "其他角色"],
-    ["耗盡", "耗尽"],
-    ["在隊", "在队"],
-    ["理論最大", "理论最大"],
-    ["剩餘可排", "剩余可排"],
-    ["無預設", "无预设"],
-    ["點擊自訂", "点击自订"],
-    ["選擇推薦配隊", "选择推荐配队"],
-    ["無DPS", "无DPS"],
-    ["無法推演", "无法推演"],
-    ["請先排滿該隊伍的成員", "请先排满该队伍的成员"],
-    ["找不到此組合的排軸資料", "找不到此组合的排轴资料"],
-    ["已清除該隊伍排軸的自訂", "已清除该队伍排轴的自订"],
-    ["恢復系統預設值", "恢复系统预设值"],
-    ["請先在上方勾選擁有的角色", "请先在上方勾选拥有的角色"],
-    ["以解鎖可組建的排軸", "以解锁可组建的排轴"],
-    ["套用校正", "套用校正"],
-    ["已成功校正為平均值", "已成功校正为平均值"],
-    ["號?", "号?"],
-    ["抗性王", "抗性王"],
-    ["打完結算給的總分", "打完结算给的总分"],
-    ["實戰得分", "实战得分"],
-    ["下限", "下限"],
-    ["上限", "上限"],
+    ["轉場耗時(秒)", "转场耗时(秒)"], ["擊殺BOSS後的出場動畫延遲", "击杀BOSS后的出场动画延迟"],
+    ["單隊時限(秒)", "单队时限(秒)"], ["進階：個別 BOSS 血量覆寫與代數反解校正面板", "进阶：个别 BOSS 血量覆写与代数反解校正面板"],
+    ["主輸出篩選", "主输出筛选"], ["世代", "世代"], ["推薦配隊快速填入", "推荐配队快速填入"],
+    ["填入下一空位", "填入下一空位"], ["當前編隊 矩陣接力推演總分", "当前编队 矩阵接力推演总分"],
+    ["隊伍", "队伍"], ["位置 1 (主C)", "位置 1 (主C)"], ["位置 2 (副C)", "位置 2 (副C)"], ["位置 3 (生存)", "位置 3 (生存)"],
+    ["實戰得分 / 殘血反解與抗性", "实战得分 / 残血反解与抗性"], ["推演戰果 (接力波次進度)", "推演战果 (接力波次进度)"],
+    ["填寫檢測數據與環境加權", "填写检测数据与环境加权"], ["真實", "真实"], ["當期屬性增傷加權", "当期属性增伤加权"],
+    ["取消", "取消"], ["清除自訂", "清除自订"], ["儲存", "储存"], ["實戰手法穩定性檢測", "实战手法稳定性检测"],
+    ["基準理論耗時", "基准理论耗时"], ["實測耗時紀錄", "实测耗时纪录"], ["以逗號分隔", "以逗号分隔"],
+    ["執行檢測分析", "执行检测分析"], ["平均耗時", "平均耗时"], ["節奏標準差", "节奏标准差"],
+    ["綜合穩定性", "综合稳定性"], ["關閉", "关闭"], ["套用至全局拉桿", "套用至全局拉杆"],
+    ["數據提供", "数据提供"], ["整理", "整理"], ["流量統計", "流量统计"],
+    ["第一步", "第一步"], ["角色", "角色"], ["排軸", "排轴"], ["設定", "设定"],
+    ["第二步", "第二步"], ["實戰", "实战"], ["推演", "推演"], ["全局", "全局"],
+    ["輪椅", "轮椅"], ["進階", "进阶"], ["中等", "中等"], ["極難", "极难"], ["非主流", "非主流"],
+    ["一般角色", "一般角色"], ["生存位", "生存位"], ["主輸出", "主输出"], ["副C/輔助", "副C/辅助"],
+    ["生存/輔助", "生存/辅助"], ["適配推薦", "适配推荐"], ["其他角色", "其他角色"], ["耗盡", "耗尽"],
+    ["在隊", "在队"], ["理論最大", "理论最大"], ["剩餘可排", "剩余可排"], ["無預設", "无预设"],
+    ["點擊自訂", "点击自订"], ["選擇推薦配隊", "选择推荐配队"], ["無DPS", "无DPS"], ["無法推演", "无法推演"],
+    ["請先排滿該隊伍的成員", "请先排满该队伍的成员"], ["找不到此組合的排軸資料", "找不到此组合的排轴资料"],
+    ["已清除該隊伍排軸的自訂", "已清除该队伍排轴的自订"], ["恢復系統預設值", "恢复系统预设值"],
+    ["請先在上方勾選擁有的角色", "请先在上方勾选拥有的角色"], ["以解鎖可組建的排軸", "以解锁可组建的排轴"],
+    ["套用校正", "套用校正"], ["已成功校正為平均值", "已成功校正为平均值"], ["號?", "号?"], ["抗性王", "抗性王"],
+    ["打完結算給的總分", "打完结算给的总分"], ["實戰得分", "实战得分"], ["下限", "下限"], ["上限", "上限"],
     ["將清空當前編隊並自動生成極限陣容，確定執行？", "将清空当前编队并自动生成极限阵容，确定执行？"],
-    ["一鍵配置完成！共組建", "一键配置完成！共组建"],
-    ["沒有空白隊伍了！", "没有空白队伍了！"],
-    ["確定清空編隊表嗎？", "确定清空编队表吗？"],
-    ["您即將匿名提交當前表單上的數據，是否繼續？", "您即将匿名提交当前表单上的数据，是否继续？"],
-    ["請先填寫實戰得分！", "请先填写实战得分！"],
-    ["請先完成至少一支滿編隊伍！", "请先完成至少一支满编队伍！"],
-    ["實得分", "实得分"],
-    ["推演編隊表", "推演编队表"],
-    ["總分預估", "总分预估"],
-    ["生成時間", "生成时间"],
+    ["一鍵配置完成！共組建", "一键配置完成！共组建"], ["沒有空白隊伍了！", "没有空白队伍了！"],
+    ["確定清空編隊表嗎？", "确定清空编队表吗？"], ["您即將匿名提交當前表單上的數據，是否繼續？", "您即将匿名提交当前表单上的数据，是否继续？"],
+    ["請先填寫實戰得分！", "请先填写实战得分！"], ["請先完成至少一支滿編隊伍！", "请先完成至少一支满编队伍！"],
+    ["實得分", "实得分"], ["推演編隊表", "推演编队表"], ["總分預估", "总分预估"], ["生成時間", "生成时间"],
     ["冷凝", "冷凝"], ["熱熔", "热熔"], ["導電", "导电"], ["氣動", "气动"], ["衍射", "衍射"], ["湮滅", "湮灭"],
     ["漂泊者", "漂泊者"], ["維里奈", "维里奈"], ["守岸人", "守岸人"], ["今汐", "今汐"], ["長離", "长离"], 
     ["忌炎", "忌炎"], ["相里要", "相里要"], ["椿", "椿"], ["折枝", "折枝"], ["吟霖", "吟霖"], 
@@ -191,21 +112,20 @@ const translationList = [
     ["西格莉卡", "西格莉卡"], ["光主", "光主"], ["暗主", "暗主"], ["風主", "风主"],
     ["常規", "常规"], ["錯輪", "错轮"], ["死告", "死告"], ["龍切", "龙切"], ["離火", "离火"], 
     ["雙延", "双延"], ["奶套", "奶套"], ["轉聚暴", "转聚暴"], ["雙下", "双下"], ["劍切", "剑切"], 
-    ["雙錨", "双锚"], ["錯延", "错延"], ["旋踢", "旋踢"], ["基礎", "基础"], ["後", "后"],
-    ["第", "第"], ["終", "终"], ["剩", "剩"], ["分", "分"], ["版", "版"], ["星", "星"], ["隊", "队"], ["次", "次"]
+    ["雙錨", "双锚"], ["錯延", "错延"], ["旋踢", "旋踢"], ["新增自訂編隊", "新增自订编队"], ["預設理論", "预设理论"]
 ];
 
-// 非常重要：將翻譯字典按照「字串長度由長到短」排序，確保長句先被替換，不會被短詞截斷破壞
-translationList.sort((a, b) => b[0].length - a[0].length);
+// 依照字串長度由大到小排序，確保長句先替換，不會被短詞截斷
+phraseDict.sort((a, b) => b[0].length - a[0].length);
 
 let isSimp = false;
 function t(str) { 
     if (!isSimp || !str || typeof str !== 'string') return str; 
-    let result = str;
-    for (let i = 0; i < translationList.length; i++) {
-        result = result.split(translationList[i][0]).join(translationList[i][1]);
+    let res = str;
+    for (let [tw, cn] of phraseDict) {
+        res = res.split(tw).join(cn);
     }
-    return result;
+    return res;
 }
 
 function translateDOM(node) {
@@ -218,27 +138,24 @@ function translateDOM(node) {
             n.nodeValue = isSimp ? t(n.originalValue) : n.originalValue;
         }
     }
-    document.querySelectorAll('input[placeholder], textarea[placeholder], option').forEach(el => {
-        if (el.tagName === 'OPTION' && el.label) {
-            if (el.originalLabel === undefined) el.originalLabel = el.label;
-            el.label = isSimp ? t(el.originalLabel) : el.originalLabel;
-        }
-        if (el.placeholder) {
-            if (el.originalPlaceholder === undefined) el.originalPlaceholder = el.placeholder;
-            el.placeholder = isSimp ? t(el.originalPlaceholder) : el.originalPlaceholder;
-        }
-    });
 }
 
+// 改變語言時，直接重整頁面，確保所有 JS 動態產生的文本 100% 被重新翻譯與校對！
 function toggleLang() { 
     isSimp = !isSimp; 
-    document.getElementById('lang-toggle').innerText = isSimp ? "繁" : "简"; 
     try { localStorage.setItem('ww_lang', isSimp ? 'zh-CN' : 'zh-TW'); } catch(e){} 
-    renderCheckboxes();
-    renderRotations();
-    updateTracker();
-    translateDOM(document.body);
+    window.location.reload(); 
 }
+
+// 🚀 [效能優化] Debounce 防抖函數，避免拉桿與搜尋的高頻觸發卡頓
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 
 // --- 2. 核心資料庫 ---
 const charData = {
@@ -438,12 +355,95 @@ const teamDB = {
     ]
 };
 
-const dpsData = [];
+let dpsData = [];
 let rotIdCounter = 0;
+// 載入系統預設排軸
 for (let c1 in teamDB) {
     teamDB[c1].forEach(tData => {
         dpsData.push({ id: 'rot_' + rotIdCounter++, c1: c1, c2: tData.c2, c3: tData.c3, dps: tData.dps, rot: tData.rot, diff: tData.diff, gen: charData[c1]?charData[c1].gen:1 });
     });
+}
+
+// --- 載入本機使用者自訂的排軸 (🚀 新增功能) ---
+let customRotations = [];
+function loadCustomRotations() {
+    try {
+        let stored = localStorage.getItem('ww_custom_rotations_v2');
+        if (stored) customRotations = JSON.parse(stored);
+    } catch(e) {}
+    customRotations.forEach(cr => {
+        dpsData.push({ id: 'custom_rot_' + cr.id, c1: cr.c1, c2: cr.c2, c3: cr.c3, dps: cr.dps, rot: cr.rot, diff: cr.diff, gen: charData[cr.c1]?charData[cr.c1].gen:1, isUserCustom: true });
+    });
+}
+loadCustomRotations();
+
+// --- 🚀 新增自訂編隊 UI 與邏輯 ---
+function injectCustomTeamModal() {
+    let m = document.createElement('div');
+    m.id = 'custom-team-modal';
+    m.style = 'display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;';
+    
+    let charOpts = Object.keys(charData).map(n => `<option value="${n}">${t(n)}</option>`).join('');
+    
+    m.innerHTML = `
+        <div style="background:#2b2b36; padding:25px; border-radius:10px; border:1px solid #d4af37; width:340px; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+            <h3 style="margin-top:0; color:#d4af37; text-align:center; margin-bottom: 20px;">${t('➕ 新增自訂編隊')}</h3>
+            <select id="ct-c1" style="width:100%; margin-bottom:10px; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px;">
+                <option value="">-- ${t('選擇主輸出')} --</option>${charOpts}
+            </select>
+            <select id="ct-c2" style="width:100%; margin-bottom:10px; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px;">
+                <option value="">-- ${t('選擇副C/輔助')} --</option>${charOpts}
+            </select>
+            <select id="ct-c3" style="width:100%; margin-bottom:10px; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px;">
+                <option value="">-- ${t('選擇生存/輔助')} --</option>${charOpts}
+            </select>
+            <input type="number" id="ct-dps" placeholder="${t('預設理論')} DPS (${t('萬')})" style="width:100%; margin-bottom:10px; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px;">
+            <select id="ct-diff" style="width:100%; margin-bottom:20px; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px;">
+                <option value="🟩">🟩 ${t('輪椅')}</option>
+                <option value="🔵">🔵 ${t('中等')}</option>
+                <option value="⭐">⭐ ${t('進階')}</option>
+                <option value="⚠️">⚠️ ${t('極難')}</option>
+                <option value="🧩">🧩 ${t('非主流')}</option>
+            </select>
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('custom-team-modal').style.display='none'" style="flex:1; padding:8px; background:#555; color:#fff; border:none; border-radius:4px; cursor:pointer;">${t('取消')}</button>
+                <button onclick="saveCustomTeam()" style="flex:1; padding:8px; background:#4caf50; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">${t('儲存')}</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(m);
+
+    // 在排軸選單旁注入按鈕
+    let headerAction = document.querySelector('#rotation-setup').previousElementSibling;
+    let btnGroup = headerAction.querySelector('div');
+    let addBtn = document.createElement('button');
+    addBtn.className = 'btn-apply';
+    addBtn.style.marginLeft = '10px';
+    addBtn.style.padding = '8px 12px';
+    addBtn.style.fontSize = '0.9em';
+    addBtn.style.background = '#ff9800';
+    addBtn.innerHTML = `➕ ${t('新增自訂編隊')}`;
+    addBtn.onclick = () => document.getElementById('custom-team-modal').style.display = 'flex';
+    btnGroup.appendChild(addBtn);
+}
+
+function saveCustomTeam() {
+    let c1 = document.getElementById('ct-c1').value, c2 = document.getElementById('ct-c2').value, c3 = document.getElementById('ct-c3').value;
+    let dps = parseFloat(document.getElementById('ct-dps').value) || 0;
+    let diff = document.getElementById('ct-diff').value;
+    
+    if (!c1 || !c2 || !c3) return alert(t('請完整選擇三名角色！'));
+    
+    let newId = Date.now();
+    let newRot = { id: newId, c1: c1, c2: c2, c3: c3, dps: dps, rot: "自訂", diff: diff };
+    customRotations.push(newRot);
+    try { localStorage.setItem('ww_custom_rotations_v2', JSON.stringify(customRotations)); } catch(e){}
+    
+    dpsData.push({ id: 'custom_rot_' + newId, c1: c1, c2: c2, c3: c3, dps: dps, rot: "自訂", diff: diff, gen: charData[c1]?charData[c1].gen:1, isUserCustom: true });
+    
+    document.getElementById('custom-team-modal').style.display = 'none';
+    renderRotations(); updateTracker();
+    alert(t('✅ 自訂編隊已成功加入，並儲存於本機。'));
 }
 
 // --- 全域變數 ---
@@ -455,6 +455,12 @@ const noRecChars = new Set(["莫特斐", "秧秧", "桃祈", "淵武", "釉瑚"]
 let diffStability = { '⚠️': 100, '⭐': 100, '🔵': 100, '🟩': 100, '🧩': 100 };
 let bossHPMap = {};
 let bossHPHistory = {};
+
+// 🚀 Debounce 共用的核心渲染引擎，大幅降低效能負擔
+const debouncedRenderAndTrack = debounce(() => {
+    renderRotations();
+    updateTracker();
+}, 150);
 
 // --- 3. 核心工具與防呆 ---
 function clampHpPct(el) {
@@ -512,7 +518,8 @@ function renderCheckboxes() {
     filterCharacters();
 }
 
-function filterCharacters() {
+// 防抖搜尋
+const debouncedFilterCharacters = debounce(() => {
     let q = document.getElementById('char-search').value.toLowerCase();
     let qTrad = q; 
     document.querySelectorAll('.checkbox-item').forEach(l => {
@@ -522,7 +529,9 @@ function filterCharacters() {
         let m = searchTarget.includes(qTrad) && ((d.rarity==5 && show5Star) || (d.rarity==4 && show4Star)) && ((d.gen==1 && showG1) || (d.gen==2 && showG2) || (d.gen==3 && showG3));
         l.style.display = m ? 'flex' : 'none';
     });
-}
+}, 150);
+
+function filterCharacters() { debouncedFilterCharacters(); }
 
 function rosterCheckboxButton() {
     const visibleBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
@@ -535,7 +544,7 @@ function rosterCheckboxButton() {
 function updateOwnedCharacters() {
     ownedCharacters.clear();
     document.querySelectorAll('#roster-setup input:checked').forEach(i => ownedCharacters.add(i.value));
-    updateTracker();
+    debouncedRenderAndTrack();
 }
 
 function updateMasterSkill() {
@@ -548,13 +557,13 @@ function updateMasterSkill() {
     document.getElementById('slider-diff-2').value = diffStability['🔵']; document.getElementById('val-diff-2').innerText = diffStability['🔵'].toFixed(0) + '%';
     document.getElementById('slider-diff-1').value = diffStability['🟩']; document.getElementById('val-diff-1').innerText = diffStability['🟩'].toFixed(0) + '%';
     document.getElementById('slider-diff-5').value = diffStability['🧩']; document.getElementById('val-diff-5').innerText = diffStability['🧩'].toFixed(0) + '%';
-    renderRotations(); updateTracker();
+    debouncedRenderAndTrack();
 }
 
 function updateSubSkill(diffKey, sliderId, valId) {
     let val = parseInt(document.getElementById(sliderId).value);
     diffStability[diffKey] = val; document.getElementById(valId).innerText = val + '%';
-    renderRotations(); updateTracker();
+    debouncedRenderAndTrack();
 }
 
 function getRotDpsRange(d) {
@@ -631,12 +640,15 @@ function renderRotations() {
             let r = getRotDpsRange(d);
             let dpsStr = (r.max > 0 || r.isCustom) ? `[${r.min.toFixed(2)}~${r.max.toFixed(2)}w]` : t('[無預設/點擊自訂]'); 
             let colorStyle = r.isCustom ? 'color: #00ffaa; text-decoration: underline; text-decoration-style: dashed;' : (r.min < r.max ? 'color: #ffaa00;' : 'color: #fff;');
+            let tagStyle = d.isUserCustom ? 'background: #4caf50; color: #fff; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; margin-right: 4px;' : '';
+            let tagHTML = d.isUserCustom ? `<span style="${tagStyle}">${t('自訂')}</span>` : '';
+            
             if(r.max === 0 && !r.isCustom) colorStyle = 'color: #888; text-decoration: underline; text-decoration-style: dashed;';
             html += `<div style="background:#2b2b36; padding:6px 10px; border-radius:4px; font-size:0.9em; border: 1px solid #444; display:inline-flex; align-items:center; gap:5px;">
                         <input type="checkbox" id="chk_${d.id}" value="${d.id}" ${checkedRotations.has(d.id)?'checked':''} onchange="updateRotationState()">
                         <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${t(d.diff)}</label>
                         <span onclick="openStatsModal(event, '${d.id}')" style="cursor:pointer; font-weight:bold; ${colorStyle}; padding:0 4px;" title="${t('點擊輸入數據或加權')}">${dpsStr}</span>
-                        <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${t(d.c2)} / ${t(d.c3)} (${t(d.rot)})</label>
+                        <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${tagHTML}${t(d.c2)} / ${t(d.c3)} (${t(d.rot)})</label>
                     </div>`;
         });
         html += `</div></div>`;
@@ -644,14 +656,16 @@ function renderRotations() {
     container.innerHTML = html;
 }
 
-function filterRotations() {
+const debouncedFilterRotations = debounce(() => {
     let q = document.getElementById('rot-search').value.toLowerCase();
     document.querySelectorAll('#rotation-setup input[type="checkbox"]').forEach(i => {
         let container = i.closest('div');
         container.style.display = container.innerText.toLowerCase().includes(q) ? 'inline-flex' : 'none';
     });
     document.querySelectorAll('#rotation-setup > div').forEach(group => { group.style.display = Array.from(group.querySelectorAll('div > div')).some(l => l.style.display !== 'none') ? 'block' : 'none'; });
-}
+}, 150);
+
+function filterRotations() { debouncedFilterRotations(); }
 
 function toggleAllRotations() {
     const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
@@ -670,12 +684,12 @@ function toggleDifficulty(diff) {
 }
 
 function updateRotationState() {
-    checkedRotations.clear(); document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value)); updateTracker();
+    checkedRotations.clear(); document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value)); debouncedRenderAndTrack();
 }
 
 let activePresetAttrs = new Set(); let activePresetGens = new Set();
-function togglePresetAttr(attr) { activePresetAttrs.has(attr) ? activePresetAttrs.delete(attr) : activePresetAttrs.add(attr); document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`); updateTracker(); }
-function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.delete(gen) : activePresetGens.add(gen); document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`); updateTracker(); }
+function togglePresetAttr(attr) { activePresetAttrs.has(attr) ? activePresetAttrs.delete(attr) : activePresetAttrs.add(attr); document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`); debouncedRenderAndTrack(); }
+function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.delete(gen) : activePresetGens.add(gen); document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`); debouncedRenderAndTrack(); }
 
 function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
     let html = `<option value="">-- ${slotType==1 ? t('主輸出') : slotType==2 ? t('副C/輔助') : t('生存/輔助')} --</option>`;
@@ -808,7 +822,7 @@ function manualUpdateHP(key) {
 }
 function applyCalibratedHP(key, avgValue) {
     bossHPMap[key] = { value: avgValue, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
-    renderIndividualHPPanel(); updateTracker(); alert(t("已成功校正為平均值") + `：${avgValue.toFixed(2)} ` + t("萬") + `！`);
+    renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`);
 }
 function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
 
@@ -1122,6 +1136,7 @@ function exportImage() {
 
 // --- 9. 初始化啟動引擎 ---
 function initializeApp() {
+    injectCustomTeamModal();
     initBoard();
     try { isSimp = localStorage.getItem('ww_lang') === 'zh-CN'; } catch(e){}
     if (isSimp) document.getElementById('lang-toggle').innerText = "繁";
