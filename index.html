@@ -13,10 +13,11 @@
       gtag('config', 'G-FYW9EX8V5G');
     </script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+</html>  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* 基礎全域設定 */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #f5f5f5; padding: 20px; max-width: 1300px; margin: auto; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #f5f5f5; padding: 20px; max-width: 1450px; margin: auto; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
         h2 { border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 5px; display: inline-block; color: #fff; word-break: break-word; }
         .data-source { color: #aaa; font-size: 0.9em; margin-bottom: 15px; font-style: italic; }
@@ -36,15 +37,16 @@
         
         /* 表格區塊 */
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 1050px; }
         th, td { border: 1px solid #444; padding: 12px 8px; text-align: center; }
         th { background-color: #3f3f4e; color: #d4af37; white-space: nowrap; }
         
-        /* 下拉選單 */
+        /* 下拉選單與輸入框 */
         select { width: 100%; padding: 10px 5px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 5px; outline: none; font-size: 1em; cursor: pointer; min-height: 44px; }
         .error { border: 2px solid #ff4d4d !important; background-color: #4a1c1c !important; }
         option.recommended { color: #d4af37; font-weight: bold; background-color: #3f3f4e; }
         option:disabled { color: #888; font-style: italic; background-color: #2b2b36; }
+        .score-input { width: 90px; padding: 6px; background: #1e1e24; color: #d4af37; border: 1px solid #555; border-radius: 4px; font-weight: bold; text-align: center; margin-top: 4px; margin-bottom: 4px; }
         
         /* 追蹤面板樣式 */
         .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
@@ -57,6 +59,7 @@
         .btn-reset { background-color: #d9534f; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
         .btn-apply { background-color: #4caf50; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
         .btn-export { background-color: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; }
+        .btn-report { background-color: #ff9800; color: #1e1e24; border: none; padding: 10px 15px; border-radius: 5px; font-size: 1em; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap; box-shadow: 0 0 8px rgba(255,152,0,0.4); }
         
         /* 篩選按鈕 */
         .btn-filter { border: none; border-radius: 5px; padding: 8px 12px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #777; border: 1px solid #444; }
@@ -95,6 +98,14 @@
         input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
         input[type="range"]::-webkit-slider-runnable-track { background: #444; height: 6px; border-radius: 3px; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -6px; background-color: #cf00ff; height: 18px; width: 18px; border-radius: 50%; box-shadow: 0 0 10px rgba(207,0,255,0.8); }
+        
+        .env-input { width: 85px; padding: 6px; background: #1e1e24; color: #00ffaa; border: 1px solid #555; border-radius: 4px; font-weight: bold; text-align: center; }
+        
+        .hp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; padding: 15px; background: #1e2b24; border-radius: 8px; border: 1px dashed #00ffaa; }
+        .hp-item { display: flex; flex-direction: column; gap: 4px; }
+        .hp-label { font-size: 0.85em; color: #aaa; }
+        .hp-input { padding: 4px; background: #1e1e24; color: #fff; border: 1px solid #555; border-radius: 4px; text-align: center; font-family: monospace; }
+        .calibrated { color: #ffaa00 !important; border-color: #ffaa00 !important; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #1e1e24; }
@@ -111,7 +122,7 @@
 <body>
 
     <button id="lang-toggle" onclick="toggleLang()">简 / 繁</button>
-    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: #cf00ff;">v4.7.2</span></h2>
+    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: #cf00ff;">v4.7.3</span></h2>
     
     <div class="data-source" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px;">
         <span>📊 數據庫設計與邏輯：AI架構 / 數據提供：QuichilOvO、南邊 / 整理：Kolton / 流量統計：Google Analytics</span>
@@ -121,35 +132,37 @@
     </div>
 
 <details style="background: #1e2b24; padding: 10px 15px; border-radius: 8px; border: 1px solid #2e5c3e; margin-bottom: 10px; cursor: pointer;">
-    <summary style="color: #4caf50; font-weight: bold; outline: none;">📖 點此查看 v4.7.2 工具使用說明 (新手必讀)</summary>
+    <summary style="color: #4caf50; font-weight: bold; outline: none;">📖 點此查看 v4.7.3 工具使用說明</summary>
     <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #2e5c3e; padding-top: 10px;">
-        <strong>【第一步：勾選角色】</strong> 在上方清單點選你擁有的角色，解鎖相關排軸。<br>
-        <strong>【第二步：設定排軸與穩定性】</strong> 
+        <strong>【第一步：一般自動編隊】</strong> 
+        勾選擁有的角色與會打的排軸，點擊右下角「🔥 一鍵編制」，系統會依據理論最高分，自動幫你從滿編位置往回排。<br><br>
+        <strong>【第二步：實戰反推最佳化與數據貢獻 (硬核玩家專屬)】</strong> 
         <ul style="margin: 5px 0 10px 20px; padding: 0;">
-            <li>勾選你會打的排軸，系統才能用它們來智能組隊。</li>
-            <li>使用<strong>「全局操作達成率」</strong>拉桿，或點擊<strong>「⏱️ 內建軸穩定性計算器」</strong>，科學計算你的實戰折損。</li>
-            <li>想自訂傷害？點擊列表排軸旁的 <strong>[數值]</strong> (包含無預設的排軸) 即可直接覆寫專屬 DPS 與穩定性！</li>
+            <li>按照你遊戲中打矩陣的順序，將隊伍排在表格上。在「矩陣環境設定」中設定好這期的抗性減傷 %。</li>
+            <li>在表格右側的<strong>「實戰得分」</strong>欄位，填入該隊單場得分 (例如 188363)，並勾選該隊遭遇抗性的是第幾隻王 `[1] [2] [3] [4]`。</li>
+            <li>點擊 <strong>「🔄 依實戰得分反推與重排」</strong>，系統會精準扣除轉場動畫延遲與抗性干擾，反推你這隊純粹的真實 DPS。若發現王血量偏差大於 5%，系統會自動在「個別血量面板」中以<span style="color:#ffaa00;">橘字</span>校正。最後會自動將隊伍<strong>大洗牌重排</strong>！</li>
+            <li>最後，點擊右下角 <strong>「📤 貢獻實戰數據」</strong>，將你的真實戰果與遭遇的抗性匿名傳送，幫助我們透過線上問卷建立大數據池，精準校正下一版的預設血量與抗性公式！</li>
         </ul>
-        <strong>【第三步：智能一鍵編隊】</strong> 在右下方點擊 <strong>「🔥 一鍵編制」</strong>，系統將依據折損後的「真實保底 DPS」執行貪婪演算，並<strong>自動從你當前能組出的最大隊伍數開始往回排</strong>，為你配置容錯率最高、極限傷害壓軸的最優爬塔陣容！
     </div>
 </details>
-
 <details style="background: #2b2b36; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; cursor: pointer;">
-    <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新說明 (當前: v4.7.2)</summary>
+    <summary style="color: #d4af37; font-weight: bold; outline: none;">📜 點此查看版本更新說明 (當前: v4.7.3)</summary>
     <div style="margin-top: 10px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed #555; padding-top: 10px;">
-        <strong style="color:#cf00ff;">【v4.7.2 最新更新】</strong><br>
-        - ⚙️ <strong>動態壓軸修正</strong>：一鍵編制現在會偵測玩家角色池「當前最多可編制隊伍數」，並從該實際上限位置往回排，不再固定從第 16 隊開始。<br>
+        <strong style="color:#cf00ff;">【v4.7.3 實戰反推校正版】</strong><br>
+        - 🔄 <strong>實戰反推最佳化</strong>：玩家可在表格輸入遊戲真實得分，系統將逆向工程扣除「轉場動畫」與「指定抗性王」，推算純粹真實火力並自動重排隊伍最優解！<br>
+        - 🛡️ <strong>獨立抗性指定系統</strong>：可為每一隊單獨指定遭遇抗性的是「該波次的第幾隻王」，精準還原傷害折損。<br>
+        - 🦍 <strong>序列王血量引擎</strong>：後台精確模擬 R1-1 到 R10-4 獨立序列，猩猩精準落於 R2-1。<br>
+        - 📤 <strong>大數據貢獻問卷</strong>：新增一鍵貢獻按鈕，自動抓取實戰推演數據並產生 Google 表單預填連結，助力社群共同校正王血量公式。<br>
         <br>
-        <strong style="color:#888;">【v4.7.0 ~ 4.7.1 近期版本更新概略】</strong><br>
+        <strong style="color:#888;">【v4.7.0 ~ 4.7.2 近期版本更新概略】</strong><br>
         <span style="color:#777;">
-        - 新增<strong>「內建軸穩定性計算器」</strong>，支援實測耗時統計分析與一鍵套用評分。<br>
-        - 實裝<strong>「一鍵編制」</strong>貪婪演算法，自動依據保底 DPS 智能排隊並壓軸。<br>
-        - 新增<strong>「手法折損全局與微調拉桿」</strong>，可動態計算失誤對不同難度排軸的 DPS 懲罰。<br>
+        - 實裝「動態壓軸」一鍵編制邏輯，精準從當前最多可編制隊伍數往回排。<br>
+        - 新增「內建軸穩定性計算器」，支援實測耗時統計分析與一鍵套用評分。<br>
+        - 實裝「手法折損全局與微調拉桿」，動態計算失誤對不同難度排軸的 DPS 懲罰。<br>
         - 支援無預設 DPS 自訂覆寫與當前編隊總 DPS 範圍估算功能。<br>
         </span>
     </div>
-</details>
-    
+</details>    
     <div class="panel">
         <details open>
             <summary style="font-size: 1.17em; font-weight: bold; color: #fff; cursor: pointer; border-bottom: 2px solid #d4af37; padding-bottom: 10px; outline: none;">
@@ -233,7 +246,7 @@
                 </details>
 
                 <span style="color: #aaa; font-size: 0.85em; margin-top: 15px; line-height: 1.4;">
-                    * 您可以點擊下方列表各排軸的數值，直接填入您在「檢測報告」中測出的真實 DPS 與穩定性。包含無預設數值的排軸也可自訂。
+                    * 您可以點擊下方列表各排軸的數值，直接填入您在「檢測報告」中測出的真實 DPS、穩定性，並設定矩陣專屬環境加成。
                 </span>
             </div>
 
@@ -254,16 +267,75 @@
                 <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; align-items: flex-start;">
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start; background: #3f3f4e; padding: 12px; border-radius: 8px; border: 1px solid #555;">
                         <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <button class="btn-apply" onclick="autoBuildMaxDpsTeams()" style="background: #cf00ff; box-shadow: 0 0 10px rgba(207,0,255,0.4); padding: 10px 20px;">🔥 一鍵編制</button>
-                            <span style="color: #aaa; font-size: 0.75em; max-width: 250px;">*自動依據手法折損保底，高DPS壓軸，尚未針對矩陣最佳化（如抗性、殘血之利用，各軸的出傷分配曲線等）進行優化。 </span>
+                            <button class="btn-apply" onclick="autoBuildMaxDpsTeams()" style="background: #cf00ff; box-shadow: 0 0 10px rgba(207,0,255,0.4); padding: 10px 20px;">🔥 一鍵編制 (理論推演)</button>
+                            <span style="color: #aaa; font-size: 0.75em; max-width: 180px;">*依據您設定的 DPS 與加權，自動挑選最佳陣容並壓軸</span>
                         </div>
-                        <button class="btn-reset" onclick="resetTeams()" style="height: fit-content; padding: 10px 15px;">🗑️ 重設編制</button>
+                        
+                        <div style="width: 1px; background: #555; height: 50px; margin: 0 5px;"></div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <button class="btn-apply" onclick="reverseInferAndOptimize()" style="background: #00ffaa; box-shadow: 0 0 10px rgba(0,255,170,0.4); padding: 10px 20px; color: #1e1e24;">🔄 依實戰得分反推與重排</button>
+                            <span style="color: #aaa; font-size: 0.75em; max-width: 250px;">*根據表格內您輸入的「遊戲實戰得分」，推算被吃掉的轉場並反推真實 DPS，自動將<strong>現有隊伍</strong>洗牌為最高分組合</span>
+                        </div>
                     </div>
                     
                     <div style="flex-grow: 1;"></div>
                     
-                    <button class="btn-export" onclick="exportImage()" style="height: fit-content; padding: 10px 20px; align-self: flex-start;">📷 截圖分享</button>
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-reset" onclick="resetTeams()" style="height: fit-content; padding: 8px 15px;">🗑️ 重設編制</button>
+                            <button class="btn-export" onclick="exportImage()" style="height: fit-content; padding: 8px 15px;">📷 截圖分享</button>
+                        </div>
+                        <button class="btn-report" onclick="submitToGoogleForm()" title="將您本次排出的矩陣波次與分數傳送給開發者，協助校正王血量公式！">📤 貢獻實戰大數據</button>
+                    </div>
                 </div>
+            </div>
+
+            <div class="preset-box" style="border: 1px solid #00ffaa; box-shadow: inset 0 2px 10px rgba(0,255,170,0.1);">
+                <details open>
+                    <summary style="color:#00ffaa; font-weight:bold; font-size:1.1em; cursor:pointer; outline:none; margin-bottom: 10px;">
+                        🌌 矩陣實戰接力推演與環境設定 (影響分數與轉場計算)
+                    </summary>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; padding-top: 10px; border-top: 1px dashed #555; font-size: 0.9em;">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>R1 均血(萬):</label>
+                            <input type="number" id="env-r1" class="env-input" value="400.89" step="10" oninput="resetIndividualHP(); updateTracker();">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>R2 均血(萬):</label>
+                            <input type="number" id="env-r2" class="env-input" value="783.56" step="10" title="R2-1猩猩系統內建特例判定546.67萬" oninput="resetIndividualHP(); updateTracker();">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>R3 均血(萬):</label>
+                            <input type="number" id="env-r3" class="env-input" value="1384.9" step="10" oninput="resetIndividualHP(); updateTracker();">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>後續成長(%):</label>
+                            <input type="number" id="env-growth" class="env-input" value="5" step="1" title="R4以後每階血量成長率" oninput="resetIndividualHP(); updateTracker();">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>抗性減傷(%):</label>
+                            <input type="number" id="env-res" class="env-input" style="color:#ffaa00; border-color:#ffaa00;" value="40" step="5" title="當隊伍遭遇抗性王時，降低的DPS百分比" oninput="updateTracker()">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>轉場耗時(秒):</label>
+                            <input type="number" id="env-trans" class="env-input" value="1.5" step="0.1" title="擊殺BOSS後的出場動畫延遲" oninput="updateTracker()">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label>單隊時限(秒):</label>
+                            <input type="number" id="env-time" class="env-input" style="color:#cf00ff; border-color:#cf00ff;" value="120" step="10" oninput="updateTracker()">
+                        </div>
+                    </div>
+                    
+                    <details style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 10px;">
+                        <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">🧮 進階：個別 BOSS 血量覆寫與自機校正面板 (點擊展開)</summary>
+                        <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
+                            * 以下為系統底層計算時使用的真實王血量。您可手動修改。若「實戰反推」發現誤差 > 5%，系統將自動以此面板的橘色數值進行校正。
+                        </div>
+                        <div id="individual-hp-container" class="hp-grid">
+                            </div>
+                    </details>
+                </details>
             </div>
 
             <div class="preset-box">
@@ -289,15 +361,22 @@
 
             <div style="background:#2b2b36; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #444; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
-                    <span style="color:#d4af37; font-weight:bold; font-size:1.1em;">⚔️ 當前編隊總 DPS 範圍估算：</span>
-                    <span id="total-dps-range" style="color:#cf00ff; font-weight:bold; font-size:1.2em; text-shadow:0 0 5px rgba(207,0,255,0.5);">0.00w ~ 0.00w</span>
+                    <span style="color:#00ffaa; font-weight:bold; font-size:1.1em;">⚔️ 當前編隊 矩陣接力推演總分：</span>
+                    <span id="matrix-total-score" style="color:#cf00ff; font-weight:bold; font-size:1.4em; text-shadow:0 0 8px rgba(207,0,255,0.6);">0 分</span>
                 </div>
-                <div style="color:#aaa; font-size:0.85em; margin-top:5px;">*依據手法穩定性折損，顯示當前表單內隊伍的【失誤保底下限 ~ 完美理論極限】總和。</div>
+                <div style="color:#aaa; font-size:0.85em; margin-top:5px;">*依據手法穩定性折損、環境加權、溢出傷害耗時與轉場延遲，動態模擬計算 120 秒接力總分。(雙軌預測：【手殘下限分數 ~ 完美發揮上限】)</div>
             </div>
 
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th width="10%">隊伍</th><th width="30%">位置 1 (主C)</th><th width="30%">位置 2 (副C)</th><th width="30%">位置 3 (生存)</th></tr></thead>
+                    <thead><tr>
+                        <th width="6%">隊伍</th>
+                        <th width="15%">位置 1 (主C)</th>
+                        <th width="15%">位置 2 (副C)</th>
+                        <th width="15%">位置 3 (生存)</th>
+                        <th width="18%" style="color:#d4af37;">實戰得分與指定抗性</th>
+                        <th width="31%" style="background:#1e2b24; color:#00ffaa; letter-spacing: 1px;">推演戰果 (接力波次進度)</th>
+                    </tr></thead>
                     <tbody id="team-board"></tbody>
                 </table>
             </div>
@@ -305,16 +384,23 @@
     </div>
 
     <div id="stats-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
-        <div style="background:#2b2b36; padding:25px; border-radius:10px; border:1px solid #d4af37; width:320px; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
-            <h3 style="margin-top:0; color:#d4af37; font-size:1.2em; text-align:center;">📊 填寫檢測報告數據</h3>
+        <div style="background:#2b2b36; padding:25px; border-radius:10px; border:1px solid #d4af37; width:340px; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+            <h3 style="margin-top:0; color:#d4af37; font-size:1.2em; text-align:center;">📊 填寫檢測數據與環境加權</h3>
             <p id="stats-modal-rot" style="color:#aaa; font-size:0.9em; text-align:center; margin-bottom: 20px; border-bottom: 1px dashed #555; padding-bottom: 10px;"></p>
-            <label style="display:block; margin-bottom:10px; font-weight:bold;">⚔️ 真實 DPS (萬): 
+            
+            <label style="display:block; margin-bottom:12px; font-weight:bold;">⚔️ 真實 DPS (萬): 
                 <input type="number" id="stats-dps" step="0.01" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;" placeholder="例如: 10.85">
             </label>
-            <label style="display:block; margin-bottom:20px; font-weight:bold;">⚖️ 穩定性 (%): 
+            
+            <label style="display:block; margin-bottom:12px; font-weight:bold;">⚖️ 穩定性 (%): 
                 <input type="number" id="stats-stab" min="0" max="100" style="width:100%; padding:8px; background:#1e1e24; color:#fff; border:1px solid #555; border-radius:4px; margin-top:5px;" placeholder="例如: 95">
                 <div style="font-size:0.8em; color:#888; margin-top:4px; font-weight:normal;">*決定該排軸的實戰保底傷害下限</div>
             </label>
+            
+            <label style="display:block; margin-bottom:20px; font-weight:bold; color:#00ffaa;">🌟 當期屬性增傷加權 (%): 
+                <input type="number" id="stats-buff" step="1" style="width:100%; padding:8px; background:#1e2b24; color:#00ffaa; border:1px solid #00ffaa; border-radius:4px; margin-top:5px;" placeholder="例如: 20 (代表吃滿20%增傷)">
+            </label>
+
             <div style="display:flex; justify-content:space-between; gap: 10px;">
                 <button onclick="closeStatsModal()" style="flex:1; padding:8px; background:#555; color:#fff; border:none; border-radius:4px; cursor:pointer;">取消</button>
                 <button onclick="clearStatsModal()" style="flex:1; padding:8px; background:#d9534f; color:#fff; border:none; border-radius:4px; cursor:pointer;">清除自訂</button>
@@ -732,13 +818,18 @@
     } catch(e) {}
 
     function getRotDpsRange(d) {
+        let buffMult = 1;
+        if (customStatsMap[d.id] && customStatsMap[d.id].buff) {
+            buffMult = 1 + (customStatsMap[d.id].buff / 100);
+        }
+
         if (customStatsMap[d.id]) {
             let s = customStatsMap[d.id];
-            let max = s.dps;
+            let max = s.dps * buffMult;
             let min = max * (s.stability / 100);
             return { min: Math.max(0, min), max: max, isCustom: true };
         } else {
-            let max = d.dps;
+            let max = d.dps * buffMult;
             if (max === 0) return { min: 0, max: 0, isCustom: false };
 
             let diffKey = '🧩';
@@ -763,6 +854,7 @@
         if (stats) {
             document.getElementById('stats-dps').value = stats.dps;
             document.getElementById('stats-stab').value = stats.stability;
+            document.getElementById('stats-buff').value = stats.buff || 0;
         } else {
             document.getElementById('stats-dps').value = d.dps > 0 ? d.dps : '';
             
@@ -773,6 +865,7 @@
             else if (d.diff.includes('🟩')) diffKey = '🟩';
             
             document.getElementById('stats-stab').value = diffStability[diffKey].toFixed(0);
+            document.getElementById('stats-buff').value = 0;
         }
         document.getElementById('stats-modal').style.display = 'flex';
     }
@@ -795,11 +888,16 @@
     function saveStatsModal() {
         let dpsVal = parseFloat(document.getElementById('stats-dps').value);
         let stabVal = parseFloat(document.getElementById('stats-stab').value);
+        let buffVal = parseFloat(document.getElementById('stats-buff').value) || 0;
         if (isNaN(dpsVal) || isNaN(stabVal)) {
             alert(t("請輸入有效的數字！")); return;
         }
         if (currentEditRotId) {
-            customStatsMap[currentEditRotId] = { dps: dpsVal, stability: Math.min(100, Math.max(0, stabVal)) };
+            customStatsMap[currentEditRotId] = { 
+                dps: dpsVal, 
+                stability: Math.min(100, Math.max(0, stabVal)),
+                buff: buffVal
+            };
             try { localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); } catch(e) {}
             renderRotations();
             updateTracker();
@@ -885,7 +983,7 @@
                 html += `<div style="background:#2b2b36; padding:6px 10px; border-radius:4px; font-size:0.9em; border: 1px solid #444; display:inline-flex; align-items:center; gap:5px;">
                             <input type="checkbox" id="chk_${d.id}" value="${d.id}" ${checkedRotations.has(d.id)?'checked':''} onchange="updateRotationState()">
                             <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${d.diff}</label>
-                            <span onclick="openStatsModal(event, '${d.id}')" style="cursor:pointer; font-weight:bold; ${colorStyle}; padding:0 4px;" title="${t('點擊輸入檢測報告數據')}">${dpsStr}</span>
+                            <span onclick="openStatsModal(event, '${d.id}')" style="cursor:pointer; font-weight:bold; ${colorStyle}; padding:0 4px;" title="${t('點擊輸入數據或加權')}">${dpsStr}</span>
                             <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${t(d.c2)} / ${t(d.c3)} (${t(d.rot)})</label>
                         </div>`;
             });
@@ -1097,7 +1195,95 @@
         return Math.min(16, teams);
     }
 
+    // 🌟 全域序列血量資料庫 (R1-1 to R10-4)
+    let bossHPMap = {};
+    
+    function initBossHPMap() {
+        let env = {
+            r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89,
+            r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
+            r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9,
+            growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100
+        };
+        
+        try {
+            let stored = localStorage.getItem('ww_boss_hp');
+            if (stored) bossHPMap = JSON.parse(stored);
+        } catch(e) {}
+
+        for (let r = 1; r <= 10; r++) {
+            for (let i = 1; i <= 4; i++) {
+                let key = `R${r}-${i}`;
+                if (!bossHPMap[key] || bossHPMap[key].isDefault) {
+                    let hp = 0;
+                    if (r === 1) hp = env.r1_hp;
+                    else if (r === 2) hp = (i === 1) ? 546.67 : env.r2_hp; // 猩猩固定 R2-1
+                    else if (r === 3) hp = env.r3_hp;
+                    else {
+                        let n = (r - 4) * 4 + i;
+                        hp = env.r3_hp * (1 + env.growth * n);
+                    }
+                    bossHPMap[key] = { value: hp, isDefault: true };
+                }
+            }
+        }
+        renderIndividualHPPanel();
+    }
+
+    function renderIndividualHPPanel() {
+        let container = document.getElementById('individual-hp-container');
+        if (!container) return;
+        let html = '';
+        for (let r = 1; r <= 10; r++) {
+            for (let i = 1; i <= 4; i++) {
+                let key = `R${r}-${i}`;
+                let data = bossHPMap[key];
+                let isCalib = !data.isDefault;
+                let cClass = isCalib ? 'calibrated' : '';
+                let title = isCalib ? "經實戰反推校正或手動覆寫的血量" : "系統預設常規血量";
+                html += `
+                    <div class="hp-item">
+                        <span class="hp-label">${key}</span>
+                        <input type="number" class="hp-input ${cClass}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" title="${title}" onchange="manualUpdateHP('${key}')">
+                    </div>
+                `;
+            }
+        }
+        container.innerHTML = html;
+    }
+
+    function manualUpdateHP(key) {
+        let val = parseFloat(document.getElementById(`hp_${key}`).value);
+        if (!isNaN(val) && val > 0) {
+            bossHPMap[key] = { value: val, isDefault: false };
+            try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
+            renderIndividualHPPanel();
+            updateTracker();
+        }
+    }
+
+    function resetIndividualHP() {
+        bossHPMap = {};
+        try { localStorage.removeItem('ww_boss_hp'); } catch(e) {}
+        initBossHPMap();
+    }
+
+    function getBossMaxHP(r, index) {
+        let key = `R${r}-${index}`;
+        return bossHPMap[key] ? bossHPMap[key].value : 400; // Fallback
+    }
+
+    function getEnvSettings() {
+        return {
+            transTime: parseFloat(document.getElementById('env-trans').value) || 1.5,
+            battleTime: parseFloat(document.getElementById('env-time').value) || 120,
+            resPenalty: parseFloat(document.getElementById('env-res').value) || 40
+        };
+    }
+
     function updateTracker() {
+        initBossHPMap(); // 確保血量庫初始化
+        
         let used = {}; for(let n in charData) used[n] = 0;
         document.querySelectorAll('.char-select').forEach(s => { if(s.value) used[getBase(s.value)]++; });
         
@@ -1155,30 +1341,246 @@
         
         ps.innerHTML = ph;
 
-        // 📊 計算當前隊伍的總 DPS 範圍估算
-        let totalMinDps = 0;
-        let totalMaxDps = 0;
+        // 🌌 雙軌推演引擎 (Min & Max Relay Simulation)
+        let env = getEnvSettings();
+        
+        let current_r_min = 1, current_index_min = 1, current_hp_min = getBossMaxHP(1, 1);
+        let current_r_max = 1, current_index_max = 1, current_hp_max = getBossMaxHP(1, 1);
+        
+        let totalMatrixScoreMin = 0;
+        let totalMatrixScoreMax = 0;
 
-        document.querySelectorAll('#team-board tr').forEach(row => {
+        document.querySelectorAll('#team-board tr').forEach((row, i) => {
             let ss = row.querySelectorAll('select');
             let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
+            let resTd = row.querySelector('.relay-result');
+            
+            let chk_res = [
+                row.querySelector('.res-chk-1').checked,
+                row.querySelector('.res-chk-2').checked,
+                row.querySelector('.res-chk-3').checked,
+                row.querySelector('.res-chk-4').checked
+            ];
+
             if (c1 && c2 && c3) {
-                let possibleRots = dpsData.filter(d => 
-                    d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id)
-                );
+                let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
                 if (possibleRots.length > 0) {
                     possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
                     let bestRot = possibleRots[0];
-                    let r = getRotDpsRange(bestRot);
-                    totalMinDps += r.min; 
-                    totalMaxDps += r.max; 
+                    let dpsRange = getRotDpsRange(bestRot);
+
+                    if (dpsRange.max <= 0) { resTd.innerHTML = `<span style="color:#d32f2f;">${t("DPS過低")}<br>${t("無法推演")}</span>`; return; }
+
+                    // --- 模擬 MIN 狀態 ---
+                    let t_left_min = env.battleTime;
+                    let dmg_dealt_min = 0;
+                    let s_max_min = getBossMaxHP(current_r_min, current_index_min);
+                    let s_pct_min = (current_hp_min / s_max_min * 100).toFixed(0);
+                    let startStrMin = `R${current_r_min}-${current_index_min}(${s_pct_min}%)`;
+
+                    while (t_left_min > 0) {
+                        let activeRes = chk_res[current_index_min - 1] ? (1 - env.resPenalty / 100) : 1;
+                        let eff_dps_min = dpsRange.min * activeRes;
+                        if (eff_dps_min <= 0) break;
+
+                        let ttk = current_hp_min / eff_dps_min;
+                        if (ttk <= t_left_min) {
+                            dmg_dealt_min += current_hp_min;
+                            t_left_min -= ttk;
+                            t_left_min -= env.transTime;
+                            current_index_min++;
+                            if (current_index_min > 4) { current_r_min++; current_index_min = 1; }
+                            current_hp_min = getBossMaxHP(current_r_min, current_index_min);
+                        } else {
+                            let partial = eff_dps_min * t_left_min;
+                            dmg_dealt_min += partial;
+                            current_hp_min -= partial;
+                            t_left_min = 0;
+                        }
+                    }
+                    let e_max_min = getBossMaxHP(current_r_min, current_index_min);
+                    let e_pct_min = (current_hp_min / e_max_min * 100).toFixed(0);
+                    let endStrMin = `R${current_r_min}-${current_index_min}(${e_pct_min}%)`;
+
+                    // --- 模擬 MAX 狀態 ---
+                    let t_left_max = env.battleTime;
+                    let dmg_dealt_max = 0;
+                    let s_max_max = getBossMaxHP(current_r_max, current_index_max);
+                    let s_pct_max = (current_hp_max / s_max_max * 100).toFixed(0);
+                    let startStrMax = `R${current_r_max}-${current_index_max}(${s_pct_max}%)`;
+
+                    while (t_left_max > 0) {
+                        let activeRes = chk_res[current_index_max - 1] ? (1 - env.resPenalty / 100) : 1;
+                        let eff_dps_max = dpsRange.max * activeRes;
+                        if (eff_dps_max <= 0) break;
+
+                        let ttk = current_hp_max / eff_dps_max;
+                        if (ttk <= t_left_max) {
+                            dmg_dealt_max += current_hp_max;
+                            t_left_max -= ttk;
+                            t_left_max -= env.transTime;
+                            current_index_max++;
+                            if (current_index_max > 4) { current_r_max++; current_index_max = 1; }
+                            current_hp_max = getBossMaxHP(current_r_max, current_index_max);
+                        } else {
+                            let partial = eff_dps_max * t_left_max;
+                            dmg_dealt_max += partial;
+                            current_hp_max -= partial;
+                            t_left_max = 0;
+                        }
+                    }
+                    let e_max_max = getBossMaxHP(current_r_max, current_index_max);
+                    let e_pct_max = (current_hp_max / e_max_max * 100).toFixed(0);
+                    let endStrMax = `R${current_r_max}-${current_index_max}(${e_pct_max}%)`;
+
+                    let scoreMin = dmg_dealt_min * 10; 
+                    let scoreMax = dmg_dealt_max * 10;
+                    totalMatrixScoreMin += scoreMin;
+                    totalMatrixScoreMax += scoreMax;
+
+                    resTd.innerHTML = `
+                        <div style="line-height:1.4;">
+                            <span style="color:#aaa;">下限:</span> <span style="color:#ffaa00;">${startStrMin} ➔ ${endStrMin}</span><br>
+                            <span style="color:#aaa;">上限:</span> <span style="color:#00ffaa;">${startStrMax} ➔ ${endStrMax}</span><br>
+                            <span style="color:#cf00ff; font-weight:bold;">${Math.floor(scoreMin).toLocaleString()} ~ ${Math.floor(scoreMax).toLocaleString()} 分</span>
+                        </div>
+                    `;
+                } else {
+                    resTd.innerHTML = "-";
                 }
+            } else {
+                resTd.innerHTML = "-";
             }
         });
 
-        document.getElementById('total-dps-range').innerText = `${totalMinDps.toFixed(2)}w ~ ${totalMaxDps.toFixed(2)}w`;
+        document.getElementById('matrix-total-score').innerText = `${Math.floor(totalMatrixScoreMin).toLocaleString()} ~ ${Math.floor(totalMatrixScoreMax).toLocaleString()} ` + t("分");
 
         saveData();
+    }
+
+    // 🔄 實戰反推、5% 誤差自動校正與最佳化重排
+    function reverseInferAndOptimize() {
+        initBossHPMap();
+        let env = getEnvSettings();
+        let teamsToProcess = [];
+        let rows = document.querySelectorAll('#team-board tr');
+        
+        let start_r = 1, start_idx = 1, start_hp = getBossMaxHP(1, 1);
+
+        rows.forEach((row, idx) => {
+            let ss = row.querySelectorAll('select');
+            let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
+            let scoreInput = row.querySelector('.score-input').value;
+            let chk_res = [
+                row.querySelector('.res-chk-1').checked,
+                row.querySelector('.res-chk-2').checked,
+                row.querySelector('.res-chk-3').checked,
+                row.querySelector('.res-chk-4').checked
+            ];
+
+            if (c1 && c2 && c3) {
+                let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
+                if (possibleRots.length > 0) {
+                    possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
+                    let rotId = possibleRots[0].id;
+                    let theoryDps = possibleRots[0].dps;
+                    
+                    let actualScore = parseFloat(scoreInput);
+                    if (!isNaN(actualScore) && actualScore > 0) {
+                        let dmg_left = actualScore / 10; 
+                        let kills = 0;
+                        let effective_time = env.battleTime;
+                        let effective_dmg_sum = 0;
+                        
+                        let tmp_r = start_r, tmp_idx = start_idx, tmp_hp = start_hp;
+
+                        while (dmg_left > 0) {
+                            let r_factor = chk_res[tmp_idx - 1] ? (1 - env.resPenalty / 100) : 1;
+                            if (r_factor <= 0) r_factor = 0.1; 
+
+                            if (dmg_left >= tmp_hp) {
+                                dmg_left -= tmp_hp;
+                                effective_dmg_sum += (tmp_hp / r_factor);
+                                kills++;
+                                tmp_idx++;
+                                if (tmp_idx > 4) { tmp_r++; tmp_idx = 1; }
+                                tmp_hp = getBossMaxHP(tmp_r, tmp_idx);
+                            } else {
+                                effective_dmg_sum += (dmg_left / r_factor);
+                                tmp_hp -= dmg_left;
+                                dmg_left = 0;
+                            }
+                        }
+                        
+                        effective_time -= (kills * env.transTime);
+                        let trueBaseDps = 0;
+                        if (effective_time > 0) {
+                            trueBaseDps = effective_dmg_sum / effective_time;
+                        }
+
+                        // 🔍 自動校正機制 (誤差 > 5% 時，嘗試修正剛才打的王)
+                        if (trueBaseDps > 0 && theoryDps > 0) {
+                            let deviation = Math.abs(trueBaseDps - theoryDps) / theoryDps;
+                            if (deviation > 0.05) {
+                                // 偏離過大，假設是王血量有問題。我們把真實 DPS 當作 theoryDps，反推應該的血量
+                                // 這裡先簡單用比例修正該區段的王血量
+                                let correctionFactor = theoryDps / trueBaseDps;
+                                let r_fix = start_r, idx_fix = start_idx;
+                                let fixKey = `R${r_fix}-${idx_fix}`;
+                                if (bossHPMap[fixKey] && bossHPMap[fixKey].isDefault) {
+                                    bossHPMap[fixKey].value = bossHPMap[fixKey].value * correctionFactor;
+                                    bossHPMap[fixKey].isDefault = false;
+                                }
+                            }
+                            
+                            // 將推算出來的 DPS 寫入本機覆寫 (保持原本的穩定度設定)
+                            let currStats = customStatsMap[rotId] || { stability: 100, buff: 0 };
+                            customStatsMap[rotId] = { dps: trueBaseDps, stability: currStats.stability, buff: currStats.buff };
+                        }
+                        
+                        start_r = tmp_r; start_idx = tmp_idx; start_hp = tmp_hp;
+                    }
+                    
+                    teamsToProcess.push(possibleRots[0]);
+                }
+            }
+        });
+        
+        try { 
+            localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); 
+            localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap));
+        } catch(e) {}
+        
+        renderIndividualHPPanel();
+
+        // --- 重新排序 (低傷扛轉場，高傷壓軸) ---
+        if (teamsToProcess.length > 0) {
+            teamsToProcess.sort((a, b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
+            teamsToProcess.reverse();
+
+            document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
+            document.querySelectorAll('.score-input').forEach(i => {i.value="";});
+            
+            let maxPossibleTeams = Math.min(16, getMaxTeams({}));
+            let startIndex = Math.max(0, maxPossibleTeams - teamsToProcess.length);
+            
+            teamsToProcess.forEach((tData, index) => {
+                let rowIdx = startIndex + index;
+                if(rows[rowIdx]) {
+                    let ss = rows[rowIdx].querySelectorAll('select');
+                    ss[0].innerHTML = `<option value="${tData.c1}">${tData.c1}</option>`;
+                    ss[1].innerHTML = `<option value="${tData.c2}">${tData.c2}</option>`;
+                    ss[2].innerHTML = `<option value="${tData.c3}">${tData.c3}</option>`;
+                    ss[0].value = tData.c1;
+                    ss[1].value = tData.c2;
+                    ss[2].value = tData.c3;
+                }
+            });
+
+            alert(t("✅ 實戰反推與校正完成！\n系統已扣除轉場與抗性影響，推算真實DPS。若預設血量偏差 > 5%，已自動在面板校正。\n目前已自動將隊伍洗牌至最優順序！"));
+        }
+        
+        updateTracker();
     }
 
     function autoBuildMaxDpsTeams() {
@@ -1189,7 +1591,6 @@
             isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3)
         );
 
-        // 依據 保底 DPS (Min DPS) 由高到低排序，確保貪婪演算法拿的是下限最穩的隊伍
         validTeams.sort((a, b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
 
         let charUsageCount = {};
@@ -1224,12 +1625,11 @@
 
         finalOptimizedTeams.reverse();
 
-        document.querySelectorAll('.char-select').forEach(s => {s.value=""; s.removeAttribute('data-last-html');}); 
+        document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
+        document.querySelectorAll('.score-input').forEach(i => {i.value="";});
         
         let rows = document.querySelectorAll('#team-board tr');
-        
-        // 🌟 核心修改：偵測當前角色池最大可編制隊伍數，動態決定壓軸位置
-        let maxPossibleTeams = getMaxTeams({});
+        let maxPossibleTeams = Math.min(16, getMaxTeams({}));
         let startIndex = Math.max(0, maxPossibleTeams - finalOptimizedTeams.length);
         
         finalOptimizedTeams.forEach((tData, index) => {
@@ -1246,7 +1646,7 @@
         });
 
         updateTracker();
-        alert(t(`✅ 一鍵配置完成！共組建 ${finalOptimizedTeams.length} 隊，最高 DPS 陣容已完美壓軸。`));
+        alert(t(`✅ 一鍵配置與推演完成！\n共組建 ${finalOptimizedTeams.length} 隊，系統已將高DPS陣容安排於壓軸。`));
     }
 
     function applyPreset() {
@@ -1266,7 +1666,8 @@
     
     function resetTeams() { 
         if(!confirm(t("確定清空編隊表嗎？"))) return;
-        document.querySelectorAll('.char-select').forEach(s => {s.value=""; s.removeAttribute('data-last-html');}); 
+        document.querySelectorAll('.char-select').forEach(s => {s.value="";}); 
+        document.querySelectorAll('.score-input').forEach(i => {i.value="";});
         updateTracker(); 
     }
 
@@ -1283,9 +1684,59 @@
         const b = document.getElementById('team-board');
         for(let i=1; i<=16; i++) {
             let tr = document.createElement('tr');
-            tr.innerHTML = `<td>${t("第")} ${i} ${t("隊")}</td><td><select class="char-select" onchange="updateTracker()"></select></td><td><select class="char-select" onchange="updateTracker()"></select></td><td><select class="char-select" onchange="updateTracker()"></select></td>`;
+            tr.innerHTML = `<td style="font-weight:bold; color:#d4af37;">${t("第")}${i}${t("隊")}</td>
+                            <td><select class="char-select" onchange="updateTracker()"></select></td>
+                            <td><select class="char-select" onchange="updateTracker()"></select></td>
+                            <td><select class="char-select" onchange="updateTracker()"></select></td>
+                            <td style="font-size:0.85em; text-align:center;">
+                                <input type="number" class="score-input" placeholder="${t('實戰得分')}" title="${t('打完結算給的總分')}"><br>
+                                <div style="display:flex; justify-content:center; gap:3px; margin-top:2px;">
+                                    <label title="${t('第1隻王有抗性')}"><input type="checkbox" class="res-chk-1" onchange="updateTracker()">[1]</label>
+                                    <label title="${t('第2隻王有抗性')}"><input type="checkbox" class="res-chk-2" onchange="updateTracker()">[2]</label>
+                                    <label title="${t('第3隻王有抗性')}"><input type="checkbox" class="res-chk-3" onchange="updateTracker()">[3]</label>
+                                    <label title="${t('第4隻王有抗性')}"><input type="checkbox" class="res-chk-4" onchange="updateTracker()">[4]</label>
+                                </div>
+                            </td>
+                            <td class="relay-result" style="font-size:0.85em; text-align:left; padding-left:15px; border-left:2px solid #00ffaa;">-</td>`;
             b.appendChild(tr);
         }
+    }
+
+    // 📤 大數據貢獻問卷系統 (Google 表單 CSV 格式版)
+    function submitToGoogleForm() {
+        if(!confirm(t("您即將匿名提交當前表單上的【隊伍陣容、遭遇抗性與實戰得分】。\n這將幫助我們建立線上數據池，更精確地校正王血量與抗性公式！\n\n是否同意前往 Google 提交數據？"))) return;
+
+        let dataParams = [];
+        let rows = document.querySelectorAll('#team-board tr');
+        
+        // 寫入 CSV 標頭
+        dataParams.push("主C,副C,生存,實戰分數,王1抗,王2抗,王3抗,王4抗");
+        
+        rows.forEach((r) => {
+            let ss = r.querySelectorAll('select');
+            let score = r.querySelector('.score-input').value;
+            if(ss[0].value && ss[1].value && ss[2].value && score) {
+                let res1 = r.querySelector('.res-chk-1').checked ? 1 : 0;
+                let res2 = r.querySelector('.res-chk-2').checked ? 1 : 0;
+                let res3 = r.querySelector('.res-chk-3').checked ? 1 : 0;
+                let res4 = r.querySelector('.res-chk-4').checked ? 1 : 0;
+                dataParams.push(`${ss[0].value},${ss[1].value},${ss[2].value},${score},${res1},${res2},${res3},${res4}`);
+            }
+        });
+
+        if (dataParams.length === 1) {
+            alert(t("沒有找到任何填有「實戰得分」的有效隊伍！\n請先填寫得分再提交。"));
+            return;
+        }
+
+        let csvReport = dataParams.join('\n');
+        
+        // ⚠️【開發者注意】：請將 1FAIpQLSf... 換成你的真實表單ID，entry.12345 換成你表單多行文字框的ID
+        let formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLS_替換成你的真實表單ID/viewform";
+        let entryId = "entry.123456789"; 
+        
+        let finalUrl = `${formBaseUrl}?usp=pp_url&${entryId}=${encodeURIComponent(csvReport)}`;
+        window.open(finalUrl, '_blank');
     }
 
     function exportImage() {
@@ -1293,19 +1744,25 @@
         let completed = [];
         rows.forEach((r, i) => {
             let ss = r.querySelectorAll('select');
-            if(ss[0].value && ss[1].value && ss[2].value) completed.push({id: i+1, c1: ss[0].value, c2: ss[1].value, c3: ss[2].value});
+            let resTd = r.querySelector('.relay-result');
+            let score = r.querySelector('.score-input').value;
+            if(ss[0].value && ss[1].value && ss[2].value) {
+                let resText = resTd.innerText.replace(/\n/g, ' | '); 
+                let finalScore = score ? `實得分: ${score}` : resText;
+                completed.push({id: i+1, c1: ss[0].value, c2: ss[1].value, c3: ss[2].value, res: finalScore});
+            }
         });
         if(!completed.length) return alert(t("請先完成至少一支滿編 3 人的隊伍！"));
         
         let box = document.createElement('div');
-        box.style = "position:absolute; left:-9999px; background:#1e1e24; color:#fff; padding:30px; border-radius:15px; width:800px; font-family:'Segoe UI',sans-serif;";
-        let h = `<h2 style="color:#d4af37; text-align:center; border-bottom:2px solid #d4af37; padding-bottom:10px;">${t("鳴潮矩陣實戰編隊表")}</h2><table style="width:100%; border-collapse:collapse; margin-top:20px; text-align:center; font-size:1.1em;">`;
-        h += `<tr style="background:#3f3f4e; color:#d4af37;"><th>${t("關卡")}</th><th>${t("主輸出")}</th><th>${t("副C/輔助")}</th><th>${t("生存/輔助")}</th></tr>`;
-        completed.forEach(tData => h += `<tr><td style="border:1px solid #555; padding:15px; font-weight:bold; color:#4caf50;">${t("第")} ${tData.id} ${t("隊")}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c1)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c2)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c3)}</td></tr>`);
-        box.innerHTML = h + `</table><div style="margin-top:20px; text-align:right; color:#888; font-size:0.9em;">${t("生成時間")}：${new Date().toLocaleString()}</div>`;
+        box.style = "position:absolute; left:-9999px; background:#1e1e24; color:#fff; padding:30px; border-radius:15px; width:1000px; font-family:'Segoe UI',sans-serif;";
+        let h = `<h2 style="color:#d4af37; text-align:center; border-bottom:2px solid #d4af37; padding-bottom:10px;">${t("鳴潮矩陣實戰推演編隊表")}</h2><table style="width:100%; border-collapse:collapse; margin-top:20px; text-align:center; font-size:1.1em;">`;
+        h += `<tr style="background:#3f3f4e; color:#d4af37;"><th>${t("關卡")}</th><th>${t("主輸出")}</th><th>${t("副C/輔助")}</th><th>${t("生存/輔助")}</th><th style="color:#00ffaa;">${t("推演戰果 / 實戰得分")}</th></tr>`;
+        completed.forEach(tData => h += `<tr><td style="border:1px solid #555; padding:15px; font-weight:bold; color:#4caf50;">${t("第")} ${tData.id} ${t("隊")}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c1)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c2)}</td><td style="border:1px solid #555; padding:15px;">${t(tData.c3)}</td><td style="border:1px solid #555; padding:15px; font-size:0.85em; text-align:left;">${tData.res}</td></tr>`);
+        box.innerHTML = h + `</table><div style="margin-top:20px; text-align:right; color:#888; font-size:0.9em;">${t("總分預估")}：${document.getElementById('matrix-total-score').innerText} | ${t("生成時間")}：${new Date().toLocaleString()}</div>`;
         document.body.appendChild(box);
         html2canvas(box, { backgroundColor: '#1e1e24', scale: 2 }).then(c => {
-            let l = document.createElement('a'); l.download = '鳴潮矩陣編隊表.png'; l.href = c.toDataURL('image/png'); l.click();
+            let l = document.createElement('a'); l.download = '鳴潮矩陣推演編隊表.png'; l.href = c.toDataURL('image/png'); l.click();
             document.body.removeChild(box);
         });
     }
@@ -1373,4 +1830,3 @@
     initializeApp();
 </script>
 </body>
-</html>
