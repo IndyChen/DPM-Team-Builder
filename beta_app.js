@@ -57,7 +57,6 @@ function switchTab(pageId, btnElement) {
     window.scrollTo(0, 0);
 }
 
-// === 核心變數庫 ===
 let dpsData = [];
 let rotIdCounter = 0;
 let ownedCharacters = new Set();
@@ -69,17 +68,23 @@ let bossHPMap = {};
 let bossHPHistory = {};
 let customRotations = [];
 
-// 🚀 修正：自動更新按鈕「清空」或「全選」文字狀態的函式
+// 🚀 核心更新：智慧判斷並切換「紅綠燈」按鈕樣式
 function updateToggleButtons() {
     const rBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
     const rAnyChecked = rBoxes.some(i => i.checked);
     let rBtn = document.getElementById('roster-switch');
-    if(rBtn) rBtn.innerHTML = rAnyChecked ? "🗑️ 清空" : "☑️ 全選";
+    if(rBtn) {
+        rBtn.innerHTML = rAnyChecked ? "🗑️ 清空角色勾選" : "☑️ 全選可見角色";
+        rBtn.className = rAnyChecked ? "btn-action-clear" : "btn-action-all";
+    }
 
     const rotBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
     const rotAnyChecked = rotBoxes.some(i => i.checked);
     let rotBtn = document.getElementById('rot-all-btn');
-    if(rotBtn) rotBtn.innerHTML = rotAnyChecked ? "🗑️ 清空" : "☑️ 全選";
+    if(rotBtn) {
+        rotBtn.innerHTML = rotAnyChecked ? "🗑️ 清空可見排軸" : "☑️ 全選可見排軸";
+        rotBtn.className = rotAnyChecked ? "btn-action-clear" : "btn-action-all";
+    }
 }
 
 const debouncedRenderAndTrack = debounce(() => { renderRotations(); updateTracker(); updateToggleButtons(); }, 150);
@@ -138,8 +143,8 @@ function openCustomTeamModal() {
                 <option value="🟩">🟩 輪椅</option><option value="🔵">🔵 中等</option><option value="⭐">⭐ 進階</option><option value="⚠️">⚠️ 極難</option><option value="🧩">🧩 非主流</option>
             </select>
             <div style="display:flex; gap:10px;">
-                <button onclick="document.getElementById('custom-team-modal').style.display='none'" class="btn-reset" style="flex:1;">取消</button>
-                <button onclick="saveCustomTeam()" class="btn-apply" style="flex:1;">儲存</button>
+                <button onclick="document.getElementById('custom-team-modal').style.display='none'" class="btn-action-clear" style="flex:1;">取消</button>
+                <button onclick="saveCustomTeam()" class="btn-action-all" style="flex:1;">儲存</button>
             </div>
         </div>`;
     m.style.display = 'flex';
@@ -162,11 +167,11 @@ function openDataManager() {
         <div style="margin-bottom:20px;">
             <p style="color:#aaa; font-size:0.9em;">包含角色、排軸、自訂編隊、血量校正紀錄。</p>
             <textarea id="dm-code" rows="3" style="width:100%; padding:10px; background:rgba(0,0,0,0.5); color:var(--neon-green); border:1px solid var(--border-glass); border-radius:8px; resize:none;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:10px;"><button onclick="generateExportCode()" class="btn-apply" style="flex:1; background:var(--neon-green); color:#000;">📥 產生代碼</button><button onclick="importFromCode()" class="btn-reset" style="flex:1;">📤 還原設定</button></div>
+            <div style="display:flex; gap:10px; margin-top:10px;"><button onclick="generateExportCode()" class="btn-apply" style="flex:1; background:var(--neon-green); color:#000;">📥 產生代碼</button><button onclick="importFromCode()" class="btn-action-all" style="flex:1;">📤 還原設定</button></div>
         </div>
         <div style="border-top:1px dashed var(--border-glass); padding-top:15px;"><h4 style="color:var(--gold); margin-top:0;">📝 自訂編隊管理</h4><div id="dm-teams"></div></div>
     `;
-    let teamHtml = customRotations.length === 0 ? `<p style="color:#666;">無資料</p>` : customRotations.map((cr, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px;"><span>${cr.diff} ${t(cr.c1)}+${t(cr.c2)}+${t(cr.c3)} (${cr.dps}w)</span><button onclick="deleteCustomTeam(${i})" class="btn-reset" style="padding:2px 8px;">❌</button></div>`).join('');
+    let teamHtml = customRotations.length === 0 ? `<p style="color:#666;">無資料</p>` : customRotations.map((cr, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px;"><span>${cr.diff} ${t(cr.c1)}+${t(cr.c2)}+${t(cr.c3)} (${cr.dps}w)</span><button onclick="deleteCustomTeam(${i})" class="btn-action-clear" style="padding:2px 8px;">❌</button></div>`).join('');
     document.getElementById('dm-teams').innerHTML = teamHtml;
     document.getElementById('data-manager-modal').style.display = 'flex';
 }
@@ -282,7 +287,6 @@ function saveStatsModal() {
     closeStatsModal();
 }
 
-// 🚀 新增：計算器邏輯回歸
 let lastCalculatedStability = 100;
 function openCalcModal() { document.getElementById('calc-modal').style.display = 'flex'; document.getElementById('calc-result').style.display = 'none'; }
 function closeCalcModal() { document.getElementById('calc-modal').style.display = 'none'; }
@@ -309,7 +313,7 @@ function initBoard() {
         tr.innerHTML = `<td>${t("第")} ${i} ${t("隊")}</td>
                         <td data-label="⚔️ ${t('主C')}："><select class="char-select" onchange="updateTracker()"></select></td>
                         <td data-label="🗡️ ${t('副C')}："><select class="char-select" onchange="updateTracker()"></select></td>
-                        <td data-label="🛡️ ${t('生存')}："><select class="char-select" onchange="updateTracker()"></select><button onclick="resetRowDps(this)" class="btn-reset-dps">🔄 Reset DPS</button></td>
+                        <td data-label="🛡️ ${t('生存')}："><select class="char-select" onchange="updateTracker()"></select><button onclick="resetRowDps(this)" class="btn-reset-dps" style="margin-top:5px; padding:4px 8px; border-radius:4px; font-size:0.8em; background:#2b2b36; color:#aaa; border:1px solid #555; cursor:pointer;">🔄 Reset DPS</button></td>
                         <td data-label="📊 ${t('實戰得分')} 與 ${t('設定')}：">
                             <input type="number" class="score-input" placeholder="${t('實戰得分')}"><br>
                             <div style="display:flex; justify-content:center; align-items:center; gap:4px; flex-wrap:wrap; margin-bottom:6px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px; border:1px solid var(--neon-green);">
@@ -458,7 +462,7 @@ function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
         let match = hasContext ? ((slotType === 1 || !v1 || d.c1 === v1) && (slotType === 2 || !v2 || d.c2 === v2) && (slotType === 3 || !v3 || d.c3 === v3)) : checkedRotations.has(d.id);
         if(match) {
             let target = slotType==1 ? d.c1 : slotType==2 ? d.c2 : d.c3;
-            let isBlacklisted = (slotType === 1) && (typeof noRecChars !== 'undefined' ? noRecChars.has(target) : false);
+            let isBlacklisted = false; // 移除會導致報錯的 noRecChars
             if(availableDisplayChars.includes(target) && !isBlacklisted) {
                 let c1Avail = (slotType === 1) || (d.c1 === v1 || (used[getBase(d.c1)]||0) < (charData[getBase(d.c1)]?.max||1));
                 let c2Avail = (slotType === 2) || (d.c2 === v2 || (used[getBase(d.c2)]||0) < (charData[getBase(d.c2)]?.max||1));
@@ -684,10 +688,10 @@ function initializeApp() {
     } catch(e) {}
     
     updateTracker(); 
-    updateToggleButtons(); // 初始化確保按鈕文字正確
+    updateToggleButtons(); // 啟動時強制同步一次按鈕文字
     document.querySelectorAll('.tab-btn')[0].click(); 
     translateDOM(document.body);
 }
 
-// 啟動
+// 啟動程式
 initializeApp();
