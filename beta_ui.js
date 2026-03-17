@@ -4,7 +4,7 @@
 // 職責：DOM 操作、事件監聽、畫面更新、圖表與彈窗
 // ==========================================
 
-// --- 1. 防呆原生防抖事件綁定 (解決跨檔案 Scope 崩潰問題) ---
+// --- 1. 防呆原生防抖事件綁定 ---
 let _trackerTimeout = null;
 function debouncedUpdateTracker() {
     clearTimeout(_trackerTimeout);
@@ -58,7 +58,73 @@ function switchTab(pageId, btnElement) {
     window.scrollTo(0, 0);
 }
 
-// --- 3. 畫面初始化 (App Bootstrapper) ---
+// --- 3. UI 按鈕與篩選器狀態控制 (補回遺失的部分) ---
+function toggleRarity(s) { 
+    s == 5 ? show5Star = !show5Star : show4Star = !show4Star; 
+    document.getElementById(`btn-${s}star`).classList.toggle(`active-${s}star`, s==5?show5Star:show4Star); 
+    filterCharacters(); 
+}
+
+function toggleGen(g) { 
+    if(g==1) showG1=!showG1; if(g==2) showG2=!showG2; if(g==3) showG3=!showG3; 
+    document.getElementById(`btn-g${g}`).classList.toggle('active-gen', g==1?showG1:g==2?showG2:showG3); 
+    filterCharacters(); 
+}
+
+function rosterCheckboxButton() {
+    const visibleBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
+    if(!visibleBoxes.length) return;
+    const anyChecked = visibleBoxes.some(i => i.checked);
+    visibleBoxes.forEach(i => i.checked = !anyChecked); 
+    updateOwnedCharacters();
+}
+
+function toggleAllRotations() { 
+    const b = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none'); 
+    if(!b.length) return; 
+    const a = b.some(i => i.checked); 
+    b.forEach(i => i.checked = !a); 
+    updateRotationState(); 
+}
+
+function toggleDifficulty(diff) { 
+    let idx = diff === '🟩' ? 1 : diff === '🔵' ? 2 : diff === '⭐' ? 3 : diff === '⚠️' ? 4 : 5;
+    let btn = document.getElementById(`btn-diff-${idx}`);
+    let activeClass = `active-diff-${idx}`;
+    let isActive = btn.classList.contains(activeClass);
+    let newState = !isActive;
+    
+    if (newState) btn.classList.add(activeClass);
+    else btn.classList.remove(activeClass);
+    
+    const b = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none' && i.closest('div').innerText.includes(diff)); 
+    b.forEach(i => i.checked = newState); 
+    updateRotationState(); 
+}
+
+function updateToggleButtons() {
+    const rBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
+    if (rBoxes.length > 0) {
+        const rAnyChecked = rBoxes.some(i => i.checked);
+        let rBtn = document.getElementById('roster-switch');
+        if(rBtn) {
+            rBtn.innerHTML = rAnyChecked ? "🗑️ " + t("清空角色勾選") : "☑️ " + t("全選可見角色");
+            rBtn.className = rAnyChecked ? "btn-action-clear ratio-71" : "btn-action-all ratio-71";
+        }
+    }
+
+    const rotBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
+    if (rotBoxes.length > 0) {
+        const rotAnyChecked = rotBoxes.some(i => i.checked);
+        let rotBtn = document.getElementById('rot-all-btn');
+        if(rotBtn) {
+            rotBtn.innerHTML = rotAnyChecked ? "🗑️ " + t("清空可見排軸") : "☑️ " + t("全選可見排軸");
+            rotBtn.className = rotAnyChecked ? "btn-action-clear ratio-71" : "btn-action-all ratio-71";
+        }
+    }
+}
+
+// --- 4. 畫面初始化 (App Bootstrapper) ---
 function initializeApp() {
     initCoreData(); // 呼叫 core.js 的資料初始化
     initBoard(); 
@@ -124,7 +190,6 @@ function initBoard() {
         b.appendChild(tr);
     }
     
-    // Drag & Drop 邏輯
     let draggedRow = null;
     b.addEventListener('dragstart', e => { draggedRow = e.target.closest('tr'); if(draggedRow) draggedRow.classList.add('dragging'); });
     b.addEventListener('dragover', e => {
@@ -145,7 +210,7 @@ function updateRowNumbers() {
     }); 
 }
 
-// --- 4. 選單與清單渲染 (UI Rendering) ---
+// --- 5. 選單與清單渲染 (UI Rendering) ---
 function renderCheckboxes() {
     if(typeof characterOrder === 'undefined' || typeof charData === 'undefined') return;
     const grid = document.getElementById('roster-setup');
@@ -246,9 +311,11 @@ function renderIndividualHPPanel() {
     container.innerHTML = html;
 }
 
-// --- 5. Tracker 與儀表板更新 (Dashboard Updates) ---
+// --- 6. Tracker 與儀表板更新 (Dashboard Updates) ---
 function updateTracker() {
     initBossHPMap();
+    renderIndividualHPPanel(); // 補回：呼叫畫出個別血量面板
+    
     let env = getEnvSettings();
     let usedCharacters = getUsedCharacters();
 
@@ -363,7 +430,7 @@ function renderDashboard(res, env) {
     }
 }
 
-// --- 6. 事件綁定與拉桿微調邏輯 ---
+// --- 7. 事件綁定與拉桿微調邏輯 ---
 function updateOwnedCharacters() { 
     ownedCharacters.clear(); 
     document.querySelectorAll('#roster-setup input:checked').forEach(i => ownedCharacters.add(i.value)); 
@@ -415,7 +482,7 @@ function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.del
 
 function manualUpdateHP(key) { let val = parseFloat(document.getElementById(`hp_${key}`).value); if (!isNaN(val) && val > 0) { bossHPMap[key] = { value: val, isDefault: false }; safeStorageSet('ww_boss_hp', bossHPMap); renderIndividualHPPanel(); updateTracker(); } }
 function applyCalibratedHP(key, avgValue) { bossHPMap[key] = { value: avgValue, isDefault: false }; safeStorageSet('ww_boss_hp', bossHPMap); renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`); }
-function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
+function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); renderIndividualHPPanel(); updateTracker(); }
 
 // 拉桿微調邏輯 (全局 + 個別)
 function updateMasterSkill() {
@@ -476,7 +543,7 @@ function updateTeamDisplayCount() {
     if (needsTrackerUpdate) updateTracker();
 }
 
-// --- 7. 進階推演與編隊功能 ---
+// --- 8. 進階推演與編隊功能 ---
 function reverseInferAndOptimize() {
     initBossHPMap(); let env = getEnvSettings(), currentTeams = [], rows = document.querySelectorAll('#team-board tr'), start_r = 1, start_idx = 1, start_hp = getBossMaxHP(1, 1);
     rows.forEach((row) => {
@@ -589,7 +656,7 @@ function resetRowDps(btn) {
     if(possibleRots.length > 0) { possibleRots.forEach(r => { delete customStatsMap[r.id]; }); safeStorageSet('ww_custom_stats', customStatsMap); row.querySelector('.score-input').value = ""; renderRotations(); updateTracker(); alert(t("已重設該隊伍的 DPS 為預設值。")); }
 }
 
-// --- 8. Modals (彈窗與資料管理) ---
+// --- 9. Modals (彈窗與資料管理) ---
 function openCalcModal() { document.getElementById('calc-modal').style.display = 'flex'; document.getElementById('calc-result').style.display = 'none'; }
 function closeCalcModal() { document.getElementById('calc-modal').style.display = 'none'; }
 function calculateStability() {
@@ -672,6 +739,7 @@ function deleteCustomTeam(index) {
     if(!confirm(t('確定刪除？'))) return; let cr = customRotations.splice(index, 1)[0]; safeStorageSet('ww_custom_rotations_v2', customRotations); dpsData = dpsData.filter(d => d.id !== 'custom_rot_' + cr.id); debouncedRenderAndTrack(); openDataManager(); 
 }
 
+// --- 10. 匯出、反推與其他行為 ---
 function saveCurrentLineup() {
     let teams = []; let totalActualScore = 0; let rows = document.querySelectorAll('#team-board tr');
     rows.forEach((r) => {
@@ -776,5 +844,5 @@ function submitToGoogleForm() {
     } catch(err) { alert(t("傳送失敗，錯誤資訊：") + err.message); }
 }
 
-// --- 啟動 ---
+// 啟動
 initializeApp();
