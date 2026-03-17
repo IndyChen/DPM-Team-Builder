@@ -101,7 +101,21 @@ function loadCustomRotations() {
 function openCustomTeamModal() {
     let m = document.getElementById('custom-team-modal');
     if(typeof charData === 'undefined') return;
-    let charOpts = Object.keys(charData).map(n => `<option value="${n}">${t(n)}</option>`).join('');
+    
+    // 完美排序並將漂泊者拆分為光主、暗主、風主
+    let charOpts = '';
+    if (typeof characterOrder !== 'undefined') {
+        characterOrder.forEach(n => {
+            if (n === '漂泊者') {
+                charOpts += `<option value="光主">${t("光主")}</option><option value="暗主">${t("暗主")}</option><option value="風主">${t("風主")}</option>`;
+            } else if (charData[n]) {
+                charOpts += `<option value="${n}">${t(n)}</option>`;
+            }
+        });
+    } else {
+        charOpts = Object.keys(charData).map(n => `<option value="${n}">${t(n)}</option>`).join('');
+    }
+    
     m.innerHTML = `
         <div style="background:var(--bg-panel); backdrop-filter:blur(20px); padding:25px; border-radius:16px; border:1px solid var(--gold); width:340px; max-width:90%;">
             <h3 style="margin-top:0; color:var(--gold); text-align:center;">➕ 新增自訂編隊</h3>
@@ -112,7 +126,10 @@ function openCustomTeamModal() {
             <select id="ct-diff" class="char-select" style="margin-bottom:20px;">
                 <option value="🟩">🟩 輪椅</option><option value="🔵">🔵 中等</option><option value="⭐">⭐ 進階</option><option value="⚠️">⚠️ 極難</option><option value="🧩">🧩 非主流</option>
             </select>
-            <div style="display:flex; gap:10px;"><button onclick="document.getElementById('custom-team-modal').style.display='none'" class="btn-reset" style="flex:1;">取消</button><button onclick="saveCustomTeam()" class="btn-apply" style="flex:1;">儲存</button></div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('custom-team-modal').style.display='none'" class="btn-reset" style="flex:1;">取消</button>
+                <button onclick="saveCustomTeam()" class="btn-apply" style="flex:1;">儲存</button>
+            </div>
         </div>`;
     m.style.display = 'flex';
 }
