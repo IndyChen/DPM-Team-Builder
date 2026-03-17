@@ -54,6 +54,7 @@
         .checkbox-item:active { transform: scale(0.96); }
         input[type="checkbox"] { cursor: pointer; width: 18px; height: 18px; accent-color: var(--gold); }
         
+        /* 遺失的剩餘次數樣式 */
         .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
         .count-badge { background: #4caf50; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85em; white-space: nowrap; color: #000; }
         .count-empty { background: #ff4d4d; color: white; opacity: 0.6; }
@@ -85,17 +86,24 @@
         .btn-apply:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5); }
         .btn-reset { background: rgba(255, 82, 82, 0.1); color: #ff5252; border: 1px solid #ff5252; padding: 10px 15px; border-radius: 8px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-reset:hover { background: #ff5252; color: white; }
+
+        /* 🚨 完美重構：實體明暗按鈕 (暗灰底 vs 鮮豔色) */
+        .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid #444; border-radius: 8px; padding: 10px 5px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #888; text-align: center; }
+        .btn-filter:hover, .btn-diff:hover { filter: brightness(1.2); }
         
-        /* 🚨 修正：還原按鈕亮起的實體顏色 */
-        .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px 14px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: rgba(0,0,0,0.4); color: #888; }
-        .btn-filter.active-5star { background: var(--gold); color: #1e1e24; border-color: var(--gold); }
+        .btn-filter.active-5star { background: #d4af37; color: #1e1e24; border-color: #d4af37; }
         .btn-filter.active-4star { background: #9b59b6; color: #fff; border-color: #9b59b6; }
         .btn-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
         .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; }
         .btn-diff.active-diff-2 { background: #2196f3; color: white; border-color: #2196f3; }
-        .btn-diff.active-diff-3 { background: #ffb300; color: white; border-color: #ffb300; }
-        .btn-diff.active-diff-4 { background: #d32f2f; color: white; border-color: #d32f2f; }
-        .btn-diff.active-diff-5 { background: #8e44ad; color: white; border-color: #8e44ad; }
+        .btn-diff.active-diff-3 { background: #ffb300; color: #1e1e24; border-color: #ffb300; }
+        .btn-diff.active-diff-4 { background: #f44336; color: white; border-color: #f44336; }
+        .btn-diff.active-diff-5 { background: #9c27b0; color: white; border-color: #9c27b0; }
+
+        /* 🚨 動態紅綠燈按鈕專用 */
+        .btn-action-clear { background: #f44336; color: white; border: 1px solid #f44336; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-action-all { background: #4caf50; color: white; border: 1px solid #4caf50; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-action-clear:hover, .btn-action-all:hover { filter: brightness(1.1); }
 
         .preset-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; border-bottom: 1px dashed #555; padding-bottom: 12px; }
         .btn-preset-filter.active-attr-冷凝 { background: #00bcd4; color: #1e1e24; border-color: #00bcd4; }
@@ -107,7 +115,7 @@
         .preset-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .preset-controls select { flex: 1; min-width: 250px; width: auto; padding: 8px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--border-glass); border-radius: 4px; outline: none; }
 
-        input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+        input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; width: 100%; }
         input[type="range"]::-webkit-slider-runnable-track { background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -8px; background-color: var(--neon-purple); height: 24px; width: 24px; border-radius: 50%; box-shadow: 0 0 15px var(--neon-purple); border: 2px solid #fff; }
         
@@ -122,28 +130,12 @@
         @media (max-width: 768px) {
             body { padding: 5px; padding-bottom: 100px; overflow-x: hidden; } 
             .panel { padding: 12px 10px; margin-bottom: 15px; box-sizing: border-box; width: 100%; overflow: hidden; } 
-
-            h2 { font-size: 1.3em; margin-left: 5px; }
             .container { flex-direction: column; gap: 10px; width: 100%; }
             .pool-panel { max-height: none; position: static; width: 100%; }
             .team-panel { width: 100%; }
             
-            .header-actions { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
-            .header-actions > div { display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; gap: 8px; }
-            
-            .tab-menu { 
-                position: fixed; bottom: 0; left: 0; width: 100%; 
-                background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); 
-                border-top: 1px solid var(--border-glass); 
-                margin: 0; padding: 10px 5px 20px 5px; 
-                display: flex; justify-content: space-around; z-index: 1000; 
-                border-radius: 20px 20px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.6);
-            }
-            .tab-btn { 
-                flex: 1; border: none; padding: 10px 5px; font-size: 0.95em; 
-                border-radius: 12px; display: flex; flex-direction: column; align-items: center; 
-                background: transparent; color: #777;
-            }
+            .tab-menu { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--border-glass); margin: 0; padding: 10px 5px 20px 5px; display: flex; justify-content: space-around; z-index: 1000; border-radius: 20px 20px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.6); }
+            .tab-btn { flex: 1; border: none; padding: 10px 5px; font-size: 0.95em; border-radius: 12px; display: flex; flex-direction: column; align-items: center; background: transparent; color: #777; }
             .tab-btn.active { color: var(--gold); background: rgba(212, 175, 55, 0.1); }
             .tab-btn.active::after { display: none; }
 
@@ -152,22 +144,12 @@
             thead { display: none; } 
             tbody { display: block; width: 100%; box-sizing: border-box; }
             
-            .draggable-row { 
-                display: block; margin-bottom: 20px; border: 1px solid var(--neon-green); 
-                border-radius: 12px; background: rgba(0,0,0,0.4); overflow: hidden; 
-                box-shadow: 0 8px 20px rgba(0,255,170,0.1); width: 100%; box-sizing: border-box;
-            }
-            td { 
-                display: block; text-align: left !important; border: none !important; 
-                border-bottom: 1px solid var(--border-glass) !important; padding: 12px 10px !important; 
-                background: transparent !important; width: 100% !important; box-sizing: border-box;
-            }
+            .draggable-row { display: block; margin-bottom: 20px; border: 1px solid var(--neon-green); border-radius: 12px; background: rgba(0,0,0,0.4); overflow: hidden; box-shadow: 0 8px 20px rgba(0,255,170,0.1); width: 100%; box-sizing: border-box; }
+            td { display: block; text-align: left !important; border: none !important; border-bottom: 1px solid var(--border-glass) !important; padding: 12px 10px !important; background: transparent !important; width: 100% !important; box-sizing: border-box; }
             td:last-child { border-bottom: none !important; }
             
             td:nth-child(1) { background: rgba(0, 255, 170, 0.1) !important; color: var(--neon-green); font-size: 1.2em; text-align: center !important; padding: 10px !important; font-weight: 800; }
-            td:nth-child(2)::before, td:nth-child(3)::before, td:nth-child(4)::before, td:nth-child(5)::before, td:nth-child(6)::before {
-                content: attr(data-label); display: block; margin-bottom: 8px; font-size: 0.9em; font-weight: bold;
-            }
+            td:nth-child(2)::before, td:nth-child(3)::before, td:nth-child(4)::before, td:nth-child(5)::before, td:nth-child(6)::before { content: attr(data-label); display: block; margin-bottom: 8px; font-size: 0.9em; font-weight: bold; }
             td:nth-child(2)::before, td:nth-child(3)::before, td:nth-child(4)::before { color: var(--gold); }
             td:nth-child(5)::before { color: #aaa; }
             td:nth-child(6)::before { color: var(--neon-green); }
@@ -175,6 +157,9 @@
 
             .score-input, .char-select, .hp-calc-select, .hp-calc-input { font-size: 0.9rem; max-width: 100%; box-sizing: border-box; }
             td:nth-child(5) > div { padding: 8px !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
+            
+            /* 在手機上讓 Grid 縮小一點確保塞得下 */
+            .btn-filter, .btn-diff { font-size: 0.75em; padding: 10px 2px; }
         }
         
         .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
@@ -216,17 +201,17 @@
 
         <div class="panel">
             <h3 style="color: #fff; margin-top: 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">1. 勾選擁有的角色</h3>
-            <div class="header-actions" style="margin-bottom: 15px;">
-                <div style="display: flex; width: 100%; gap: 10px;">
-                    <button id="roster-switch" class="btn-reset" onclick="rosterCheckboxButton()">🗑️ 清空</button>
-                    <input type="text" id="char-search" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.5); color: #fff; flex: 1; outline: none;">
-                </div>
-                <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; width: 100%;">
+            <div class="header-actions" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%;">
                     <button id="btn-5star" class="btn-filter active-5star" onclick="toggleRarity(5)">🌟 5星</button>
                     <button id="btn-4star" class="btn-filter active-4star" onclick="toggleRarity(4)">⭐ 4星</button>
                     <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X版</button>
                     <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X版</button>
                     <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: stretch;">
+                    <button id="roster-switch" class="btn-action-clear" onclick="rosterCheckboxButton()" style="flex: 0 0 auto; white-space: nowrap;">🗑️ 清空角色勾選</button>
+                    <input type="text" id="char-search" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="flex: 1; min-width: 150px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
             <div id="roster-setup"></div>
@@ -234,18 +219,18 @@
 
         <div class="panel">
             <h3 style="color: #fff; margin-top: 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">2. 配置實戰排軸</h3>
-            <div class="header-actions" style="margin-bottom: 15px;">
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
+            <div class="header-actions" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%;">
                     <button id="btn-diff-1" class="btn-diff active-diff-1" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
                     <button id="btn-diff-2" class="btn-diff active-diff-2" onclick="toggleDifficulty('🔵')">🔵 中等</button>
                     <button id="btn-diff-3" class="btn-diff active-diff-3" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
                     <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
                     <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%; align-items: center;">
-                    <button id="rot-all-btn" class="btn-reset" onclick="toggleAllRotations()">🗑️ 清空</button>
-                    <button class="btn-apply" onclick="openCustomTeamModal()" style="background: linear-gradient(135deg, #ff9800, #f57c00);">➕ 新增自訂</button>
-                    <input type="text" id="rot-search" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.5); color: #fff; outline: none;">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: stretch;">
+                    <button id="rot-all-btn" class="btn-action-clear" onclick="toggleAllRotations()" style="flex: 0 0 auto; white-space: nowrap;">🗑️ 清空可見排軸</button>
+                    <button class="btn-apply" onclick="openCustomTeamModal()" style="flex: 0 0 auto; background: #ff9800; color: #1e1e24; white-space: nowrap; border: none; padding: 0 15px; font-weight: bold; border-radius: 8px;">➕ 新增自訂</button>
+                    <input type="text" id="rot-search" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="flex: 1; min-width: 150px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
 
@@ -257,7 +242,7 @@
                         <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
                     </div>
                 </div>
-                <input type="range" id="skill-slider" min="50" max="100" value="100" style="width: 100%;" oninput="updateMasterSkill()">
+                <input type="range" id="skill-slider" min="50" max="100" value="100" oninput="updateMasterSkill()">
             </div>
 
             <div id="rotation-setup" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
@@ -303,12 +288,8 @@
                             <div><label style="font-size:0.8em; color:#aaa;">轉場耗時(秒):</label><input type="number" id="env-trans" class="env-input" value="1.5" step="0.1" oninput="updateTracker()"></div>
                             <div><label style="font-size:0.8em; color:#aaa;">單隊時限(秒):</label><input type="number" id="env-time" class="env-input" style="color:var(--neon-purple);" value="120" step="10" oninput="updateTracker()"></div>
                         </div>
-                        
                         <details style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 10px;">
-                            <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">🧮 進階：個別 BOSS 血量覆寫與代數反解校正面板 (點擊展開)</summary>
-                            <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
-                                * 當您填寫表格中的「終點王殘血反解」與分數後，系統會統計並代數反解出真實血量。若樣本數足夠且偏差較大，將會出現警告供您一鍵校正。
-                            </div>
+                            <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">🧮 進階：個別 BOSS 血量覆寫與代數反解校正面板</summary>
                             <div id="individual-hp-container" class="hp-grid"></div>
                         </details>
                     </details>
@@ -387,8 +368,8 @@
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>綜合穩定性:</span> <strong id="calc-res-stab" style="color:var(--neon-purple);">0 %</strong></div>
             </div>
             <div style="display:flex; justify-content:space-between; gap: 10px;">
-                <button onclick="closeCalcModal()" class="btn-reset" style="flex:1;">關閉</button>
-                <button onclick="applyCalculatedStability()" class="btn-apply" style="flex:2;">套用至全局拉桿</button>
+                <button onclick="closeCalcModal()" class="btn-action-clear" style="flex:1;">關閉</button>
+                <button onclick="applyCalculatedStability()" class="btn-action-all" style="flex:2;">套用至全局拉桿</button>
             </div>
         </div>
     </div>
