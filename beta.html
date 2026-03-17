@@ -276,15 +276,41 @@
             </div>
 
             <div style="margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-                    <span style="color: var(--gold); font-weight: bold;">🎯 全局操作達成率 (自動依難度換算折損)</span>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <button onclick="openCalcModal()" style="background:var(--neon-purple); color:#fff; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 0 10px rgba(207,0,255,0.4);">⏱️ 內建軸穩定性計算器</button>
-                        <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
-                    </div>
-                </div>
-                <input type="range" id="skill-slider" min="50" max="100" value="100" oninput="updateMasterSkill()">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+        <span style="color: var(--gold); font-weight: bold;">🎯 全局操作達成率 (自動依難度換算折損)</span>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button onclick="openCalcModal()" style="background:var(--neon-purple); color:#fff; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 0 10px rgba(207,0,255,0.4);">⏱️ 內建軸穩定性計算器</button>
+            <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
+        </div>
+    </div>
+    <input type="range" id="skill-slider" min="50" max="100" value="100" oninput="updateMasterSkill()">
+    
+    <details style="margin-top: 15px;">
+        <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">⚙️ 依排軸難度微調個別穩定性 (點擊展開)</summary>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+            <div style="flex: 1; min-width: 120px;">
+                <label style="color:#f44336; font-size:0.85em; font-weight:bold;">⚠️ 極難: <span id="val-diff-4">100%</span></label>
+                <input type="range" id="slider-diff-4" min="1" max="100" value="100" oninput="updateIndividualSkill('⚠️', this.value, 'val-diff-4')">
             </div>
+            <div style="flex: 1; min-width: 120px;">
+                <label style="color:#ffb300; font-size:0.85em; font-weight:bold;">⭐ 進階: <span id="val-diff-3">100%</span></label>
+                <input type="range" id="slider-diff-3" min="1" max="100" value="100" oninput="updateIndividualSkill('⭐', this.value, 'val-diff-3')">
+            </div>
+            <div style="flex: 1; min-width: 120px;">
+                <label style="color:#2196f3; font-size:0.85em; font-weight:bold;">🔵 中等: <span id="val-diff-2">100%</span></label>
+                <input type="range" id="slider-diff-2" min="1" max="100" value="100" oninput="updateIndividualSkill('🔵', this.value, 'val-diff-2')">
+            </div>
+            <div style="flex: 1; min-width: 120px;">
+                <label style="color:#4caf50; font-size:0.85em; font-weight:bold;">🟩 輪椅: <span id="val-diff-1">100%</span></label>
+                <input type="range" id="slider-diff-1" min="1" max="100" value="100" oninput="updateIndividualSkill('🟩', this.value, 'val-diff-1')">
+            </div>
+            <div style="flex: 1; min-width: 120px;">
+                <label style="color:#9c27b0; font-size:0.85em; font-weight:bold;">🧩 非主流: <span id="val-diff-5">100%</span></label>
+                <input type="range" id="slider-diff-5" min="1" max="100" value="100" oninput="updateIndividualSkill('🧩', this.value, 'val-diff-5')">
+            </div>
+        </div>
+    </details>
+</div>
 
             <div id="rotation-setup" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
         </div>
