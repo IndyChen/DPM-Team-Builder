@@ -54,7 +54,6 @@
         .checkbox-item:active { transform: scale(0.96); }
         input[type="checkbox"] { cursor: pointer; width: 18px; height: 18px; accent-color: var(--gold); }
         
-        /* 遺失的剩餘次數樣式 (已加回) */
         .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
         .count-badge { background: #4caf50; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85em; white-space: nowrap; color: #000; }
         .count-empty { background: #ff4d4d; color: white; opacity: 0.6; }
@@ -87,11 +86,16 @@
         .btn-reset { background: rgba(255, 82, 82, 0.1); color: #ff5252; border: 1px solid #ff5252; padding: 10px 15px; border-radius: 8px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-reset:hover { background: #ff5252; color: white; }
         
+        /* 🚨 修正：還原按鈕亮起的實體顏色 */
         .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px 14px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: rgba(0,0,0,0.4); color: #888; }
-        .btn-filter.active-5star { background: rgba(212, 175, 55, 0.2); color: var(--gold); border-color: var(--gold); }
-        .btn-filter.active-4star { background: rgba(155, 89, 182, 0.2); color: #c39bd3; border-color: #9b59b6; }
-        .btn-diff.active-diff-1 { background: rgba(76, 175, 80, 0.2); color: #81c784; border-color: #4caf50; }
-        .btn-diff.active-diff-4 { background: rgba(211, 47, 47, 0.2); color: #e57373; border-color: #d32f2f; }
+        .btn-filter.active-5star { background: var(--gold); color: #1e1e24; border-color: var(--gold); }
+        .btn-filter.active-4star { background: #9b59b6; color: #fff; border-color: #9b59b6; }
+        .btn-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
+        .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; }
+        .btn-diff.active-diff-2 { background: #2196f3; color: white; border-color: #2196f3; }
+        .btn-diff.active-diff-3 { background: #ffb300; color: white; border-color: #ffb300; }
+        .btn-diff.active-diff-4 { background: #d32f2f; color: white; border-color: #d32f2f; }
+        .btn-diff.active-diff-5 { background: #8e44ad; color: white; border-color: #8e44ad; }
 
         .preset-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; border-bottom: 1px dashed #555; padding-bottom: 12px; }
         .btn-preset-filter.active-attr-冷凝 { background: #00bcd4; color: #1e1e24; border-color: #00bcd4; }
@@ -100,7 +104,6 @@
         .btn-preset-filter.active-attr-氣動 { background: #4caf50; color: #fff; border-color: #4caf50; }
         .btn-preset-filter.active-attr-衍射 { background: #ffc107; color: #1e1e24; border-color: #ffc107; }
         .btn-preset-filter.active-attr-湮滅 { background: #e91e63; color: #fff; border-color: #e91e63; }
-        .btn-preset-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
         .preset-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .preset-controls select { flex: 1; min-width: 250px; width: auto; padding: 8px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--border-glass); border-radius: 4px; outline: none; }
 
@@ -116,7 +119,6 @@
         .btn-calib { background: #d9534f; color: white; border: 1px solid #ff4d4d; border-radius: 4px; font-size: 0.7em; cursor: pointer; padding: 4px; margin-top: 2px; animation: blink 1.5s infinite; font-weight: bold; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* 📱 手機版專屬：App 級人因工學介面 */
         @media (max-width: 768px) {
             body { padding: 5px; padding-bottom: 100px; overflow-x: hidden; } 
             .panel { padding: 12px 10px; margin-bottom: 15px; box-sizing: border-box; width: 100%; overflow: hidden; } 
@@ -129,7 +131,6 @@
             .header-actions { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
             .header-actions > div { display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; gap: 8px; }
             
-            /* 🚀 底部導航列 */
             .tab-menu { 
                 position: fixed; bottom: 0; left: 0; width: 100%; 
                 background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); 
@@ -146,7 +147,6 @@
             .tab-btn.active { color: var(--gold); background: rgba(212, 175, 55, 0.1); }
             .tab-btn.active::after { display: none; }
 
-            /* 🎴 卡片式表格防撐破版 */
             .table-responsive { overflow-x: hidden; width: 100%; padding: 0; margin: 0; } 
             table { display: block; width: 100% !important; min-width: 0 !important; border-spacing: 0; box-sizing: border-box; }
             thead { display: none; } 
@@ -224,9 +224,9 @@
                 <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; width: 100%;">
                     <button id="btn-5star" class="btn-filter active-5star" onclick="toggleRarity(5)">🌟 5星</button>
                     <button id="btn-4star" class="btn-filter active-4star" onclick="toggleRarity(4)">⭐ 4星</button>
-                    <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X</button>
-                    <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X</button>
-                    <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X</button>
+                    <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X版</button>
+                    <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X版</button>
+                    <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
                 </div>
             </div>
             <div id="roster-setup"></div>
@@ -242,17 +242,20 @@
                     <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
                     <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
                 </div>
-                <div style="display: flex; gap: 8px; width: 100%;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%; align-items: center;">
                     <button id="rot-all-btn" class="btn-reset" onclick="toggleAllRotations()">🗑️ 清空</button>
-                    <button class="btn-apply" onclick="openCustomTeamModal()" style="flex: 1; background: linear-gradient(135deg, #ff9800, #f57c00);">➕ 新增自訂</button>
+                    <button class="btn-apply" onclick="openCustomTeamModal()" style="background: linear-gradient(135deg, #ff9800, #f57c00);">➕ 新增自訂</button>
+                    <input type="text" id="rot-search" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.5); color: #fff; outline: none;">
                 </div>
-                <input type="text" id="rot-search" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.5); color: #fff; outline: none;">
             </div>
 
             <div style="margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                     <span style="color: var(--gold); font-weight: bold;">🎯 全局操作達成率</span>
-                    <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="openCalcModal()" style="background:var(--neon-purple); color:#fff; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 0 10px rgba(207,0,255,0.4);">⏱️ 穩定度計算器</button>
+                        <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
+                    </div>
                 </div>
                 <input type="range" id="skill-slider" min="50" max="100" value="100" style="width: 100%;" oninput="updateMasterSkill()">
             </div>
@@ -364,6 +367,28 @@
                 <button onclick="closeStatsModal()" class="btn-reset" style="flex:1;">取消</button>
                 <button onclick="clearStatsModal()" class="btn-reset" style="flex:1; background:#d9534f; color:#fff;">清除</button>
                 <button onclick="saveStatsModal()" class="btn-apply" style="flex:1;">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="calc-modal" class="modal-overlay">
+        <div style="background:var(--bg-panel); padding:25px; border-radius:16px; border:2px solid var(--neon-purple); width:400px; max-width:90%; box-shadow: 0 0 30px rgba(207,0,255,0.4); backdrop-filter:blur(20px);">
+            <h3 style="margin-top:0; color:var(--neon-purple); font-size:1.3em; text-align:center;">⏱️ 實戰手法穩定性檢測</h3>
+            <label style="display:block; margin-bottom:10px; font-weight:bold; color:var(--gold);">📏 基準理論耗時 (秒): 
+                <input type="number" id="calc-base-time" step="0.1" value="25" class="score-input" style="color:#fff; border-color:var(--border-glass);">
+            </label>
+            <label style="display:block; margin-bottom:15px; font-weight:bold; color:var(--gold);">📝 實測耗時紀錄 (秒): 
+                <textarea id="calc-times" rows="3" class="score-input" style="color:#fff; border-color:var(--border-glass); resize:none;" placeholder="以逗號分隔"></textarea>
+            </label>
+            <button onclick="calculateStability()" class="btn-apply" style="width:100%; background:var(--neon-purple); margin-bottom:15px;">執行檢測分析</button>
+            <div id="calc-result" style="display:none; background:rgba(0,0,0,0.5); padding:15px; border-radius:8px; border:1px dashed var(--neon-purple); margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>平均耗時:</span> <strong id="calc-res-mean" style="color:#fff;">0.00 秒</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>節奏標準差 (σ):</span> <strong id="calc-res-std" style="color:#ffb300;">0.00 秒</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>綜合穩定性:</span> <strong id="calc-res-stab" style="color:var(--neon-purple);">0 %</strong></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; gap: 10px;">
+                <button onclick="closeCalcModal()" class="btn-reset" style="flex:1;">關閉</button>
+                <button onclick="applyCalculatedStability()" class="btn-apply" style="flex:2;">套用至全局拉桿</button>
             </div>
         </div>
     </div>
