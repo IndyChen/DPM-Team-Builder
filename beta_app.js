@@ -67,7 +67,7 @@ let diffStability = { '⚠️': 100, '⭐': 100, '🔵': 100, '🟩': 100, '🧩
 let bossHPMap = {};
 let bossHPHistory = {};
 let customRotations = [];
-let savedLineups = [];
+let savedLineups = []; 
 
 function initSavedLineups() {
     try {
@@ -205,14 +205,18 @@ function openDataManager() {
     document.getElementById('dm-teams').innerHTML = teamHtml;
     document.getElementById('data-manager-modal').style.display = 'flex';
 }
+
 function closeDataManager() { document.getElementById('data-manager-modal').style.display = 'none'; }
+
 function generateExportCode() {
-    let data = { roster: [...ownedCharacters], rotations: [...checkedRotations], customStats: customStatsMap, bossHp: bossHPHistory, customTeams: customRotations, savedLineups: savedLineups };
+    let data = { roster: [...ownedCharacters], rotations: [...checkedRotations], customStats: customStatsMap, bossHp: bossHPHistory, customTeams: customRotations, savedLineups: savedLineups, bossHPMap: bossHPMap };
     document.getElementById('dm-code').value = btoa(encodeURIComponent(JSON.stringify(data))); alert(t('✅ 存檔代碼已產生，請複製保存。'));
 }
+
 function confirmImportFromCode() {
     if(confirm(t(`這將會覆寫您目前所有的自訂與記憶隊伍設定，確定執行嗎？`))) { importFromCode(); }
 }
+
 function importFromCode() {
     let code = document.getElementById('dm-code').value; if(!code) return;
     try {
@@ -223,9 +227,11 @@ function importFromCode() {
         if(data.bossHp) localStorage.setItem('ww_boss_hp_history', JSON.stringify(data.bossHp));
         if(data.customTeams) localStorage.setItem('ww_custom_rotations_v2', JSON.stringify(data.customTeams));
         if(data.savedLineups) localStorage.setItem('ww_saved_lineups', JSON.stringify(data.savedLineups));
+        if(data.bossHPMap) localStorage.setItem('ww_boss_hp', JSON.stringify(data.bossHPMap));
         alert(t('✅ 設定已還原！即將重新載入頁面。')); window.location.reload();
     } catch(e) { alert(t('❌ 解析失敗，請確認代碼正確。')); }
 }
+
 function deleteCustomTeam(index) {
     if(!confirm(t('確定刪除？'))) return; let cr = customRotations.splice(index, 1)[0];
     try { localStorage.setItem('ww_custom_rotations_v2', JSON.stringify(customRotations)); } catch(e){}
@@ -394,6 +400,7 @@ function rosterCheckboxButton() {
     visibleBoxes.forEach(i => i.checked = !anyChecked); 
     updateOwnedCharacters();
 }
+
 function updateOwnedCharacters() { ownedCharacters.clear(); document.querySelectorAll('#roster-setup input:checked').forEach(i => ownedCharacters.add(i.value)); debouncedRenderAndTrack(); }
 
 function updateMasterSkill() {
@@ -1063,4 +1070,92 @@ function submitToGoogleForm() {
         let env = getEnvSettings();
         dataParams.push("主C,副C,生存,實戰分數,真實DPS,終點王R,終點王隻數,剩餘血量%,推算王血量,王1抗,王2抗,王3抗,王4抗");
         
-        rows.forEach
+        rows.forEach((r) => {
+            if (r.classList.contains('hidden-row')) return;
+            let ss = r.querySelectorAll('select.char-select');
+            let scoreInput = r.querySelector('.score-input');
+            let score = scoreInput ? parseFloat(scoreInput.value) : NaN;
+            let ebR = parseInt(r.querySelector('.end-boss-r').value), ebIdx = parseInt(r.querySelector('.end-boss-idx').value), ebHp = parseFloat(r.querySelector('.end-boss-hp').value);
+            
+            if(ss.length >= 3 && ss[0].value && ss[1].value && ss[2].value && !isNaN(score)) {
+                let res1 = r.querySelector('.res-chk-1') && r.querySelector('.res-chk-1').checked ? 1 : 0;
+                let res2 = r.querySelector('.res-chk-2') && r.querySelector('.res-chk-2').checked ? 1 : 0;
+                let res3 = r.querySelector('.res-chk-3') && r.querySelector('.res-chk-3').checked ? 1 : 0;
+                let res4 = r.querySelector('.res-chk-4') && r.querySelector('.res-chk-4').checked ? 1 : 0;
+                
+                let dmg_left = score / Math.max(0.0001, env.scoreRatio), kills = 0, effective_dmg_sum = 0, tmp_r = 1, tmp_idx = 1, tmp_hp = getBossMaxHP(1, 1), dmgDealtToKilledBosses = 0;
+                let chk_res = [res1, res2, res3, res4];
+                let calculatedTotalHP = 0;
+                
+                while (dmg_left > 0 && kills < 40) { 
+                    let r_factor = chk_res[tmp_idx - 1] ? (1 - env.resPenalty / 100) : 1; if (r_factor <= 0) r_factor = 0.1; 
+                    if (dmg_left >= tmp_hp) {
+                        dmg_left -= tmp_hp; dmgDealtToKilledBosses += tmp_hp; effective_dmg_sum += (tmp_hp / r_factor);
+                        kills++; tmp_idx++; if (tmp_idx > 4) { tmp_r++; tmp_idx = 1; } tmp_hp = getBossMaxHP(tmp_r, tmp_idx);
+                    } else {
+                        effective_dmg_sum += (dmg_left / r_factor);
+                        if (!isNaN(ebR) && !isNaN(ebIdx) && !isNaN(ebHp) && ebR === tmp_r && ebIdx === tmp_idx) {
+                            let dmgDoneToEndBoss = (score / env.scoreRatio) - dmgDealtToKilledBosses;
+                            let hp_factor = 1 - (ebHp / 100);
+                            if (hp_factor <= 0) hp_factor = 0.0001; 
+                            calculatedTotalHP = dmgDoneToEndBoss / hp_factor;
+                        }
+                        dmg_left = 0;
+                    }
+                }
+                let effective_time = env.battleTime - (kills * env.transTime);
+                let trueBaseDps = effective_time > 0 ? (effective_dmg_sum / effective_time) : 0;
+
+                dataParams.push(`${ss[0].value},${ss[1].value},${ss[2].value},${score},${trueBaseDps.toFixed(2)},${ebR||''},${ebIdx||''},${ebHp||''},${calculatedTotalHP ? calculatedTotalHP.toFixed(2) : ''},${res1},${res2},${res3},${res4}`);
+            }
+        });
+        if (dataParams.length === 1) return alert(t("請先在編隊表中填寫【實戰得分】！"));
+        let csvReport = dataParams.join('\n');
+        window.open(`https://docs.google.com/forms/d/e/1FAIpQLSfB2g_uLwL7D2O1uUuM1iEaWkO7q29Xm9eG-8yPqg6Vw/viewform?usp=pp_url&entry.956555135=${encodeURIComponent(csvReport)}`, '_blank');
+    } catch(err) {
+        alert(t("傳送失敗，錯誤資訊：") + err.message);
+    }
+}
+
+// 初始化啟動
+function initializeApp() {
+    initDpsData(); initSavedLineups(); initBoard(); 
+    try { isSimp = localStorage.getItem('ww_lang') === 'zh-CN'; } catch(e){}
+    if (isSimp) document.getElementById('lang-toggle').innerText = "🌐 繁 / 简";
+    try { const sr = localStorage.getItem('ww_roster'); if (sr) { let parsed = JSON.parse(sr); if (Array.isArray(parsed)) { ownedCharacters.clear(); parsed.forEach(name => { if (charData[name] || ['光主','暗主','風主'].includes(name)) ownedCharacters.add(name); }); } } else { ownedCharacters = new Set(Object.keys(charData)); } } catch(e) { ownedCharacters = new Set(Object.keys(charData)); }
+    try { const srot = localStorage.getItem('ww_rotations'); if (srot) { let parsed = JSON.parse(srot); if (Array.isArray(parsed)) { checkedRotations.clear(); const validIds = new Set(dpsData.map(d => d.id)); parsed.forEach(id => { if (validIds.has(id)) checkedRotations.add(id); }); } } else { checkedRotations = new Set(dpsData.map(d => d.id)); } } catch(e) { checkedRotations = new Set(dpsData.map(d => d.id)); }
+    try { let stored = localStorage.getItem('ww_custom_stats'); if (stored) customStatsMap = JSON.parse(stored); } catch(e) {}
+
+    try {
+        let savedCount = localStorage.getItem('ww_display_count');
+        if (savedCount && document.getElementById('team-count-select')) {
+            document.getElementById('team-count-select').value = savedCount;
+        }
+    } catch(e) {}
+
+    document.getElementById('skill-slider').value = 100; updateMasterSkill();
+    renderCheckboxes(); renderRotations();
+    
+    try {
+        const st = localStorage.getItem('ww_teams');
+        if (st) {
+            const pt = JSON.parse(st);
+            document.querySelectorAll('#team-board tr').forEach((r, i) => {
+                if (pt[i]) {
+                    let ss = r.querySelectorAll('select.char-select');
+                    if (pt[i][0]) { ss[0].innerHTML = `<option value="${pt[i][0]}">${t(pt[i][0])}</option>`; ss[0].value = pt[i][0]; }
+                    if (pt[i][1]) { ss[1].innerHTML = `<option value="${pt[i][1]}">${t(pt[i][1])}</option>`; ss[1].value = pt[i][1]; }
+                    if (pt[i][2]) { ss[2].innerHTML = `<option value="${pt[i][2]}">${t(pt[i][2])}</option>`; ss[2].value = pt[i][2]; }
+                }
+            });
+        }
+    } catch(e) {}
+    
+    updateTeamDisplayCount(); 
+    updateToggleButtons(); 
+    document.querySelectorAll('.tab-btn')[0].click(); 
+    translateDOM(document.body);
+}
+
+// 啟動程式
+initializeApp();
