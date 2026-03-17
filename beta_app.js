@@ -1,101 +1,16 @@
 // ==========================================
-// 1. 介面導航與高精度逐詞翻譯引擎
+// 鳴潮矩陣編隊工具 - Beta 測試版核心邏輯
+// 獨立檔案：beta_app.js
 // ==========================================
-function switchTab(pageId, btnElement) {
-    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    btnElement.classList.add('active');
+
+// 確保翻譯字典在初始化時按照字串長度排序 (避免短詞截斷長句)
+if (typeof phraseDict !== 'undefined') {
+    phraseDict.sort((a, b) => b[0].length - a[0].length);
 }
-
-const phraseDict = [
-    ["鳴潮矩陣編隊工具", "鸣潮矩阵编队工具"], ["測試版", "测试版"], ["數據庫設計與邏輯", "数据库设计与逻辑"], 
-    ["報錯與意見回饋", "报错与意见反馈"], ["第一步：角色與排軸設定", "第一步：角色与排轴设定"], 
-    ["第二步：矩陣編隊與實戰推演", "第二步：矩阵编队与实战推演"], ["歡迎使用！點此查看「頁面操作指南」", "欢迎使用！点此查看「页面操作指南」"],
-    ["當前頁面：角色與排軸設定", "当前页面：角色与排轴设定"], ["選擇角色：", "选择角色："], 
-    ["篩選排軸難度：", "筛选排轴难度："], ["系統只會顯示您可以組建的隊伍。", "系统只会显示您可以组建的队伍。"],
-    ["微調穩定性：", "微调稳定性："], ["下一頁預告：", "下一页预告："], ["完成設定後，點擊右下角按鈕前往下一頁。", "完成设定后，点击右下角按钮前往下一页。"],
-    ["實戰分數反推與無損洗牌重排", "实战分数反推与无损洗牌重排"], ["開發者備註", "开发者备注"], 
-    ["平滑均傷", "平滑均伤"], ["爆發前置", "爆发前置"], ["平滑出傷", "平滑出伤"],
-    ["自訂各軸傷害折線", "自订各轴伤害折线"], ["自訂循環次數", "自订循环次数"], ["版本更新說明", "版本更新说明"], 
-    ["無損實戰洗牌", "无损实战洗牌"], ["防呆選單與血量鎖定", "防呆选单与血量锁定"], ["一鍵重設預設", "一键重设预设"], 
-    ["雙檔分離與分頁", "双档分离与分页"], ["近期版本更新概略", "近期版本更新概略"], ["一鍵編制邏輯", "一键编制逻辑"],
-    ["內建軸穩定性計算器", "内建轴稳定性计算器"], ["手法折損全局與微調拉桿", "手法折损全局与微调拉杆"],
-    ["請先按照您在遊戲中實際出戰的順序，將隊伍排在表格上。", "请先按照您在游戏中实际出战的顺序，将队伍排在表格上。"],
-    ["在表格內的「實戰得分」欄位，填入該隊打完結算的總分。", "在表格内的「实战得分」栏位，填入该队打完结算的总分。"],
-    ["勾選該隊伍遭遇抗性的是第幾隻王", "勾选该队伍遭遇抗性的是第几只王"],
-    ["若該隊伍沒把王打死，請在「🎯終:」下拉選單選擇終點王", "若该队伍没把王打死，请在「🎯终:」下拉选单选择终点王"],
-    ["系統會精準扣除轉場動畫延遲與抗性干擾，推算真實", "系统会精准扣除转场动画延迟与抗性干扰，推算真实"],
-    ["為您無損地重新排序最佳出戰順序！", "为您无损地重新排序最佳出战顺序！"],
-    ["將您本次排出的矩陣波次與分數傳送給開發者，協助校正王血量公式！", "将您本次排出的矩阵波次与分数传送给开发者，协助校正王血量公式！"],
-    ["當您填寫表格中的「終點王殘血反解」與分數後，系統會自動將其加入背景的代數校正池。若需要剔除錯誤樣本，請前往右上角的「⚙️ 數據總管與備份」進行管理。", "当您填写表格中的「终点王残血反解」与分数后，系统会自动将其加入背景的代数校正池。若需要剔除错误样本，请前往右上角的「⚙️ 数据总管与备份」进行管理。"],
-    ["提示：在表格內填寫【實戰得分】並點擊反推，系統會自動修改該隊伍的「自訂 DPS」。若要還原，請點擊該隊伍下方的「🔄 重設預設 DPS」。", "提示：在表格内填写【实战得分】并点击反推，系统会自动修改该队伍的「自订 DPS」。若要还原，请点击该队伍下方的「🔄 重设预设 DPS」。"],
-    ["點擊展開", "点击展开"], ["前往下一步：編隊與推演", "前往下一步：编队与推演"],
-    ["一鍵理論編隊", "一键理论编队"], ["依排軸難度微調各別穩定性", "依排轴难度微调各别稳定性"],
-    ["全局操作達成率", "全局操作达成率"], ["自動依難度換算折損", "自动依难度换算折损"],
-    ["搜尋擁有角色", "搜寻拥有角色"], ["搜尋排軸角色", "搜寻排轴角色"], ["清空角色勾選", "清空角色勾选"], 
-    ["清空所有排軸", "清空所有排轴"], ["依據理論最高", "依据理论最高"], ["自動為您滿編", "自动为您满编"],
-    ["根據表格分數反推真實", "根据表格分数反推真实"], ["現有隊伍無損洗牌", "现有队伍无损洗牌"],
-    ["為最優順序！", "为最优顺序！"], ["一鍵編制", "一键编制"], ["理論推演", "理论推演"],
-    ["依實戰得分反推與無損重排", "依实战得分反推与无损重排"], ["重設編制", "重设编制"],
-    ["截圖分享", "截图分享"], ["貢獻實戰大數據", "贡献实战大数据"], ["剩餘可用次數", "剩余可用次数"], 
-    ["隊伍編排", "队伍编排"], ["極限上限16隊", "极限上限16队"], ["矩陣實戰接力推演與環境設定", "矩阵实战接力推演与环境设定"], 
-    ["影響分數與轉場計算", "影响分数与转场计算"], ["計分比例(分/萬)", "计分比例(分/万)"], 
-    ["每 1 萬傷害等於多少分數", "每 1 万伤害等于多少分数"], ["預設", "预设"], ["得1分", "得1分"], 
-    ["均血(萬)", "均血(万)"], ["後續成長(%)", "后续成长(%)"], ["以後每階血量成長率", "以后每阶血量成长率"], 
-    ["抗性減傷(%)", "抗性减伤(%)"], ["當隊伍遭遇抗性王時，降低的DPS百分比", "当队伍遭遇抗性王时，降低的DPS百分比"],
-    ["轉場耗時(秒)", "转场耗时(秒)"], ["擊殺BOSS後的出場動畫延遲", "击杀BOSS后的出场动画延迟"],
-    ["單隊時限(秒)", "单队时限(秒)"], ["進階：個別 BOSS 血量覆寫與代數反解校正面板", "进阶：个别 BOSS 血量覆写与代数反解校正面板"],
-    ["主輸出篩選", "主输出筛选"], ["世代", "世代"], ["推薦配隊快速填入", "推荐配队快速填入"],
-    ["填入下一空位", "填入下一空位"], ["當前編隊 矩陣接力推演總分", "当前编队 矩阵接力推演总分"],
-    ["隊伍", "队伍"], ["位置 1 (主C)", "位置 1 (主C)"], ["位置 2 (副C)", "位置 2 (副C)"], ["位置 3 (生存)", "位置 3 (生存)"],
-    ["實戰得分 / 殘血反解與抗性", "实战得分 / 残血反解与抗性"], ["推演戰果 (接力波次進度)", "推演战果 (接力波次进度)"],
-    ["填寫檢測數據與環境加權", "填写检测数据与环境加权"], ["真實", "真实"], ["當期屬性增傷加權", "当期属性增伤加权"],
-    ["取消", "取消"], ["清除自訂", "清除自订"], ["儲存", "储存"], ["實戰手法穩定性檢測", "实战手法稳定性检测"],
-    ["基準理論耗時", "基准理论耗时"], ["實測耗時紀錄", "实测耗时纪录"], ["以逗號分隔", "以逗号分隔"],
-    ["執行檢測分析", "执行检测分析"], ["平均耗時", "平均耗时"], ["節奏標準差", "节奏标准差"],
-    ["綜合穩定性", "综合稳定性"], ["關閉", "关闭"], ["套用至全局拉桿", "套用至全局拉杆"],
-    ["數據提供", "数据提供"], ["整理", "整理"], ["流量統計", "流量统计"], ["第一步", "第一步"], 
-    ["角色", "角色"], ["排軸", "排轴"], ["設定", "设定"], ["第二步", "第二步"], ["實戰", "实战"], 
-    ["推演", "推演"], ["全局", "全局"], ["輪椅", "轮椅"], ["進階", "进阶"], ["中等", "中等"], 
-    ["極難", "极难"], ["非主流", "非主流"], ["一般角色", "一般角色"], ["生存位", "生存位"], 
-    ["主輸出", "主输出"], ["副C/輔助", "副C/辅助"], ["生存/輔助", "生存/辅助"], ["適配推薦", "适配推荐"], 
-    ["其他角色", "其他角色"], ["耗盡", "耗尽"], ["在隊", "在队"], ["理論最大", "理论最大"], 
-    ["剩餘可排", "剩余可排"], ["無預設", "无预设"], ["點擊自訂", "点击自订"], ["選擇推薦配隊", "选择推荐配队"], 
-    ["無DPS", "无DPS"], ["無法推演", "无法推演"], ["請先排滿該隊伍的成員", "请先排满该队伍的成员"], 
-    ["找不到此組合的排軸資料", "找不到此组合的排轴资料"], ["已清除該隊伍排軸的自訂", "已清除该队伍排轴的自订"], 
-    ["恢復系統預設值", "恢复系统预设值"], ["請先在上方勾選擁有的角色", "请先在上方勾选拥有的角色"], 
-    ["以解鎖可組建的排軸", "以解锁可组建的排轴"], ["套用校正", "套用校正"], ["已成功校正為平均值", "已成功校正为平均值"], 
-    ["號?", "号?"], ["抗性王", "抗性王"], ["打完結算給的總分", "打完结算给的总分"], ["實戰得分", "实战得分"], 
-    ["下限", "下限"], ["上限", "上限"], ["將清空當前編隊並自動生成極限陣容，確定執行？", "将清空当前编队并自动生成极限阵容，确定执行？"],
-    ["一鍵配置完成！共組建", "一键配置完成！共组建"], ["沒有空白隊伍了！", "没有空白队伍了！"],
-    ["確定清空編隊表嗎？", "确定清空编队表吗？"], ["您即將匿名提交當前表單上的數據，是否繼續？", "您即将匿名提交当前表单上的数据，是否继续？"],
-    ["請先填寫實戰得分！", "请先填写实战得分！"], ["請先完成至少一支滿編隊伍！", "请先完成至少一支满编队伍！"],
-    ["實得分", "实得分"], ["推演編隊表", "推演编队表"], ["總分預估", "总分预估"], ["生成時間", "生成时间"],
-    ["冷凝", "冷凝"], ["熱熔", "热熔"], ["導電", "导电"], ["氣動", "气动"], ["衍射", "衍射"], ["湮滅", "湮灭"],
-    ["漂泊者", "漂泊者"], ["維里奈", "维里奈"], ["守岸人", "守岸人"], ["今汐", "今汐"], ["長離", "长离"], 
-    ["忌炎", "忌炎"], ["相里要", "相里要"], ["椿", "椿"], ["折枝", "折枝"], ["吟霖", "吟霖"], 
-    ["卡卡羅", "卡卡罗"], ["安可", "安可"], ["凌陽", "凌阳"], ["鑒心", "鉴心"], ["散華", "散华"], 
-    ["白芷", "白芷"], ["熾霞", "炽霞"], ["秧秧", "秧秧"], ["丹瑾", "丹瑾"], ["釉瑚", "釉瑚"], 
-    ["桃祈", "桃祈"], ["秋水", "秋水"], ["莫特斐", "莫特斐"], ["淵武", "渊武"], ["燈燈", "灯灯"], 
-    ["珂萊塔", "珂莱塔"], ["洛可可", "洛可可"], ["菲比", "菲比"], ["布蘭特", "布兰特"], ["坎特蕾拉", "坎特蕾拉"], 
-    ["贊妮", "赞妮"], ["夏空", "夏空"], ["卡提希婭", "卡提希娅"], ["露帕", "露帕"], ["弗洛洛", "弗洛洛"], 
-    ["奧古斯塔", "奥古斯塔"], ["尤諾", "尤诺"], ["嘉貝莉娜", "嘉贝莉娜"], ["仇遠", "仇远"], ["千咲", "千咲"], 
-    ["卜靈", "卜灵"], ["琳奈", "琳奈"], ["莫寧", "莫宁"], ["陸·赫斯", "陆·赫斯"], ["愛彌斯", "爱弥斯"], 
-    ["西格莉卡", "西格莉卡"], ["光主", "光主"], ["暗主", "暗主"], ["風主", "风主"],
-    ["常規", "常规"], ["錯輪", "错轮"], ["死告", "死告"], ["龍切", "龙切"], ["離火", "离火"], 
-    ["雙延", "双延"], ["奶套", "奶套"], ["轉聚暴", "转聚暴"], ["雙下", "双下"], ["劍切", "剑切"], 
-    ["雙錨", "双锚"], ["錯延", "错延"], ["旋踢", "旋踢"], ["新增自訂編隊", "新增自订编队"], ["預設理論", "预设理论"],
-    ["數據總管與備份", "数据总管与备份"], ["返回正式版", "返回正式版"], ["管理校正樣本", "管理校正样本"], 
-    ["匯出存檔", "汇出存档"], ["匯入存檔", "汇入存档"], ["複製代碼", "复制代码"], ["還原設定", "还原设定"],
-    ["排序", "排序"], ["未來版本嚐鮮", "未来版本尝鲜"]
-];
-
-phraseDict.sort((a, b) => b[0].length - a[0].length);
 
 let isSimp = false;
 function t(str) { 
-    if (!isSimp || !str || typeof str !== 'string') return str; 
+    if (!isSimp || !str || typeof str !== 'string' || typeof phraseDict === 'undefined') return str; 
     let res = str;
     for (let [tw, cn] of phraseDict) res = res.split(tw).join(cn);
     return res;
@@ -137,174 +52,18 @@ function debounce(func, wait) {
     };
 }
 
-// ==========================================
-// 2. 核心資料庫
-// ==========================================
-const charData = {
-    "漂泊者": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "維里奈": { max: 2, rarity: 5, gen: 1, type: "生存位 (可用 2 次)" }, 
-    "守岸人": { max: 2, rarity: 5, gen: 1, type: "生存位 (可用 2 次)" }, "今汐": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "長離": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "忌炎": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" },
-    "相里要": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "椿": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "折枝": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "吟霖": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "卡卡羅": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "安可": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" },
-    "凌陽": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, "鑒心": { max: 1, rarity: 5, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "白芷": { max: 2, rarity: 4, gen: 1, type: "生存位 (可用 2 次)" }, "散華": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "熾霞": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "秧秧": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" },
-    "丹瑾": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "釉瑚": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "桃祈": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "秋水": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "莫特斐": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, "淵武": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" },
-    "燈燈": { max: 1, rarity: 4, gen: 1, type: "一般角色 (可用 1 次)" }, 
-    "珂萊塔": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "洛可可": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "菲比": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "布蘭特": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "坎特蕾拉": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "贊妮": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" },
-    "夏空": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "卡提希婭": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "露帕": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "弗洛洛": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "奧古斯塔": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "尤諾": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "嘉貝莉娜": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "仇遠": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, 
-    "千咲": { max: 1, rarity: 5, gen: 2, type: "一般角色 (可用 1 次)" }, "卜靈": { max: 2, rarity: 4, gen: 2, type: "生存位 (可用 2 次)" }, 
-    "琳奈": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }, "莫寧": { max: 2, rarity: 5, gen: 3, type: "生存位 (可用 2 次)" }, 
-    "陸·赫斯": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }, "愛彌斯": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" },
-    "西格莉卡": { max: 1, rarity: 5, gen: 3, type: "一般角色 (可用 1 次)" }
-};
-
-const charAttrMap = {
-    "凌陽": "冷凝", "散華": "冷凝", "白芷": "冷凝", "折枝": "冷凝", "釉瑚": "冷凝", "珂萊塔": "冷凝",
-    "熾霞": "熱熔", "安可": "熱熔", "莫特斐": "熱熔", "長離": "熱熔", "布蘭特": "熱熔", "露帕": "熱熔", "嘉貝莉娜": "熱熔", "莫寧": "熱熔", "愛彌斯": "熱熔",
-    "卡卡羅": "導電", "吟霖": "導電", "淵武": "導電", "相里要": "導電", "燈燈": "導電", "奧古斯塔": "導電", "卜靈": "導電",
-    "風主": "氣動", "秧秧": "氣動", "忌炎": "氣動", "鑒心": "氣動", "秋水": "氣動", "夏空": "氣動", "卡提希婭": "氣動", "尤諾": "氣動", "仇遠": "氣動", "西格莉卡": "氣動",
-    "光主": "衍射", "維里奈": "衍射", "今汐": "衍射", "守岸人": "衍射", "贊妮": "衍射", "菲比": "衍射", "琳奈": "衍射", "陸·赫斯": "衍射",
-    "暗主": "湮滅", "丹瑾": "湮滅", "桃祈": "湮滅", "椿": "湮滅", "洛可可": "湮滅", "坎特蕾拉": "湮滅", "弗洛洛": "湮滅", "千咲": "湮滅"
-};
-
-const characterOrder = ["漂泊者", "秧秧", "熾霞", "白芷", "散華", "桃祈", "丹瑾", "秋水", "莫特斐", "淵武", "維里奈", "安可", "卡卡羅", "凌陽", "鑒心", "忌炎", "吟霖", "今汐", "長離", "折枝", "相里要", "守岸人", "釉瑚", "椿", "燈燈", "珂萊塔", "洛可可", "菲比", "布蘭特", "坎特蕾拉", "贊妮", "夏空", "卡提希婭", "露帕", "弗洛洛", "奧古斯塔", "尤諾", "嘉貝莉娜", "仇遠", "千咲", "卜靈", "琳奈", "莫寧", "陸·赫斯", "愛彌斯", "西格莉卡"];
-
-const teamDB = {
-    "椿": [
-        { c2:"散華", c3:"守岸人", dps:5.59, rot:"常規", diff:"🟩" }, { c2:"洛可可", c3:"守岸人", dps:6.35, rot:"上限", diff:"⭐" }, { c2:"洛可可", c3:"守岸人", dps:5.95, rot:"常規", diff:"🔵" }
-    ],
-    "暗主": [
-        { c2:"琳奈", c3:"守岸人", dps:7.10, rot:"錯亂2min軸", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:6.77, rot:"錯輪", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:5.48, rot:"常規", diff:"🟩" },
-        { c2:"散華", c3:"守岸人", dps:6.16, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.40, rot:"常規", diff:"🟩" },
-        { c2:"洛可可", c3:"守岸人", dps:6.48, rot:"常規", diff:"🔵" }, { c2:"洛可可", c3:"守岸人", dps:5.60, rot:"常規", diff:"🟩" }
-    ],
-    "今汐": [
-        { c2:"坎特蕾拉", c3:"守岸人", dps:6.07, rot:"常規", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:6.38, rot:"常規", diff:"⭐" }, { c2:"折枝", c3:"守岸人", dps:5.85, rot:"常規", diff:"🔵" },
-        { c2:"折枝", c3:"卜靈", dps:5.77, rot:"常規", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:6.45, rot:"錯輪", diff:"⭐" }, { c2:"吟霖", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵" }
-    ],
-    "安可": [
-        { c2:"露帕", c3:"莫寧", dps:6.47, rot:"常規上限", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:6.25, rot:"6鏈", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:5.79, rot:"常規", diff:"🔵" },
-        { c2:"散華", c3:"守岸人", dps:5.50, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.00, rot:"常規", diff:"🟩" }
-    ],
-    "長離": [
-        { c2:"露帕", c3:"莫寧", dps:7.20, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:6.90, rot:"錯輪", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:6.40, rot:"常規", diff:"🔵" },
-        { c2:"露帕", c3:"守岸人", dps:6.01, rot:"7離火", diff:"⭐" }, { c2:"露帕", c3:"守岸人", dps:5.83, rot:"6離火", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:5.63, rot:"5離火", diff:"🟩" },
-        { c2:"散華", c3:"守岸人", dps:4.81, rot:"錯輪", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.20, rot:"常規", diff:"🟩" }
-    ],
-    "忌炎": [
-        { c2:"夏空", c3:"守岸人", dps:7.81, rot:"龍切", diff:"⭐" }, { c2:"夏空", c3:"守岸人", dps:6.79, rot:"常規", diff:"⭐" }, { c2:"夏空", c3:"尤諾", dps:6.55, rot:"常規", diff:"🔵" },
-        { c2:"莫特斐", c3:"守岸人", dps:5.85, rot:"常規", diff:"⭐" }, { c2:"莫特斐", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵" }
-    ],
-    "相里要": [
-        { c2:"琳奈", c3:"守岸人", dps:6.28, rot:"常規", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.58, rot:"錯輪", diff:"🔵" }
-    ],
-    "卡卡羅": [
-        { c2:"琳奈", c3:"守岸人", dps:7.65, rot:"6鏈死告", diff:"⚠️" }, { c2:"琳奈", c3:"守岸人", dps:7.53, rot:"6鏈死告", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:7.20, rot:"6鏈死告", diff:"🔵" },
-        { c2:"琳奈", c3:"守岸人", dps:6.40, rot:"4死告", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:6.10, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:5.80, rot:"基礎", diff:"🟩" },
-        { c2:"吟霖", c3:"守岸人", dps:6.10, rot:"6鏈", diff:"⭐" }, { c2:"吟霖", c3:"守岸人", dps:5.72, rot:"6鏈", diff:"🔵" }, { c2:"吟霖", c3:"守岸人", dps:5.07, rot:"4死告", diff:"⭐" },
-        { c2:"吟霖", c3:"守岸人", dps:4.65, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.13, rot:"常規", diff:"🔵" }
-    ],
-    "凌陽": [
-        { c2:"琳奈", c3:"守岸人", dps:5.18, rot:"常規", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:5.08, rot:"6鏈", diff:"🔵" }, { c2:"折枝", c3:"守岸人", dps:4.32, rot:"常規", diff:"🔵" }
-    ],
-    "弗洛洛": [
-        { c2:"坎特蕾拉", c3:"莫寧", dps:9.02, rot:"1鏈", diff:"🔵" }, { c2:"坎特蕾拉", c3:"莫寧", dps:8.57, rot:"常規", diff:"🔵" }, { c2:"嘉貝莉娜", c3:"仇遠", dps:8.55, rot:"極限", diff:"⭐" },
-        { c2:"坎特蕾拉", c3:"守岸人", dps:8.00, rot:"常規", diff:"🔵" }, { c2:"坎特蕾拉", c3:"仇遠", dps:7.96, rot:"常規", diff:"🔵" }, { c2:"坎特蕾拉", c3:"洛可可", dps:7.51, rot:"常規", diff:"🔵" },
-        { c2:"仇遠", c3:"守岸人", dps:7.86, rot:"常規", diff:"🔵" }, { c2:"卜靈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵" }, { c2:"燈燈", c3:"守岸人", dps:5.56, rot:"常規", diff:"🔵" }
-    ],
-    "坎特蕾拉": [
-        { c2:"散華", c3:"守岸人", dps:5.73, rot:"1鏈", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.37, rot:"錯輪", diff:"🔵" }
-    ],
-    "千咲": [
-        { c2:"琳奈", c3:"守岸人", dps:6.40, rot:"常規", diff:"🔵" }, { c2:"洛可可", c3:"守岸人", dps:4.51, rot:"常規", diff:"🔵" }
-    ],
-    "贊妮": [
-        { c2:"菲比", c3:"光主", dps:9.15, rot:"極限", diff:"⭐" }, { c2:"菲比", c3:"光主", dps:8.39, rot:"常規", diff:"🔵" }, { c2:"菲比", c3:"千咲", dps:8.34, rot:"奶套", diff:"🔵" },
-        { c2:"菲比", c3:"守岸人", dps:7.95, rot:"常規", diff:"🔵" }, { c2:"菲比", c3:"守岸人", dps:7.18, rot:"基礎", diff:"🟩" }, { c2:"光主", c3:"守岸人", dps:4.78, rot:"常規", diff:"🔵" }
-    ],
-    "菲比": [
-        { c2:"光主", c3:"琳奈", dps:6.52, rot:"常規", diff:"🔵" }, { c2:"光主", c3:"守岸人", dps:5.60, rot:"常規", diff:"🔵" }
-    ],
-    "嘉貝莉娜": [
-        { c2:"露帕", c3:"莫寧", dps:8.56, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"莫寧", dps:7.84, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:8.26, rot:"常規", diff:"🔵" },
-        { c2:"露帕", c3:"布蘭特", dps:9.15, rot:"雙錨錯延", diff:"⚠️" }, { c2:"露帕", c3:"布蘭特", dps:8.80, rot:"雙錨", diff:"⭐" }, { c2:"露帕", c3:"布蘭特", dps:8.31, rot:"單錨", diff:"⚠️" },
-        { c2:"露帕", c3:"布蘭特", dps:7.67, rot:"常規", diff:"🔵" }, { c2:"仇遠", c3:"守岸人", dps:8.68, rot:"4旋踢", diff:"⚠️" }, { c2:"仇遠", c3:"守岸人", dps:8.11, rot:"極限", diff:"⭐" },
-        { c2:"仇遠", c3:"守岸人", dps:7.77, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:8.02, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"守岸人", dps:7.35, rot:"常規", diff:"🔵" },
-        { c2:"露帕", c3:"長離", dps:7.67, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:6.72, rot:"常規", diff:"🔵" }, { c2:"莫特斐", c3:"守岸人", dps:5.73, rot:"常規", diff:"🔵" }
-    ],
-    "布蘭特": [
-        { c2:"露帕", c3:"莫寧", dps:8.35, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:7.53, rot:"下限", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:7.20, rot:"基礎", diff:"🟩" },
-        { c2:"露帕", c3:"長離", dps:7.74, rot:"雙錨", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:7.57, rot:"極限", diff:"⭐" }, { c2:"露帕", c3:"長離", dps:7.05, rot:"單錨", diff:"🔵" },
-        { c2:"露帕", c3:"守岸人", dps:7.73, rot:"改軸", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.43, rot:"常規", diff:"🔵" }
-    ],
-    "露帕": [
-        { c2:"琳奈", c3:"守岸人", dps:5.68, rot:"常規", diff:"🔵" }
-    ],
-    "卡提希婭": [
-        { c2:"夏空", c3:"千咲", dps:11.00, rot:"劍切", diff:"⚠️" }, { c2:"夏空", c3:"千咲", dps:9.72, rot:"極限", diff:"⭐" }, { c2:"夏空", c3:"千咲", dps:9.01, rot:"常規", diff:"🔵" },
-        { c2:"夏空", c3:"風主", dps:9.30, rot:"劍切", diff:"⭐" }, { c2:"夏空", c3:"風主", dps:8.47, rot:"雙下", diff:"⭐" }, { c2:"夏空", c3:"風主", dps:8.20, rot:"常規", diff:"🔵" },
-        { c2:"散華", c3:"風主", dps:6.39, rot:"常規", diff:"🔵" }, { c2:"風主", c3:"卜靈", dps:6.39, rot:"常規", diff:"🔵" }
-    ],
-    "尤諾": [
-        { c2:"琳奈", c3:"夏空", dps:8.67, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:9.20, rot:"極限", diff:"⭐" }, { c2:"琳奈", c3:"守岸人", dps:8.41, rot:"常規", diff:"🔵" },
-        { c2:"琳奈", c3:"莫寧", dps:8.47, rot:"極限", diff:"⭐" }, { c2:"琳奈", c3:"莫寧", dps:8.10, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:7.90, rot:"基礎", diff:"🟩" },
-        { c2:"夏空", c3:"守岸人", dps:7.92, rot:"極限", diff:"⭐" }, { c2:"夏空", c3:"守岸人", dps:7.45, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:5.03, rot:"常規", diff:"🔵" }
-    ],
-    "夏空": [
-        { c2:"千咲", c3:"守岸人", dps:7.64, rot:"極限", diff:"⭐" }, { c2:"千咲", c3:"守岸人", dps:7.38, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:6.23, rot:"錯輪", diff:"🔵" },
-        { c2:"散華", c3:"守岸人", dps:5.53, rot:"基礎", diff:"🟩" }
-    ],
-    "仇遠": [
-        { c2:"弗洛洛", c3:"守岸人", dps:8.34, rot:"仇3鏈", diff:"🔵" }, { c2:"夏空", c3:"守岸人", dps:5.65, rot:"夏雙延", diff:"🔵" }, { c2:"夏空", c3:"守岸人", dps:5.54, rot:"仇雙延", diff:"🔵" },
-        { c2:"莫特斐", c3:"守岸人", dps:5.25, rot:"常規", diff:"🔵" }
-    ],
-    "奧古斯塔": [
-        { c2:"尤諾", c3:"琳奈", dps:8.50, rot:"2旋1升", diff:"🔵" }, { c2:"尤諾", c3:"守岸人", dps:9.05, rot:"2旋4升", diff:"⭐" }, { c2:"尤諾", c3:"守岸人", dps:8.79, rot:"2旋3升", diff:"⭐" },
-        { c2:"尤諾", c3:"守岸人", dps:8.28, rot:"2旋1升", diff:"🔵" }, { c2:"尤諾", c3:"守岸人", dps:7.67, rot:"2旋", diff:"🟩" }, { c2:"莫特斐", c3:"守岸人", dps:7.35, rot:"4旋1升", diff:"⭐" },
-        { c2:"莫特斐", c3:"守岸人", dps:7.00, rot:"3旋1升", diff:"🔵" }
-    ],
-    "珂萊塔": [
-        { c2:"琳奈", c3:"莫寧", dps:6.98, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:7.08, rot:"常規", diff:"🔵" }, { c2:"布蘭特", c3:"守岸人", dps:6.71, rot:"極限", diff:"⭐" },
-        { c2:"折枝", c3:"守岸人", dps:6.45, rot:"常規", diff:"🔵" }, { c2:"燈燈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵" }, { c2:"卜靈", c3:"守岸人", dps:6.17, rot:"常規", diff:"🔵" },
-        { c2:"散華", c3:"守岸人", dps:5.53, rot:"錯輪", diff:"🔵" }
-    ],
-    "陸·赫斯": [
-        { c2:"琳奈", c3:"莫寧", dps:8.55, rot:"1鏈", diff:"🔵" }, { c2:"琳奈", c3:"守岸人", dps:8.37, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"莫寧", dps:6.32, rot:"1鏈", diff:"🔵" },
-        { c2:"散華", c3:"守岸人", dps:6.19, rot:"常規", diff:"🔵" }, { c2:"散華", c3:"維里奈", dps:5.33, rot:"常規", diff:"🔵" }
-    ],
-    "琳奈": [
-        { c2:"散華", c3:"守岸人", dps:5.46, rot:"極限", diff:"⭐" }, { c2:"散華", c3:"守岸人", dps:4.30, rot:"常規", diff:"🔵" }
-    ],
-    "愛彌斯": [
-        { c2:"琳奈", c3:"莫寧", dps:10.50, rot:"雙處", diff:"⭐" }, { c2:"琳奈", c3:"莫寧", dps:9.50, rot:"常規", diff:"🔵" }, { c2:"弗洛洛", c3:"莫寧", dps:9.04, rot:"1鏈", diff:"🔵" },
-        { c2:"琳奈", c3:"守岸人", dps:8.35, rot:"常規", diff:"🔵" }, { c2:"琳奈", c3:"千咲", dps:8.15, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"莫寧", dps:8.72, rot:"常規", diff:"🔵" },
-        { c2:"露帕", c3:"千咲", dps:7.89, rot:"極限", diff:"⭐" }, { c2:"千咲", c3:"莫寧", dps:7.68, rot:"轉聚暴", diff:"🔵" }, { c2:"千咲", c3:"莫寧", dps:7.28, rot:"常規", diff:"🔵" },
-        { c2:"露帕", c3:"嘉貝莉娜", dps:8.62, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"布蘭特", dps:8.56, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"長離", dps:7.76, rot:"常規", diff:"🔵" },
-        { c2:"長離", c3:"莫寧", dps:7.04, rot:"極限", diff:"⭐" }, { c2:"長離", c3:"莫寧", dps:6.11, rot:"常規", diff:"🔵" }, { c2:"露帕", c3:"守岸人", dps:7.48, rot:"常規", diff:"🔵" },
-        { c2:"鑒心", c3:"莫寧", dps:5.08, rot:"2鏈", diff:"🔵" }, { c2:"鑒心", c3:"守岸人", dps:5.08, rot:"2鏈", diff:"🔵" }, { c2:"散華", c3:"守岸人", dps:4.62, rot:"常規", diff:"🔵" }
-    ]
-};
-
-let dpsData = [];
-let rotIdCounter = 0;
-for (let c1 in teamDB) {
-    teamDB[c1].forEach(tData => {
-        dpsData.push({ id: 'rot_' + rotIdCounter++, c1: c1, c2: tData.c2, c3: tData.c3, dps: tData.dps, rot: tData.rot, diff: tData.diff, gen: charData[c1]?charData[c1].gen:1 });
-    });
+function switchTab(pageId, btnElement) {
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    btnElement.classList.add('active');
 }
 
 // ==========================================
-// 3. 系統狀態與全域變數
+// 系統狀態與全域變數
 // ==========================================
+let dpsData = [];
+let rotIdCounter = 0;
 let ownedCharacters = new Set();
 let checkedRotations = new Set();
 let show5Star = true, show4Star = true, showG1 = true, showG2 = true, showG3 = true;
@@ -327,31 +86,21 @@ function clampHpPct(el) {
     if (val > 100) el.value = 100;
 }
 
-function resetRowDps(btn) {
-    let row = btn.closest('tr');
-    let ss = row.querySelectorAll('select.char-select');
-    let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
-    if (!c1 || !c2 || !c3) return alert(t("請先排滿該隊伍的成員。"));
-    
-    let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3);
-    if(possibleRots.length > 0) {
-        possibleRots.forEach(r => { delete customStatsMap[r.id]; });
-        try { localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); } catch(e){}
-        row.querySelector('.score-input').value = ""; 
-        renderRotations();
-        updateTracker();
-        alert(t("已清除該隊伍排軸的自訂 DPS，恢復系統預設值。"));
-    } else {
-        alert(t("找不到此組合的排軸資料。"));
-    }
-}
-
 function getBase(n) { return ['光主', '暗主', '風主'].includes(n) ? '漂泊者' : n; }
 function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedCharacters.has('漂泊者') : ownedCharacters.has(n); }
 
 // ==========================================
-// 4. 新增自訂編隊與數據總管
+// 資料庫初始化與自訂編隊載入
 // ==========================================
+function initDpsData() {
+    if (typeof teamDB === 'undefined') return;
+    for (let c1 in teamDB) {
+        teamDB[c1].forEach(tData => {
+            dpsData.push({ id: 'rot_' + rotIdCounter++, c1: c1, c2: tData.c2, c3: tData.c3, dps: tData.dps, rot: tData.rot, diff: tData.diff, gen: charData[c1]?charData[c1].gen:1 });
+        });
+    }
+}
+
 function loadCustomRotations() {
     try {
         let stored = localStorage.getItem('ww_custom_rotations_v2');
@@ -413,6 +162,9 @@ function saveCustomTeam() {
     alert(t('自訂編隊已成功加入，並儲存於本機。'));
 }
 
+// ==========================================
+// 數據總管與備份系統
+// ==========================================
 function openDataManager() {
     let content = document.getElementById('data-manager-content');
     let html = ``;
@@ -470,13 +222,7 @@ function openDataManager() {
 function closeDataManager() { document.getElementById('data-manager-modal').style.display = 'none'; }
 
 function generateExportCode() {
-    let data = {
-        roster: [...ownedCharacters],
-        rotations: [...checkedRotations],
-        customStats: customStatsMap,
-        bossHp: bossHPHistory,
-        customTeams: customRotations
-    };
+    let data = { roster: [...ownedCharacters], rotations: [...checkedRotations], customStats: customStatsMap, bossHp: bossHPHistory, customTeams: customRotations };
     let code = btoa(encodeURIComponent(JSON.stringify(data)));
     document.getElementById('dm-code').value = code;
     alert(t('✅ 代碼已產生，請全選複製。'));
@@ -515,11 +261,9 @@ function deleteHPSample(key, index) {
     debouncedRenderAndTrack(); openDataManager(); 
 }
 
-
 // ==========================================
-// 6. UI 互動與畫面渲染核心
+// UI 互動與畫面渲染
 // ==========================================
-
 function toggleRarity(s) { 
     s == 5 ? show5Star = !show5Star : show4Star = !show4Star; 
     document.getElementById(`btn-${s}star`).classList.toggle(`active-${s}star`, s==5?show5Star:show4Star);
@@ -565,7 +309,6 @@ const debouncedFilterCharacters = debounce(() => {
         let matchSearch = q === '' || searchTarget.includes(q);
 
         let m = matchSearch && matchRarity && matchGen;
-        
         l.style.display = m ? 'flex' : 'none';
     });
 }, 150);
@@ -621,6 +364,7 @@ function getRotDpsRange(d) {
     }
 }
 
+// Modals
 let currentEditRotId = null;
 function openStatsModal(e, rotId) {
     e.preventDefault(); e.stopPropagation(); currentEditRotId = rotId;
@@ -667,7 +411,7 @@ function calculateStability() {
 function applyCalculatedStability() { document.getElementById('skill-slider').value = lastCalculatedStability; updateMasterSkill(); closeCalcModal(); }
 
 // ==========================================
-// 7. 矩陣排兵布陣與拖曳系統 (Drag & Drop)
+// 矩陣排兵布陣與拖曳系統 (Drag & Drop) + 雙模式切換 UI
 // ==========================================
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#team-board tr');
@@ -675,6 +419,22 @@ function updateRowNumbers() {
         const td = row.querySelector('td:first-child');
         if(td) td.innerHTML = `${t("第")} ${idx + 1} ${t("隊")}`;
     });
+}
+
+// 🚀 動態注入「雙模式切換按鈕」
+function injectModeToggle() {
+    let panel = document.querySelector('.preset-box summary');
+    if(panel && !document.getElementById('sim-mode')) {
+        let toggleHTML = `
+        <div style="margin-top: 15px; display: inline-flex; align-items: center; background: #1e2b24; padding: 8px 12px; border-radius: 6px; border: 1px solid #00ffaa; gap: 8px; font-size: 0.95em;">
+            <span style="color:#00ffaa; font-weight:bold;">⚙️ ${t('推演模式')}：</span>
+            <select id="sim-mode" onchange="updateTracker()" style="background:#1e1e24; color:#fff; border:1px solid #555; padding:6px; border-radius:4px; cursor:pointer; outline:none;">
+                <option value="auto">🔥 ${t('理論極限推演')} (${t('依 DPS 自動接力')})</option>
+                <option value="manual">🗺️ ${t('戰前手動排刀')} (${t('依設定終點算分')})</option>
+            </select>
+        </div>`;
+        panel.insertAdjacentHTML('afterend', toggleHTML);
+    }
 }
 
 function initBoard() {
@@ -764,12 +524,11 @@ function updateTracker() {
         📊 ${t("理論最大")}：<span style="color:#4caf50;font-weight:bold;font-size:1.2em;">${getMaxTeams({})}</span> <span style="color:#aaa;">${t("隊")}</span> | ⏳ ${t("剩餘可排")}：<span style="color:#ffb300;font-weight:bold;font-size:1.2em;">${getMaxTeams(used)}</span> <span style="color:#aaa;">${t("隊")}</span>
     </div>`;
 
-    // 移除會產生 Bug 的中文字串依賴，改用英文 Key
     let groups = { "surv": [], "dps": [] };
     ownedCharacters.forEach(name => { 
         let base = getBase(name); 
         if(charData[base]) {
-            if(charData[base].type.includes("生存位")) groups["surv"].push(name);
+            if(charData[base].type.includes("生存位") || charData[base].type.includes("生存")) groups["surv"].push(name);
             else groups["dps"].push(name);
         }
     });
@@ -807,43 +566,95 @@ function updateTracker() {
     });
     ps.innerHTML = ph;
 
+    // =====================================
+    // 🚀 雙軌推演引擎 (包含手動排刀模式)
+    // =====================================
     let env = getEnvSettings(), current_r_min = 1, current_index_min = 1, current_hp_min = getBossMaxHP(1, 1), current_r_max = 1, current_index_max = 1, current_hp_max = getBossMaxHP(1, 1), totalMatrixScoreMin = 0, totalMatrixScoreMax = 0;
+    
+    let simMode = document.getElementById('sim-mode') ? document.getElementById('sim-mode').value : 'auto';
 
     document.querySelectorAll('#team-board tr').forEach(row => {
         let ss = row.querySelectorAll('select.char-select'), c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
-        let resTd = row.querySelector('.relay-result'), chk_res = [row.querySelector('.res-chk-1').checked, row.querySelector('.res-chk-2').checked, row.querySelector('.res-chk-3').checked, row.querySelector('.res-chk-4').checked];
+        let resTd = row.querySelector('.relay-result');
+        let ebR = row.querySelector('.end-boss-r').value, ebIdx = row.querySelector('.end-boss-idx').value, ebHp = row.querySelector('.end-boss-hp').value;
+        let chk_res = [row.querySelector('.res-chk-1').checked, row.querySelector('.res-chk-2').checked, row.querySelector('.res-chk-3').checked, row.querySelector('.res-chk-4').checked];
 
         if (c1 && c2 && c3) {
-            let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
-            if (possibleRots.length > 0) {
-                possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
-                let dpsRange = getRotDpsRange(possibleRots[0]);
-                if (dpsRange.max <= 0) { resTd.innerHTML = `<span style="color:#d32f2f;">${t("DPS過低")}<br>${t("無法推演")}</span>`; return; }
+            
+            // 模式 A：🔥 自動推演
+            if (simMode === 'auto') {
+                let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
+                if (possibleRots.length > 0) {
+                    possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
+                    let dpsRange = getRotDpsRange(possibleRots[0]);
+                    if (dpsRange.max <= 0) { resTd.innerHTML = `<span style="color:#d32f2f;">${t("DPS過低")}<br>${t("無法推演")}</span>`; return; }
 
-                let simulate = (hp, r, idx, dps) => {
-                    let t_left = env.battleTime, dmg = 0, startStr = `R${r}-${idx}(${(hp/getBossMaxHP(r,idx)*100).toFixed(0)}%)`;
-                    while (t_left > 0) {
-                        let eff_dps = dps * (chk_res[idx - 1] ? (1 - env.resPenalty / 100) : 1);
-                        if (eff_dps <= 0) break;
-                        let ttk = hp / eff_dps;
-                        if (ttk <= t_left) { dmg += hp; t_left -= (ttk + env.transTime); idx++; if (idx > 4) { r++; idx = 1; } hp = getBossMaxHP(r, idx); } 
-                        else { dmg += eff_dps * t_left; hp -= eff_dps * t_left; t_left = 0; }
+                    let simulate = (hp, r, idx, dps) => {
+                        let t_left = env.battleTime, dmg = 0, startStr = `R${r}-${idx}(${(hp/getBossMaxHP(r,idx)*100).toFixed(0)}%)`;
+                        while (t_left > 0) {
+                            let eff_dps = dps * (chk_res[idx - 1] ? (1 - env.resPenalty / 100) : 1);
+                            if (eff_dps <= 0) break;
+                            let ttk = hp / eff_dps;
+                            if (ttk <= t_left) { dmg += hp; t_left -= (ttk + env.transTime); idx++; if (idx > 4) { r++; idx = 1; } hp = getBossMaxHP(r, idx); } 
+                            else { dmg += eff_dps * t_left; hp -= eff_dps * t_left; t_left = 0; }
+                        }
+                        return { hp, r, idx, dmg, endStr: `R${r}-${idx}(${(hp/getBossMaxHP(r,idx)*100).toFixed(0)}%)`, startStr };
+                    };
+
+                    let resMin = simulate(current_hp_min, current_r_min, current_index_min, dpsRange.min);
+                    current_hp_min = resMin.hp; current_r_min = resMin.r; current_index_min = resMin.idx; totalMatrixScoreMin += resMin.dmg * env.scoreRatio;
+
+                    let resMax = simulate(current_hp_max, current_r_max, current_index_max, dpsRange.max);
+                    current_hp_max = resMax.hp; current_r_max = resMax.r; current_index_max = resMax.idx; totalMatrixScoreMax += resMax.dmg * env.scoreRatio;
+
+                    resTd.innerHTML = `<div style="line-height:1.4;"><span style="color:#aaa;">${t("下限")}:</span> <span style="color:#ffaa00;">${resMin.startStr} ➔ ${resMin.endStr}</span><br><span style="color:#aaa;">${t("上限")}:</span> <span style="color:#00ffaa;">${resMax.startStr} ➔ ${resMax.endStr}</span><br><span style="color:#cf00ff; font-weight:bold;">${Math.floor(resMin.dmg * env.scoreRatio).toLocaleString()} ~ ${Math.floor(resMax.dmg * env.scoreRatio).toLocaleString()} ${t("分")}</span></div>`;
+                } else { resTd.innerHTML = "-"; }
+                
+            } 
+            // 模式 B：🗺️ 手動排刀 (不看DPS，純粹計算設定區間的血量分數)
+            else if (simMode === 'manual') {
+                let ebRInt = parseInt(ebR), ebIdxInt = parseInt(ebIdx), ebHpPct = parseFloat(ebHp);
+                if (!isNaN(ebRInt) && !isNaN(ebIdxInt) && !isNaN(ebHpPct)) {
+                    let dmg = 0;
+                    let temp_r = current_r_min, temp_idx = current_index_min, temp_hp = current_hp_min;
+
+                    // 一路把中間經過的滿血王加總
+                    while (temp_r < ebRInt || (temp_r === ebRInt && temp_idx < ebIdxInt)) {
+                        dmg += temp_hp;
+                        temp_idx++;
+                        if (temp_idx > 4) { temp_r++; temp_idx = 1; }
+                        temp_hp = getBossMaxHP(temp_r, temp_idx);
                     }
-                    return { hp, r, idx, dmg, endStr: `R${r}-${idx}(${(hp/getBossMaxHP(r,idx)*100).toFixed(0)}%)`, startStr };
-                };
 
-                let resMin = simulate(current_hp_min, current_r_min, current_index_min, dpsRange.min);
-                current_hp_min = resMin.hp; current_r_min = resMin.r; current_index_min = resMin.idx; totalMatrixScoreMin += resMin.dmg * env.scoreRatio;
+                    // 結算最後一隻王的目標血量
+                    let targetRemainingHP = getBossMaxHP(ebRInt, ebIdxInt) * (ebHpPct / 100);
+                    if (temp_hp > targetRemainingHP) {
+                        dmg += (temp_hp - targetRemainingHP);
+                    }
 
-                let resMax = simulate(current_hp_max, current_r_max, current_index_max, dpsRange.max);
-                current_hp_max = resMax.hp; current_r_max = resMax.r; current_index_max = resMax.idx; totalMatrixScoreMax += resMax.dmg * env.scoreRatio;
+                    let startStr = `R${current_r_min}-${current_index_min}(${(current_hp_min/getBossMaxHP(current_r_min, current_index_min)*100).toFixed(0)}%)`;
+                    let endStr = `R${ebRInt}-${ebIdxInt}(${ebHpPct}%)`;
 
-                resTd.innerHTML = `<div style="line-height:1.4;"><span style="color:#aaa;">${t("下限")}:</span> <span style="color:#ffaa00;">${resMin.startStr} ➔ ${resMin.endStr}</span><br><span style="color:#aaa;">${t("上限")}:</span> <span style="color:#00ffaa;">${resMax.startStr} ➔ ${resMax.endStr}</span><br><span style="color:#cf00ff; font-weight:bold;">${Math.floor(resMin.dmg * env.scoreRatio).toLocaleString()} ~ ${Math.floor(resMax.dmg * env.scoreRatio).toLocaleString()} ${t("分")}</span></div>`;
-            } else { resTd.innerHTML = "-"; }
+                    resTd.innerHTML = `<div style="line-height:1.4;"><span style="color:#00ffaa; font-weight:bold;">🗺️ ${t('排刀區間：')}</span><br><span style="color:#fff;">${startStr} ➔ ${endStr}</span><br><span style="color:#cf00ff; font-weight:bold;">${Math.floor(dmg * env.scoreRatio).toLocaleString()} ${t('分')}</span></div>`;
+
+                    // 將這個區間作為下一隊的起點
+                    current_hp_min = targetRemainingHP; current_r_min = ebRInt; current_index_min = ebIdxInt;
+                    current_hp_max = targetRemainingHP; current_r_max = ebRInt; current_index_max = ebIdxInt;
+                    totalMatrixScoreMin += dmg * env.scoreRatio;
+                    totalMatrixScoreMax += dmg * env.scoreRatio;
+                } else {
+                    resTd.innerHTML = `<span style="color:#d32f2f; font-weight:bold;">⚠️ ${t('手動排刀需設定終點王與血量')}</span>`;
+                }
+            }
+
         } else { resTd.innerHTML = "-"; }
     });
 
-    document.getElementById('matrix-total-score').innerText = `${Math.floor(totalMatrixScoreMin).toLocaleString()} ~ ${Math.floor(totalMatrixScoreMax).toLocaleString()} ` + t("分");
+    if (simMode === 'auto') {
+        document.getElementById('matrix-total-score').innerText = `${Math.floor(totalMatrixScoreMin).toLocaleString()} ~ ${Math.floor(totalMatrixScoreMax).toLocaleString()} ` + t("分");
+    } else {
+        document.getElementById('matrix-total-score').innerText = `🗺️ ${Math.floor(totalMatrixScoreMin).toLocaleString()} ` + t("分");
+    }
     saveData();
 }
 
@@ -954,44 +765,76 @@ function renderRotations() {
     container.innerHTML = html;
 }
 
-const debouncedFilterRotations = debounce(() => {
-    let q = document.getElementById('rot-search').value.toLowerCase();
-    document.querySelectorAll('#rotation-setup input[type="checkbox"]').forEach(i => {
-        let container = i.closest('div');
-        container.style.display = container.innerText.toLowerCase().includes(q) ? 'inline-flex' : 'none';
-    });
-    document.querySelectorAll('#rotation-setup > div').forEach(group => { group.style.display = Array.from(group.querySelectorAll('div > div')).some(l => l.style.display !== 'none') ? 'block' : 'none'; });
-}, 150);
+function initBossHPMap() {
+    let env = { r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56, r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100 };
+    try {
+        let stored = localStorage.getItem('ww_boss_hp'); if (stored) bossHPMap = JSON.parse(stored);
+        let hist = localStorage.getItem('ww_boss_hp_history'); if (hist) bossHPHistory = JSON.parse(hist);
+    } catch(e) {}
 
-function filterRotations() { debouncedFilterRotations(); }
-
-function toggleAllRotations() {
-    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
-    if(!visibleBoxes.length) return;
-    const anyChecked = visibleBoxes.some(i => i.checked);
-    visibleBoxes.forEach(i => i.checked = !anyChecked);
-    updateRotationState();
+    for (let r = 1; r <= 10; r++) {
+        for (let i = 1; i <= 4; i++) {
+            let key = `R${r}-${i}`;
+            if (!bossHPMap[key] || bossHPMap[key].isDefault) {
+                let hp = (r === 1) ? env.r1_hp : (r === 2 && i === 1) ? 546.67 : (r === 2) ? env.r2_hp : (r === 3) ? env.r3_hp : env.r3_hp * (1 + env.growth * ((r - 4) * 4 + i));
+                bossHPMap[key] = { value: hp, isDefault: true };
+            }
+        }
+    }
+    renderIndividualHPPanel();
 }
 
-function toggleDifficulty(diff) {
-    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none' && i.closest('div').innerText.includes(diff));
-    if(!visibleBoxes.length) return;
-    const allChecked = visibleBoxes.every(i => i.checked);
-    visibleBoxes.forEach(i => i.checked = !allChecked);
-    updateRotationState();
+function renderIndividualHPPanel() {
+    let container = document.getElementById('individual-hp-container');
+    if (!container) return;
+    let html = '';
+    for (let r = 1; r <= 10; r++) {
+        for (let i = 1; i <= 4; i++) {
+            let key = `R${r}-${i}`, data = bossHPMap[key], btnHtml = '';
+            
+            if (bossHPHistory[key] && bossHPHistory[key].length >= 3) {
+                const totalDmg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0);
+                const totalPct = bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0);
+                let avg = totalDmg / totalPct; 
+                
+                if (Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.03 && data.isDefault) {
+                    btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}: ${avg.toFixed(1)}W</button>`;
+                }
+            }
+            html += `<div class="hp-item"><span class="hp-label">${key}</span><input type="number" class="hp-input ${!data.isDefault?'calibrated':''}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" onchange="manualUpdateHP('${key}')">${btnHtml}</div>`;
+        }
+    }
+    container.innerHTML = html;
 }
 
-function updateRotationState() {
-    checkedRotations.clear(); document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value)); debouncedRenderAndTrack();
+function getBaseEnvHP(r, index) {
+    let env = getEnvSettings();
+    if (r === 1) return env.r1_hp; if (r === 2) return index === 1 ? 546.67 : env.r2_hp; if (r === 3) return env.r3_hp;
+    return env.r3_hp * (1 + env.growth * ((r - 4) * 4 + index));
 }
 
-let activePresetAttrs = new Set(); let activePresetGens = new Set();
-function togglePresetAttr(attr) { activePresetAttrs.has(attr) ? activePresetAttrs.delete(attr) : activePresetAttrs.add(attr); document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`); debouncedRenderAndTrack(); }
-function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.delete(gen) : activePresetGens.add(gen); document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`); debouncedRenderAndTrack(); }
+function getBossMaxHP(r, index) { return bossHPMap[`R${r}-${index}`] ? bossHPMap[`R${r}-${index}`].value : 400; }
+function manualUpdateHP(key) {
+    let val = parseFloat(document.getElementById(`hp_${key}`).value);
+    if (!isNaN(val) && val > 0) { bossHPMap[key] = { value: val, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {} renderIndividualHPPanel(); updateTracker(); }
+}
+function applyCalibratedHP(key, avgValue) {
+    bossHPMap[key] = { value: avgValue, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
+    renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`);
+}
+function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
 
-// ==========================================
-// 8. 實戰反推與演算法優化 (Pooled Estimator)
-// ==========================================
+function getEnvSettings() {
+    return {
+        scoreRatio: parseFloat(document.getElementById('env-ratio').value) || 10,
+        r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
+        r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100,
+        transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, battleTime: parseFloat(document.getElementById('env-time').value) || 120,
+        resPenalty: parseFloat(document.getElementById('env-res').value) || 40
+    };
+}
+
+// 實戰反推與演算法優化 (Pooled Estimator)
 function reverseInferAndOptimize() {
     initBossHPMap();
     let env = getEnvSettings(), currentTeams = [], rows = document.querySelectorAll('#team-board tr'), start_r = 1, start_idx = 1, start_hp = getBossMaxHP(1, 1);
@@ -1071,75 +914,6 @@ function reverseInferAndOptimize() {
     updateTracker();
 }
 
-function initBossHPMap() {
-    let env = { r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56, r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100 };
-    try {
-        let stored = localStorage.getItem('ww_boss_hp'); if (stored) bossHPMap = JSON.parse(stored);
-        let hist = localStorage.getItem('ww_boss_hp_history'); if (hist) bossHPHistory = JSON.parse(hist);
-    } catch(e) {}
-
-    for (let r = 1; r <= 10; r++) {
-        for (let i = 1; i <= 4; i++) {
-            let key = `R${r}-${i}`;
-            if (!bossHPMap[key] || bossHPMap[key].isDefault) {
-                let hp = (r === 1) ? env.r1_hp : (r === 2 && i === 1) ? 546.67 : (r === 2) ? env.r2_hp : (r === 3) ? env.r3_hp : env.r3_hp * (1 + env.growth * ((r - 4) * 4 + i));
-                bossHPMap[key] = { value: hp, isDefault: true };
-            }
-        }
-    }
-    renderIndividualHPPanel();
-}
-
-function renderIndividualHPPanel() {
-    let container = document.getElementById('individual-hp-container');
-    if (!container) return;
-    let html = '';
-    for (let r = 1; r <= 10; r++) {
-        for (let i = 1; i <= 4; i++) {
-            let key = `R${r}-${i}`, data = bossHPMap[key], btnHtml = '';
-            
-            if (bossHPHistory[key] && bossHPHistory[key].length >= 3) {
-                const totalDmg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0);
-                const totalPct = bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0);
-                let avg = totalDmg / totalPct; 
-                
-                if (Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.03 && data.isDefault) {
-                    btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}: ${avg.toFixed(1)}W</button>`;
-                }
-            }
-            html += `<div class="hp-item"><span class="hp-label">${key}</span><input type="number" class="hp-input ${!data.isDefault?'calibrated':''}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" onchange="manualUpdateHP('${key}')">${btnHtml}</div>`;
-        }
-    }
-    container.innerHTML = html;
-}
-
-function getBaseEnvHP(r, index) {
-    let env = getEnvSettings();
-    if (r === 1) return env.r1_hp; if (r === 2) return index === 1 ? 546.67 : env.r2_hp; if (r === 3) return env.r3_hp;
-    return env.r3_hp * (1 + env.growth * ((r - 4) * 4 + index));
-}
-
-function getBossMaxHP(r, index) { return bossHPMap[`R${r}-${index}`] ? bossHPMap[`R${r}-${index}`].value : 400; }
-function manualUpdateHP(key) {
-    let val = parseFloat(document.getElementById(`hp_${key}`).value);
-    if (!isNaN(val) && val > 0) { bossHPMap[key] = { value: val, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {} renderIndividualHPPanel(); updateTracker(); }
-}
-function applyCalibratedHP(key, avgValue) {
-    bossHPMap[key] = { value: avgValue, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
-    renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`);
-}
-function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
-
-function getEnvSettings() {
-    return {
-        scoreRatio: parseFloat(document.getElementById('env-ratio').value) || 10,
-        r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
-        r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100,
-        transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, battleTime: parseFloat(document.getElementById('env-time').value) || 120,
-        resPenalty: parseFloat(document.getElementById('env-res').value) || 40
-    };
-}
-
 function autoBuildMaxDpsTeams() {
     if(!confirm(t("將清空當前編隊並自動生成極限陣容，確定執行？"))) return;
     let validTeams = dpsData.filter(d => checkedRotations.has(d.id) && isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3));
@@ -1171,23 +945,6 @@ function autoBuildMaxDpsTeams() {
         }
     });
     updateTracker(); alert(t(`一鍵配置完成！共組建 `) + finalOptimizedTeams.length + t(` 隊。`));
-}
-
-function applyPreset() {
-    let val = document.getElementById('preset-select').value; if(!val) return;
-    let cs = val.split(','), rows = document.querySelectorAll('#team-board tr'), applied = false;
-    for(let r of rows) {
-        let ss = r.querySelectorAll('select.char-select');
-        if(!ss[0].value && !ss[1].value && !ss[2].value) { ss[0].value=cs[0]; ss[1].value=cs[1]; ss[2].value=cs[2]; applied = true; break; }
-    }
-    if(!applied) alert(t("沒有空白隊伍了！")); updateTracker();
-}
-
-function resetTeams() { 
-    if(!confirm(t("確定清空編隊表嗎？"))) return;
-    document.querySelectorAll('.char-select, .score-input, .end-boss-hp, .end-boss-r, .end-boss-idx').forEach(el => el.value="");
-    document.querySelectorAll('input[type="checkbox"][class^="res-chk"]').forEach(c => c.checked=false);
-    updateTracker(); 
 }
 
 function saveData() {
@@ -1258,10 +1015,15 @@ function exportImage() {
     html2canvas(box, { backgroundColor: '#1e1e24', scale: 2 }).then(c => { let l = document.createElement('a'); l.download = '鳴潮矩陣推演編隊表.png'; l.href = c.toDataURL('image/png'); l.click(); document.body.removeChild(box); });
 }
 
-// --- 9. 初始化啟動引擎 ---
+// ==========================================
+// 初始化啟動引擎
+// ==========================================
 function initializeApp() {
+    initDpsData();
     loadCustomRotations();
     initBoard();
+    injectModeToggle(); // 🚀 注入雙模式切換開關
+    
     try { isSimp = localStorage.getItem('ww_lang') === 'zh-CN'; } catch(e){}
     if (isSimp) document.getElementById('lang-toggle').innerText = "繁";
     
