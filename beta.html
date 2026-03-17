@@ -49,12 +49,36 @@
         .pool-panel { flex: 1; min-width: 300px; max-height: 80vh; overflow-y: auto; position: sticky; top: 20px; padding-right: 10px; }
         .team-panel { flex: 2; min-width: 0; width: 100%; }
         
+        /* ========================================================= */
+        /* 🚀 核心更新：70% 寬度收束與 6:9:10 黃金比例排版 */
+        /* ========================================================= */
+        .filter-wrapper { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; width: 100%; }
+        @media (min-width: 769px) { .filter-wrapper { width: 70%; } }
+        
+        /* 5 格等寬 Grid 排版 */
+        .filter-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; }
+        
+        /* 操作列等高排列 */
+        .filter-actions-row { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: stretch; }
+
+        /* 比例分配設定 (僅在電腦版生效) */
+        @media (min-width: 769px) {
+            .ratio-6 { flex: 6; }
+            .ratio-9 { flex: 9; }
+            .ratio-10 { flex: 10; }
+            .ratio-19 { flex: 19; } /* 9+10，用來完美對齊上方的搜尋框 */
+        }
+        /* 手機版自動改為滿版堆疊，好點擊不破版 */
+        @media (max-width: 768px) {
+            .ratio-6, .ratio-9, .ratio-10, .ratio-19 { flex: 1 1 100%; }
+        }
+        /* ========================================================= */
+
         #roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-bottom: 15px; }
         .checkbox-item { background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 10px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-glass); transition: 0.2s; font-size: 0.95em; font-weight: 600; box-shadow: inset 0 2px 4px rgba(255,255,255,0.02); }
         .checkbox-item:active { transform: scale(0.96); }
         input[type="checkbox"] { cursor: pointer; width: 18px; height: 18px; accent-color: var(--gold); }
         
-        /* 遺失的剩餘次數樣式 */
         .char-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #444; font-size: 0.95em; }
         .count-badge { background: #4caf50; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85em; white-space: nowrap; color: #000; }
         .count-empty { background: #ff4d4d; color: white; opacity: 0.6; }
@@ -84,14 +108,12 @@
         button { font-family: inherit; outline: none; }
         .btn-apply { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: 0.2s; }
         .btn-apply:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5); }
-        .btn-reset { background: rgba(255, 82, 82, 0.1); color: #ff5252; border: 1px solid #ff5252; padding: 10px 15px; border-radius: 8px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-reset:hover { background: #ff5252; color: white; }
-
+        
         /* 🚨 完美重構：實體明暗按鈕 (暗灰底 vs 鮮豔色) */
         .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid #444; border-radius: 8px; padding: 10px 5px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #888; text-align: center; }
         .btn-filter:hover, .btn-diff:hover { filter: brightness(1.2); }
         
-        .btn-filter.active-5star { background: #d4af37; color: #1e1e24; border-color: #d4af37; }
+        .btn-filter.active-5star { background: #ffb300; color: #1e1e24; border-color: #ffb300; }
         .btn-filter.active-4star { background: #9b59b6; color: #fff; border-color: #9b59b6; }
         .btn-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
         .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; }
@@ -101,9 +123,11 @@
         .btn-diff.active-diff-5 { background: #9c27b0; color: white; border-color: #9c27b0; }
 
         /* 🚨 動態紅綠燈按鈕專用 */
-        .btn-action-clear { background: #f44336; color: white; border: 1px solid #f44336; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-action-all { background: #4caf50; color: white; border: 1px solid #4caf50; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-action-clear:hover, .btn-action-all:hover { filter: brightness(1.1); }
+        .btn-action-clear { background: #f44336; color: white; border: 1px solid #f44336; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(244,67,54,0.3); }
+        .btn-action-all { background: #4caf50; color: white; border: 1px solid #4caf50; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
+        .btn-action-clear:hover, .btn-action-all:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-reset { background: rgba(255, 82, 82, 0.1); color: #ff5252; border: 1px solid #ff5252; padding: 10px 15px; border-radius: 8px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-reset:hover { background: #ff5252; color: white; }
 
         .preset-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; border-bottom: 1px dashed #555; padding-bottom: 12px; }
         .btn-preset-filter.active-attr-冷凝 { background: #00bcd4; color: #1e1e24; border-color: #00bcd4; }
@@ -158,8 +182,8 @@
             .score-input, .char-select, .hp-calc-select, .hp-calc-input { font-size: 0.9rem; max-width: 100%; box-sizing: border-box; }
             td:nth-child(5) > div { padding: 8px !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
             
-            /* 在手機上讓 Grid 縮小一點確保塞得下 */
             .btn-filter, .btn-diff { font-size: 0.75em; padding: 10px 2px; }
+            .filter-actions-row > button { font-size: 0.85em; padding: 10px 5px; }
         }
         
         .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
@@ -192,45 +216,49 @@
                 <div style="margin-top: 15px; font-size: 0.95em; color: #ddd; line-height: 1.6;">
                     <strong>🚧 現代化版本更新：</strong><br>
                     1. <strong>全新卡片式介面</strong>：針對手機單手操作進行深度優化，告別惱人的橫向捲軸。<br>
-                    2. <strong>拖曳式排兵布陣</strong>：在第二頁的編隊卡片，直接用滑鼠或手指「按住拖曳」交換順序！<br>
-                    3. <strong>雙模式推演引擎</strong>：新增「🔥自動推演」與「🗺️手動排刀區間算分」模式。<br>
-                    4. <strong>動態自訂編隊</strong>：允許將未收錄在預設庫內的獨門配隊，永久存入系統中。
+                    2. <strong>完美電腦排版</strong>：濾鏡與按鈕縮小集中至 70% 寬度，等比例切割排版，操作不再遙遠。<br>
+                    3. <strong>智慧紅綠燈按鈕</strong>：全選與清空按鈕會依據您的勾選狀態自動變換顏色與功能。<br>
+                    4. <strong>雙模式推演引擎</strong>：新增「🔥自動推演」與「🗺️手動排刀區間算分」模式。<br>
+                    5. <strong>動態自訂編隊</strong>：允許將未收錄在預設庫內的獨門配隊，永久存入系統中。
                 </div>
             </details>
         </div>
 
         <div class="panel">
             <h3 style="color: #fff; margin-top: 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">1. 勾選擁有的角色</h3>
-            <div class="header-actions" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%;">
+            
+            <div class="filter-wrapper">
+                <div class="filter-grid-5">
                     <button id="btn-5star" class="btn-filter active-5star" onclick="toggleRarity(5)">🌟 5星</button>
                     <button id="btn-4star" class="btn-filter active-4star" onclick="toggleRarity(4)">⭐ 4星</button>
                     <button id="btn-g1" class="btn-filter active-gen" onclick="toggleGen(1)">1.X版</button>
                     <button id="btn-g2" class="btn-filter active-gen" onclick="toggleGen(2)">2.X版</button>
                     <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: stretch;">
-                    <button id="roster-switch" class="btn-action-clear" onclick="rosterCheckboxButton()" style="flex: 0 0 auto; white-space: nowrap;">🗑️ 清空角色勾選</button>
-                    <input type="text" id="char-search" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="flex: 1; min-width: 150px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
+                <div class="filter-actions-row">
+                    <button id="roster-switch" class="btn-action-clear ratio-6" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
+                    <input type="text" id="char-search" class="ratio-19" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
+            
             <div id="roster-setup"></div>
         </div>
 
         <div class="panel">
             <h3 style="color: #fff; margin-top: 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">2. 配置實戰排軸</h3>
-            <div class="header-actions" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%;">
+            
+            <div class="filter-wrapper">
+                <div class="filter-grid-5">
                     <button id="btn-diff-1" class="btn-diff active-diff-1" onclick="toggleDifficulty('🟩')">🟩 輪椅</button>
                     <button id="btn-diff-2" class="btn-diff active-diff-2" onclick="toggleDifficulty('🔵')">🔵 中等</button>
                     <button id="btn-diff-3" class="btn-diff active-diff-3" onclick="toggleDifficulty('⭐')">⭐ 進階</button>
                     <button id="btn-diff-4" class="btn-diff active-diff-4" onclick="toggleDifficulty('⚠️')">⚠️ 極難</button>
                     <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: stretch;">
-                    <button id="rot-all-btn" class="btn-action-clear" onclick="toggleAllRotations()" style="flex: 0 0 auto; white-space: nowrap;">🗑️ 清空可見排軸</button>
-                    <button class="btn-apply" onclick="openCustomTeamModal()" style="flex: 0 0 auto; background: #ff9800; color: #1e1e24; white-space: nowrap; border: none; padding: 0 15px; font-weight: bold; border-radius: 8px;">➕ 新增自訂</button>
-                    <input type="text" id="rot-search" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="flex: 1; min-width: 150px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
+                <div class="filter-actions-row">
+                    <button id="rot-all-btn" class="btn-action-clear ratio-6" onclick="toggleAllRotations()">🗑️ 清空可見排軸</button>
+                    <button class="btn-apply ratio-9" onclick="openCustomTeamModal()" style="background: #ffb300; color: #1e1e24; border: none; box-shadow: 0 4px 10px rgba(255,179,0,0.3);">➕ 新增自訂</button>
+                    <input type="text" id="rot-search" class="ratio-10" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
 
@@ -345,9 +373,9 @@
             <label style="display:block; margin-bottom:12px; color:#fff;">⚔️ 真實 DPS (萬): <input type="number" id="stats-dps" step="0.01" class="score-input" style="color:#fff; border-color:var(--border-glass);"></label>
             <label style="display:block; margin-bottom:12px; color:#fff;">⚖️ 穩定性 (%): <input type="number" id="stats-stab" class="score-input" style="color:#fff; border-color:var(--border-glass);"></label>
             <div style="display:flex; gap: 10px; margin-top: 20px;">
-                <button onclick="closeStatsModal()" class="btn-reset" style="flex:1;">取消</button>
-                <button onclick="clearStatsModal()" class="btn-reset" style="flex:1; background:#d9534f; color:#fff;">清除</button>
-                <button onclick="saveStatsModal()" class="btn-apply" style="flex:1;">儲存</button>
+                <button onclick="closeStatsModal()" class="btn-action-clear" style="flex:1; padding: 10px;">取消</button>
+                <button onclick="clearStatsModal()" class="btn-action-clear" style="flex:1; padding: 10px; background:#d9534f;">清除</button>
+                <button onclick="saveStatsModal()" class="btn-action-all" style="flex:1; padding: 10px;">儲存</button>
             </div>
         </div>
     </div>
@@ -378,7 +406,7 @@
         <div style="background:var(--bg-panel); backdrop-filter:blur(20px); padding:25px; border-radius:16px; border:1px solid var(--neon-green); width:90%; max-width:600px; max-height:80vh; overflow-y:auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; margin-bottom: 15px;">
                 <h3 style="margin:0; color:var(--neon-green);">⚙️ 數據總管</h3>
-                <button onclick="closeDataManager()" class="btn-reset" style="padding: 5px 15px;">關閉</button>
+                <button onclick="closeDataManager()" class="btn-action-clear" style="padding: 5px 15px;">關閉</button>
             </div>
             <div id="data-manager-content"></div>
         </div>
