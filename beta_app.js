@@ -1,6 +1,6 @@
 // ==========================================
 // 鳴潮矩陣編隊工具 - Beta 測試版核心邏輯
-// 獨立檔案：betaapp.js (已移除資料庫，純邏輯版)
+// 獨立檔案：beta_app.js (已移除資料庫，純邏輯版)
 // ==========================================
 
 // 確保翻譯字典在初始化時按照字串長度排序 (避免短詞截斷長句)
@@ -68,7 +68,6 @@ let ownedCharacters = new Set();
 let checkedRotations = new Set();
 let show5Star = true, show4Star = true, showG1 = true, showG2 = true, showG3 = true;
 let customStatsMap = {};
-const noRecChars = new Set(["莫特斐", "秧秧", "桃祈", "淵武", "釉瑚"]);
 let diffStability = { '⚠️': 100, '⭐': 100, '🔵': 100, '🟩': 100, '🧩': 100 };
 let bossHPMap = {};
 let bossHPHistory = {};
@@ -93,7 +92,7 @@ function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedC
 // 資料庫初始化與自訂編隊載入
 // ==========================================
 function initDpsData() {
-    if (typeof teamDB === 'undefined') return;
+    if (typeof teamDB === 'undefined' || typeof charData === 'undefined') return;
     for (let c1 in teamDB) {
         teamDB[c1].forEach(tData => {
             dpsData.push({ id: 'rot_' + rotIdCounter++, c1: c1, c2: tData.c2, c3: tData.c3, dps: tData.dps, rot: tData.rot, diff: tData.diff, gen: charData[c1]?charData[c1].gen:1 });
@@ -278,11 +277,12 @@ function toggleGen(g) {
 }
 
 function renderCheckboxes() {
-    if(typeof characterOrder === 'undefined') return;
+    if(typeof characterOrder === 'undefined' || typeof charData === 'undefined') return;
     const grid = document.getElementById('roster-setup');
     grid.innerHTML = '<div id="roster-grid"></div>';
     const container = document.getElementById('roster-grid');
     characterOrder.forEach(name => {
+        if(!charData[name]) return;
         let label = document.createElement('label');
         label.className = 'checkbox-item';
         label.style.borderLeft = charData[name].rarity === 5 ? '4px solid #d4af37' : '4px solid #9b59b6';
@@ -689,7 +689,7 @@ function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
 
         if(match) {
             let target = slotType==1 ? d.c1 : slotType==2 ? d.c2 : d.c3;
-            let isBlacklisted = (slotType === 1) && noRecChars.has(target);
+            let isBlacklisted = (slotType === 1) && typeof noRecChars !== 'undefined' && noRecChars.has(target);
             if(availableDisplayChars.includes(target) && !isBlacklisted) {
                 let c1Avail = (slotType === 1) ? true : (d.c1 === v1 || (used[getBase(d.c1)]||0) < (charData[getBase(d.c1)]?.max||1));
                 let c2Avail = (slotType === 2) ? true : (d.c2 === v2 || (used[getBase(d.c2)]||0) < (charData[getBase(d.c2)]?.max||1));
@@ -725,7 +725,7 @@ function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
             let isSurvB = (charData[getBase(b)]?.type || "").includes("生存位") ? 1 : 0;
             if (isSurvA !== isSurvB) return isSurvB - isSurvA;
         }
-        return characterOrder.indexOf(getBase(a)) - characterOrder.indexOf(getBase(b));
+        return typeof characterOrder !== 'undefined' ? (characterOrder.indexOf(getBase(a)) - characterOrder.indexOf(getBase(b))) : 0;
     });
 
     validOthers.forEach(name => {
@@ -774,44 +774,76 @@ function renderRotations() {
     container.innerHTML = html;
 }
 
-const debouncedFilterRotations = debounce(() => {
-    let q = document.getElementById('rot-search').value.toLowerCase();
-    document.querySelectorAll('#rotation-setup input[type="checkbox"]').forEach(i => {
-        let container = i.closest('div');
-        container.style.display = container.innerText.toLowerCase().includes(q) ? 'inline-flex' : 'none';
-    });
-    document.querySelectorAll('#rotation-setup > div').forEach(group => { group.style.display = Array.from(group.querySelectorAll('div > div')).some(l => l.style.display !== 'none') ? 'block' : 'none'; });
-}, 150);
+function initBossHPMap() {
+    let env = { r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56, r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100 };
+    try {
+        let stored = localStorage.getItem('ww_boss_hp'); if (stored) bossHPMap = JSON.parse(stored);
+        let hist = localStorage.getItem('ww_boss_hp_history'); if (hist) bossHPHistory = JSON.parse(hist);
+    } catch(e) {}
 
-function filterRotations() { debouncedFilterRotations(); }
-
-function toggleAllRotations() {
-    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
-    if(!visibleBoxes.length) return;
-    const anyChecked = visibleBoxes.some(i => i.checked);
-    visibleBoxes.forEach(i => i.checked = !anyChecked);
-    updateRotationState();
+    for (let r = 1; r <= 10; r++) {
+        for (let i = 1; i <= 4; i++) {
+            let key = `R${r}-${i}`;
+            if (!bossHPMap[key] || bossHPMap[key].isDefault) {
+                let hp = (r === 1) ? env.r1_hp : (r === 2 && i === 1) ? 546.67 : (r === 2) ? env.r2_hp : (r === 3) ? env.r3_hp : env.r3_hp * (1 + env.growth * ((r - 4) * 4 + i));
+                bossHPMap[key] = { value: hp, isDefault: true };
+            }
+        }
+    }
+    renderIndividualHPPanel();
 }
 
-function toggleDifficulty(diff) {
-    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none' && i.closest('div').innerText.includes(diff));
-    if(!visibleBoxes.length) return;
-    const allChecked = visibleBoxes.every(i => i.checked);
-    visibleBoxes.forEach(i => i.checked = !allChecked);
-    updateRotationState();
+function renderIndividualHPPanel() {
+    let container = document.getElementById('individual-hp-container');
+    if (!container) return;
+    let html = '';
+    for (let r = 1; r <= 10; r++) {
+        for (let i = 1; i <= 4; i++) {
+            let key = `R${r}-${i}`, data = bossHPMap[key], btnHtml = '';
+            
+            if (bossHPHistory[key] && bossHPHistory[key].length >= 3) {
+                const totalDmg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0);
+                const totalPct = bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0);
+                let avg = totalDmg / totalPct; 
+                
+                if (Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.03 && data.isDefault) {
+                    btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}: ${avg.toFixed(1)}W</button>`;
+                }
+            }
+            html += `<div class="hp-item"><span class="hp-label">${key}</span><input type="number" class="hp-input ${!data.isDefault?'calibrated':''}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" onchange="manualUpdateHP('${key}')">${btnHtml}</div>`;
+        }
+    }
+    container.innerHTML = html;
 }
 
-function updateRotationState() {
-    checkedRotations.clear(); document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value)); debouncedRenderAndTrack();
+function getBaseEnvHP(r, index) {
+    let env = getEnvSettings();
+    if (r === 1) return env.r1_hp; if (r === 2) return index === 1 ? 546.67 : env.r2_hp; if (r === 3) return env.r3_hp;
+    return env.r3_hp * (1 + env.growth * ((r - 4) * 4 + index));
 }
 
-let activePresetAttrs = new Set(); let activePresetGens = new Set();
-function togglePresetAttr(attr) { activePresetAttrs.has(attr) ? activePresetAttrs.delete(attr) : activePresetAttrs.add(attr); document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`); debouncedRenderAndTrack(); }
-function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.delete(gen) : activePresetGens.add(gen); document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`); debouncedRenderAndTrack(); }
+function getBossMaxHP(r, index) { return bossHPMap[`R${r}-${index}`] ? bossHPMap[`R${r}-${index}`].value : 400; }
+function manualUpdateHP(key) {
+    let val = parseFloat(document.getElementById(`hp_${key}`).value);
+    if (!isNaN(val) && val > 0) { bossHPMap[key] = { value: val, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {} renderIndividualHPPanel(); updateTracker(); }
+}
+function applyCalibratedHP(key, avgValue) {
+    bossHPMap[key] = { value: avgValue, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
+    renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`);
+}
+function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
 
-// ==========================================
+function getEnvSettings() {
+    return {
+        scoreRatio: parseFloat(document.getElementById('env-ratio').value) || 10,
+        r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
+        r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100,
+        transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, battleTime: parseFloat(document.getElementById('env-time').value) || 120,
+        resPenalty: parseFloat(document.getElementById('env-res').value) || 40
+    };
+}
+
 // 實戰反推與演算法優化 (Pooled Estimator)
-// ==========================================
 function reverseInferAndOptimize() {
     initBossHPMap();
     let env = getEnvSettings(), currentTeams = [], rows = document.querySelectorAll('#team-board tr'), start_r = 1, start_idx = 1, start_hp = getBossMaxHP(1, 1);
@@ -889,75 +921,6 @@ function reverseInferAndOptimize() {
         alert(t("✅ 實戰反推與無損洗牌完成！"));
     }
     updateTracker();
-}
-
-function initBossHPMap() {
-    let env = { r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56, r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100 };
-    try {
-        let stored = localStorage.getItem('ww_boss_hp'); if (stored) bossHPMap = JSON.parse(stored);
-        let hist = localStorage.getItem('ww_boss_hp_history'); if (hist) bossHPHistory = JSON.parse(hist);
-    } catch(e) {}
-
-    for (let r = 1; r <= 10; r++) {
-        for (let i = 1; i <= 4; i++) {
-            let key = `R${r}-${i}`;
-            if (!bossHPMap[key] || bossHPMap[key].isDefault) {
-                let hp = (r === 1) ? env.r1_hp : (r === 2 && i === 1) ? 546.67 : (r === 2) ? env.r2_hp : (r === 3) ? env.r3_hp : env.r3_hp * (1 + env.growth * ((r - 4) * 4 + i));
-                bossHPMap[key] = { value: hp, isDefault: true };
-            }
-        }
-    }
-    renderIndividualHPPanel();
-}
-
-function renderIndividualHPPanel() {
-    let container = document.getElementById('individual-hp-container');
-    if (!container) return;
-    let html = '';
-    for (let r = 1; r <= 10; r++) {
-        for (let i = 1; i <= 4; i++) {
-            let key = `R${r}-${i}`, data = bossHPMap[key], btnHtml = '';
-            
-            if (bossHPHistory[key] && bossHPHistory[key].length >= 3) {
-                const totalDmg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0);
-                const totalPct = bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0);
-                let avg = totalDmg / totalPct; 
-                
-                if (Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.03 && data.isDefault) {
-                    btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}: ${avg.toFixed(1)}W</button>`;
-                }
-            }
-            html += `<div class="hp-item"><span class="hp-label">${key}</span><input type="number" class="hp-input ${!data.isDefault?'calibrated':''}" id="hp_${key}" value="${data.value.toFixed(2)}" step="10" onchange="manualUpdateHP('${key}')">${btnHtml}</div>`;
-        }
-    }
-    container.innerHTML = html;
-}
-
-function getBaseEnvHP(r, index) {
-    let env = getEnvSettings();
-    if (r === 1) return env.r1_hp; if (r === 2) return index === 1 ? 546.67 : env.r2_hp; if (r === 3) return env.r3_hp;
-    return env.r3_hp * (1 + env.growth * ((r - 4) * 4 + index));
-}
-
-function getBossMaxHP(r, index) { return bossHPMap[`R${r}-${index}`] ? bossHPMap[`R${r}-${index}`].value : 400; }
-function manualUpdateHP(key) {
-    let val = parseFloat(document.getElementById(`hp_${key}`).value);
-    if (!isNaN(val) && val > 0) { bossHPMap[key] = { value: val, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {} renderIndividualHPPanel(); updateTracker(); }
-}
-function applyCalibratedHP(key, avgValue) {
-    bossHPMap[key] = { value: avgValue, isDefault: false }; try { localStorage.setItem('ww_boss_hp', JSON.stringify(bossHPMap)); } catch(e) {}
-    renderIndividualHPPanel(); updateTracker(); alert(t(`已成功校正為平均值`) + `：${avgValue.toFixed(2)} ` + t(`萬`) + `！`);
-}
-function resetIndividualHP() { bossHPMap = {}; bossHPHistory = {}; try { localStorage.removeItem('ww_boss_hp'); localStorage.removeItem('ww_boss_hp_history'); } catch(e) {} initBossHPMap(); }
-
-function getEnvSettings() {
-    return {
-        scoreRatio: parseFloat(document.getElementById('env-ratio').value) || 10,
-        r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56,
-        r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100,
-        transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, battleTime: parseFloat(document.getElementById('env-time').value) || 120,
-        resPenalty: parseFloat(document.getElementById('env-res').value) || 40
-    };
 }
 
 function autoBuildMaxDpsTeams() {
