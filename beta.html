@@ -83,7 +83,7 @@
         .draggable-row { cursor: grab; transition: transform 0.2s; }
         .draggable-row:active { cursor: grabbing; transform: scale(0.99); }
         .dragging { opacity: 0.5; box-shadow: 0 0 20px var(--neon-green); }
-        
+
         select.char-select { width: 100%; padding: 12px 8px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--border-glass); border-radius: 8px; outline: none; font-size: 1em; font-weight: 600; cursor: pointer; transition: 0.2s; }
         select.char-select:focus { border-color: var(--gold); box-shadow: 0 0 8px rgba(212, 175, 55, 0.4); }
         option { background-color: #101014; color: #fff; font-weight: bold; }
@@ -91,6 +91,7 @@
         
         .score-input { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: var(--gold); border: 1px solid var(--gold); border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 8px; outline: none; font-size: 1.1em; box-sizing: border-box; }
         .hp-calc-input, .hp-calc-select { padding: 6px; background: rgba(0, 255, 170, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); border-radius: 6px; font-size: 0.9em; text-align: center; font-weight: bold; outline: none; }
+        .hp-calc-input::placeholder { color: rgba(0, 255, 170, 0.3); font-size: 0.85em; }
         .res-chk-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 0.85em; color: #aaa; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 6px; }
         .env-input { width: 85px; padding: 8px; background: rgba(0,0,0,0.5); color: var(--neon-green); border: 1px solid var(--border-glass); border-radius: 6px; font-weight: bold; text-align: center; }
         
@@ -101,9 +102,11 @@
         .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid #444; border-radius: 8px; padding: 10px 5px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #888; text-align: center; }
         .btn-filter:hover, .btn-diff:hover, .btn-preset-filter:hover { filter: brightness(1.2); }
         
+        /* 🚀 完美修正 1.X, 2.X, 3.X 按鈕的高亮顏色 */
         .btn-filter.active-5star { background: #ffb300; color: #1e1e24; border-color: #ffb300; }
         .btn-filter.active-4star { background: #9b59b6; color: #fff; border-color: #9b59b6; }
-        .btn-filter.active-gen { background: #34495e; color: #fff; border-color: #34495e; }
+        .btn-filter.active-gen, .btn-preset-filter.active-gen { background: #3498db; color: #fff; border-color: #3498db; }
+        
         .btn-diff.active-diff-1 { background: #4caf50; color: white; border-color: #4caf50; }
         .btn-diff.active-diff-2 { background: #2196f3; color: white; border-color: #2196f3; }
         .btn-diff.active-diff-3 { background: #ffb300; color: #1e1e24; border-color: #ffb300; }
@@ -138,7 +141,6 @@
         .btn-calib { background: #d9534f; color: white; border: 1px solid #ff4d4d; border-radius: 4px; font-size: 0.7em; cursor: pointer; padding: 4px; margin-top: 2px; animation: blink 1.5s infinite; font-weight: bold; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* 警告與提示面板 */
         .info-panel { background: rgba(255, 170, 0, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #ffaa00; margin-bottom: 15px; font-size: 0.9em; color: #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .info-panel strong { color: #ffaa00; }
 
@@ -177,6 +179,9 @@
             .filter-actions-row > button { font-size: 0.85em; padding: 10px 5px; }
         }
         
+        /* 🚀 終極隱藏類別，確保隊伍數量控制絕對生效 */
+        .hidden-row { display: none !important; }
+        
         .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
     </style>
 </head>
@@ -201,21 +206,22 @@
     </div>
 
     <div id="page1" class="page-content active">
-        
         <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-            <details style="flex: 1; min-width: 300px; background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer;">
-                <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 操作指南：實戰編隊與推演功能 (點擊展開)</summary>
+            <details open style="flex: 1; min-width: 300px; background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer;">
+                <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 歡迎使用！點此查看「頁面操作指南」與「下一頁預告」</summary>
                 <div style="margin-top: 15px; font-size: 0.95em; color: #ddd; line-height: 1.6; border-top: 1px dashed var(--neon-green); padding-top: 15px;">
-                    <strong style="color: #fff; font-size: 1.05em;">【第一步：一鍵理論編隊】</strong><br>
-                    如果您只是想知道手邊的角色能組出什麼最高分的隊伍，請直接點擊表格上方的<strong>「🔥 一鍵極限編制 (理論推演)」</strong>。系統會依已存於本機與預設的編制，自動配出最高總 DPS 的組合（註：當前演算法尚未針對各隊伍排軸的「出傷折線」進行最佳化）。<br><br>
-                    
-                    <strong style="color: var(--neon-green); font-size: 1.05em;">【第二步：實戰反推與無損洗牌 (進階功能)】</strong><br>
+                    <strong style="color: #fff; font-size: 1.05em;">【當前頁面：角色與排軸設定】</strong><br>
                     <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li style="margin-bottom: 5px;">請先按照您在遊戲中實際出戰的順序，將隊伍排在表格上。</li>
-                        <li style="margin-bottom: 5px;">在表格內的<strong>「實戰得分」</strong>欄位，填入該隊打完結算的總分。</li>
-                        <li style="margin-bottom: 5px;">勾選該隊伍遭遇抗性的是第幾隻王 `[1] [2] [3] [4]`（若有）。</li>
-                        <li style="margin-bottom: 5px;"><strong>殘血推演與代數校正：</strong>若該隊伍沒把王打死，請在「🎯終:」下拉選單選擇終點王，並在「🩸剩:」輸入剩餘血量 %。</li>
-                        <li style="margin-bottom: 5px;">點擊 <strong>「🔄 依實戰得分反推與無損重排」</strong>。系統會精準扣除轉場動畫延遲與抗性干擾，推算真實 DPS，並<strong>無損為您重新排序最佳出戰順序！</strong></li>
+                        <li style="margin-bottom: 5px;"><strong>選擇角色：</strong>請在下方勾選您目前擁有的角色，系統會自動計算您可用的組隊次數。</li>
+                        <li style="margin-bottom: 5px;"><strong>篩選排軸難度：</strong>根據您的手法，勾選您有把握的排軸難度。系統只會顯示您可以組建的隊伍。</li>
+                        <li style="margin-bottom: 5px;"><strong>微調穩定性：</strong>若您的手法容易失誤，可以透過拉桿微調「全局」或「各難度」的達成率，系統將自動折算您的實戰傷害下限。</li>
+                    </ul>
+                    
+                    <strong style="color: var(--neon-green); font-size: 1.05em;">【下一頁預告：矩陣編隊與實戰推演】</strong><br>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li style="margin-bottom: 5px;">完成設定後，點擊右下角按鈕前往下一頁。</li>
+                        <li style="margin-bottom: 5px;">您可以在該頁面進行<strong>「一鍵自動編隊」</strong>，或是手動排兵布陣。</li>
+                        <li>該頁面亦提供硬核的<strong>「實戰分數反推與無損洗牌重排」</strong>功能，幫助您找出最優的出戰順序。</li>
                     </ul>
                 </div>
             </details>
@@ -294,6 +300,24 @@
     </div>
 
     <div id="page2" class="page-content">
+        
+        <details style="background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); margin-bottom: 20px; cursor: pointer;">
+            <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 操作指南：實戰編隊與推演功能 (點擊展開)</summary>
+            <div style="margin-top: 15px; font-size: 0.95em; color: #ddd; line-height: 1.6; border-top: 1px dashed var(--neon-green); padding-top: 15px;">
+                <strong style="color: #fff; font-size: 1.05em;">【第一步：一鍵理論編隊】</strong><br>
+                如果您只是想知道手邊的角色能組出什麼最高分的隊伍，請直接點擊表格上方的<strong>「🔥 一鍵極限編制 (理論推演)」</strong>。系統會依已存於本機與預設的編制，自動配出最高總 DPS 的組合（註：當前演算法尚未針對各隊伍排軸的「出傷折線」進行最佳化）。<br><br>
+                
+                <strong style="color: var(--neon-green); font-size: 1.05em;">【第二步：實戰反推與無損洗牌 (進階功能)】</strong><br>
+                <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                    <li style="margin-bottom: 5px;">請先按照您在遊戲中實際出戰的順序，將隊伍排在表格上。</li>
+                    <li style="margin-bottom: 5px;">在表格內的<strong>「實戰得分」</strong>欄位，填入該隊打完結算的總分。</li>
+                    <li style="margin-bottom: 5px;">勾選該隊伍遭遇抗性的是第幾隻王 `[1] [2] [3] [4]`（若有）。</li>
+                    <li style="margin-bottom: 5px;"><strong>殘血推演與代數校正：</strong>若該隊伍沒把王打死，請在「🎯尾王:」下拉選單選擇終點王，並在「🩸剩(%):」輸入剩餘血量。</li>
+                    <li style="margin-bottom: 5px;">點擊 <strong>「🔄 依實戰得分反推與無損重排」</strong>。系統會精準扣除轉場動畫延遲與抗性干擾，推算真實 DPS，並<strong>無損為您重新排序最佳出戰順序！</strong></li>
+                </ul>
+            </div>
+        </details>
+
         <div class="container">
             <div class="panel pool-panel">
                 <h3 style="color: var(--gold); margin-top: 0;">3. 剩餘可用次數</h3>
