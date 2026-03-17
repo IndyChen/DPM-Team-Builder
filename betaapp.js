@@ -312,14 +312,9 @@ let customStatsMap = {};
 const noRecChars = new Set(["莫特斐", "秧秧", "桃祈", "淵武", "釉瑚"]);
 let diffStability = { '⚠️': 100, '⭐': 100, '🔵': 100, '🟩': 100, '🧩': 100 };
 let bossHPMap = {};
-
-// 🩸 矩陣血量校正引擎 2.0 (總和權重算法)
-// 改為儲存物件: { dmg: 造成傷害, pct: 扣除的百分比 }
 let bossHPHistory = {};
-
 let customRotations = [];
 
-// 🚀 Debounce 核心渲染引擎
 const debouncedRenderAndTrack = debounce(() => {
     renderRotations();
     updateTracker();
@@ -332,11 +327,30 @@ function clampHpPct(el) {
     if (val > 100) el.value = 100;
 }
 
+function resetRowDps(btn) {
+    let row = btn.closest('tr');
+    let ss = row.querySelectorAll('select.char-select');
+    let c1 = ss[0].value, c2 = ss[1].value, c3 = ss[2].value;
+    if (!c1 || !c2 || !c3) return alert(t("請先排滿該隊伍的成員。"));
+    
+    let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3);
+    if(possibleRots.length > 0) {
+        possibleRots.forEach(r => { delete customStatsMap[r.id]; });
+        try { localStorage.setItem('ww_custom_stats', JSON.stringify(customStatsMap)); } catch(e){}
+        row.querySelector('.score-input').value = ""; 
+        renderRotations();
+        updateTracker();
+        alert(t("已清除該隊伍排軸的自訂 DPS，恢復系統預設值。"));
+    } else {
+        alert(t("找不到此組合的排軸資料。"));
+    }
+}
+
 function getBase(n) { return ['光主', '暗主', '風主'].includes(n) ? '漂泊者' : n; }
 function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedCharacters.has('漂泊者') : ownedCharacters.has(n); }
 
 // ==========================================
-// 4. 新增自訂編隊 (存儲於本機)
+// 4. 新增自訂編隊與數據總管
 // ==========================================
 function loadCustomRotations() {
     try {
@@ -399,14 +413,10 @@ function saveCustomTeam() {
     alert(t('自訂編隊已成功加入，並儲存於本機。'));
 }
 
-// ==========================================
-// 5. 數據總管與備份系統 (Export/Import & Management)
-// ==========================================
 function openDataManager() {
     let content = document.getElementById('data-manager-content');
     let html = ``;
 
-    // 備份與還原
     html += `<div style="margin-bottom: 25px;">
                 <h3 style="color:#d4af37; margin-bottom: 10px;">💾 ${t('玩家設定檔備份 (匯出 / 匯入)')}</h3>
                 <p style="color:#aaa; font-size:0.9em;">${t('包含您的角色勾選、排軸狀態、自訂編隊、修改過的王血量與 DPS 覆寫紀錄。')}</p>
@@ -417,7 +427,6 @@ function openDataManager() {
                 </div>
              </div>`;
 
-    // 自訂編隊管理
     html += `<div style="margin-bottom: 25px; border-top: 1px dashed #555; padding-top: 15px;">
                 <h3 style="color:#ff9800; margin-bottom: 10px;">📝 ${t('自訂編隊管理')}</h3>`;
     if(customRotations.length === 0) {
@@ -434,7 +443,6 @@ function openDataManager() {
     }
     html += `</div>`;
 
-    // 矩陣血量校正樣本管理 (Pooled Estimator History)
     html += `<div style="border-top: 1px dashed #555; padding-top: 15px;">
                 <h3 style="color:#cf00ff; margin-bottom: 10px;">🩸 ${t('矩陣血量校正樣本管理')}</h3>`;
     if(Object.keys(bossHPHistory).length === 0) {
@@ -497,31 +505,110 @@ function deleteCustomTeam(index) {
     let cr = customRotations.splice(index, 1)[0];
     try { localStorage.setItem('ww_custom_rotations_v2', JSON.stringify(customRotations)); } catch(e){}
     dpsData = dpsData.filter(d => d.id !== 'custom_rot_' + cr.id);
-    debouncedRenderAndTrack(); openDataManager(); // 重新渲染總管介面
+    debouncedRenderAndTrack(); openDataManager(); 
 }
 
 function deleteHPSample(key, index) {
     bossHPHistory[key].splice(index, 1);
     if(bossHPHistory[key].length === 0) delete bossHPHistory[key];
     try { localStorage.setItem('ww_boss_hp_history', JSON.stringify(bossHPHistory)); } catch(e){}
-    debouncedRenderAndTrack(); openDataManager(); // 重新渲染總管介面
+    debouncedRenderAndTrack(); openDataManager(); 
 }
 
+
 // ==========================================
-// 6. UI 互動與畫面渲染
+// 6. UI 互動與畫面渲染核心 (修復遺失的部分)
 // ==========================================
+
 function toggleRarity(s) { 
     s == 5 ? show5Star = !show5Star : show4Star = !show4Star; 
     document.getElementById(`btn-${s}star`).classList.toggle(`active-${s}star`, s==5?show5Star:show4Star);
     filterCharacters(); 
 }
+
 function toggleGen(g) { 
     if(g==1) showG1=!showG1; if(g==2) showG2=!showG2; if(g==3) showG3=!showG3;
     document.getElementById(`btn-g${g}`).classList.toggle('active-gen', g==1?showG1:g==2?showG2:showG3);
     filterCharacters(); 
 }
 
-// --- Modals ---
+function renderCheckboxes() {
+    const grid = document.getElementById('roster-setup');
+    grid.innerHTML = '<div id="roster-grid"></div>';
+    const container = document.getElementById('roster-grid');
+    characterOrder.forEach(name => {
+        let label = document.createElement('label');
+        label.className = 'checkbox-item';
+        label.style.borderLeft = charData[name].rarity === 5 ? '4px solid #d4af37' : '4px solid #9b59b6';
+        label.innerHTML = `<input type="checkbox" value="${name}" ${ownedCharacters.has(name)?'checked':''} onchange="updateOwnedCharacters()"> ${t(name)}`;
+        container.appendChild(label);
+    });
+    filterCharacters();
+}
+
+const debouncedFilterCharacters = debounce(() => {
+    let q = document.getElementById('char-search').value.toLowerCase();
+    let qTrad = q; 
+    document.querySelectorAll('.checkbox-item').forEach(l => {
+        let name = l.querySelector('input').value, d = charData[name];
+        let searchTarget = name.toLowerCase() + t(name).toLowerCase();
+        if (searchTarget.includes('漂泊者')) searchTarget += ' 光主 暗主 風主';
+        let m = searchTarget.includes(qTrad) && ((d.rarity==5 && show5Star) || (d.rarity==4 && show4Star)) && ((d.gen==1 && showG1) || (d.gen==2 && showG2) || (d.gen==3 && showG3));
+        l.style.display = m ? 'flex' : 'none';
+    });
+}, 150);
+
+function filterCharacters() { debouncedFilterCharacters(); }
+
+function rosterCheckboxButton() {
+    const visibleBoxes = Array.from(document.querySelectorAll('#roster-setup .checkbox-item')).filter(l => l.style.display !== 'none').map(l => l.querySelector('input'));
+    if(!visibleBoxes.length) return;
+    const anyChecked = visibleBoxes.some(i => i.checked);
+    visibleBoxes.forEach(i => i.checked = !anyChecked);
+    updateOwnedCharacters();
+}
+
+function updateOwnedCharacters() {
+    ownedCharacters.clear();
+    document.querySelectorAll('#roster-setup input:checked').forEach(i => ownedCharacters.add(i.value));
+    debouncedRenderAndTrack();
+}
+
+function updateMasterSkill() {
+    let val = parseInt(document.getElementById('skill-slider').value);
+    document.getElementById('skill-display').innerText = val + '%';
+    diffStability['⚠️'] = Math.max(0, 100 - (100 - val) * 1.8); diffStability['⭐'] = Math.max(0, 100 - (100 - val) * 1.4);
+    diffStability['🔵'] = Math.max(0, 100 - (100 - val) * 1.1); diffStability['🟩'] = Math.max(0, 100 - (100 - val) * 0.8); diffStability['🧩'] = Math.max(0, 100 - (100 - val) * 1.0);
+    document.getElementById('slider-diff-4').value = diffStability['⚠️']; document.getElementById('val-diff-4').innerText = diffStability['⚠️'].toFixed(0) + '%';
+    document.getElementById('slider-diff-3').value = diffStability['⭐']; document.getElementById('val-diff-3').innerText = diffStability['⭐'].toFixed(0) + '%';
+    document.getElementById('slider-diff-2').value = diffStability['🔵']; document.getElementById('val-diff-2').innerText = diffStability['🔵'].toFixed(0) + '%';
+    document.getElementById('slider-diff-1').value = diffStability['🟩']; document.getElementById('val-diff-1').innerText = diffStability['🟩'].toFixed(0) + '%';
+    document.getElementById('slider-diff-5').value = diffStability['🧩']; document.getElementById('val-diff-5').innerText = diffStability['🧩'].toFixed(0) + '%';
+    debouncedRenderAndTrack();
+}
+
+function updateSubSkill(diffKey, sliderId, valId) {
+    let val = parseInt(document.getElementById(sliderId).value);
+    diffStability[diffKey] = val; document.getElementById(valId).innerText = val + '%';
+    debouncedRenderAndTrack();
+}
+
+function getRotDpsRange(d) {
+    let buffMult = customStatsMap[d.id] && customStatsMap[d.id].buff ? 1 + (customStatsMap[d.id].buff / 100) : 1;
+    if (customStatsMap[d.id]) {
+        let s = customStatsMap[d.id]; let max = s.dps * buffMult;
+        return { min: Math.max(0, max * (s.stability / 100)), max: max, isCustom: true };
+    } else {
+        let max = d.dps * buffMult;
+        if (max === 0) return { min: 0, max: 0, isCustom: false };
+        let diffKey = '🧩';
+        if (d.diff.includes('⚠️')) diffKey = '⚠️'; else if (d.diff.includes('⭐')) diffKey = '⭐';
+        else if (d.diff.includes('🔵')) diffKey = '🔵'; else if (d.diff.includes('🟩')) diffKey = '🟩';
+        let stab = diffStability[diffKey] !== undefined ? diffStability[diffKey] : 100;
+        return { min: Math.max(0, max * (stab / 100)), max: max, isCustom: false };
+    }
+}
+
 let currentEditRotId = null;
 function openStatsModal(e, rotId) {
     e.preventDefault(); e.stopPropagation(); currentEditRotId = rotId;
@@ -586,7 +673,7 @@ function initBoard() {
     for(let i=1; i<=16; i++) {
         let tr = document.createElement('tr');
         tr.className = 'draggable-row';
-        tr.draggable = true; // 開啟拖曳
+        tr.draggable = true; 
         tr.innerHTML = `<td style="font-weight:bold; color:#d4af37; cursor:grab;">${t("第")} ${i} ${t("隊")}</td>
                         <td><select class="char-select" onchange="updateTracker()"></select></td>
                         <td><select class="char-select" onchange="updateTracker()"></select></td>
@@ -616,7 +703,6 @@ function initBoard() {
         b.appendChild(tr);
     }
 
-    // 🚀 實作 Drag & Drop 邏輯
     let draggedRow = null;
     b.addEventListener('dragstart', function(e) {
         draggedRow = e.target.closest('tr');
@@ -624,15 +710,15 @@ function initBoard() {
     });
     
     b.addEventListener('dragover', function(e) {
-        e.preventDefault(); // 允許 Drop
+        e.preventDefault(); 
         const targetRow = e.target.closest('tr');
         if(targetRow && targetRow !== draggedRow && targetRow.classList.contains('draggable-row')) {
             const bounding = targetRow.getBoundingClientRect();
             const offset = bounding.y + (bounding.height / 2);
             if(e.clientY - offset > 0) {
-                targetRow.after(draggedRow); // 拖到下半部，插在後面
+                targetRow.after(draggedRow); 
             } else {
-                targetRow.before(draggedRow); // 拖到上半部，插在前面
+                targetRow.before(draggedRow); 
             }
             updateRowNumbers();
         }
@@ -642,7 +728,7 @@ function initBoard() {
         if(draggedRow) draggedRow.classList.remove('dragging');
         draggedRow = null;
         updateRowNumbers();
-        debouncedRenderAndTrack(); // 順序改變，觸發重新算分
+        debouncedRenderAndTrack(); 
     });
 }
 
@@ -692,7 +778,6 @@ function updateTracker() {
     });
     ps.innerHTML = ph;
 
-    // 雙軌推演引擎
     let env = getEnvSettings(), current_r_min = 1, current_index_min = 1, current_hp_min = getBossMaxHP(1, 1), current_r_max = 1, current_index_max = 1, current_hp_max = getBossMaxHP(1, 1), totalMatrixScoreMin = 0, totalMatrixScoreMax = 0;
 
     document.querySelectorAll('#team-board tr').forEach(row => {
@@ -733,6 +818,148 @@ function updateTracker() {
     saveData();
 }
 
+function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
+    let html = `<option value="">-- ${slotType==1 ? t('主輸出') : slotType==2 ? t('副C/輔助') : t('生存/輔助')} --</option>`;
+    let recs = new Map();
+    let hasContext = (slotType === 1 && (v2 || v3)) || (slotType === 2 && (v1 || v3)) || (slotType === 3 && (v1 || v2));
+
+    let availableDisplayChars = [];
+    for (let name of ownedCharacters) { if (name === '漂泊者') { availableDisplayChars.push('光主', '暗主', '風主'); } else { availableDisplayChars.push(name); } }
+
+    dpsData.forEach(d => {
+        let match = false;
+        if (hasContext) {
+            match = true;
+            if (slotType !== 1 && v1 && d.c1 !== v1) match = false;
+            if (slotType !== 2 && v2 && d.c2 !== v2) match = false;
+            if (slotType !== 3 && v3 && d.c3 !== v3) match = false;
+        } else {
+            if (slotType === 1 && checkedRotations.has(d.id)) match = true;
+            if (slotType !== 1 && checkedRotations.has(d.id)) match = true;
+        }
+
+        if(match) {
+            let target = slotType==1 ? d.c1 : slotType==2 ? d.c2 : d.c3;
+            let isBlacklisted = (slotType === 1) && noRecChars.has(target);
+            if(availableDisplayChars.includes(target) && !isBlacklisted) {
+                let c1Avail = (slotType === 1) ? true : (d.c1 === v1 || (used[getBase(d.c1)]||0) < (charData[getBase(d.c1)]?.max||1));
+                let c2Avail = (slotType === 2) ? true : (d.c2 === v2 || (used[getBase(d.c2)]||0) < (charData[getBase(d.c2)]?.max||1));
+                let c3Avail = (slotType === 3) ? true : (d.c3 === v3 || (used[getBase(d.c3)]||0) < (charData[getBase(d.c3)]?.max||1));
+                if (!recs.has(target)) recs.set(target, { maxDPS: 0, buildable: false });
+                let data = recs.get(target);
+                if (c1Avail && c2Avail && c3Avail) { data.buildable = true; let r = getRotDpsRange(d); if (r.min > data.maxDPS) data.maxDPS = r.min; }
+            }
+        }
+    });
+
+    if(recs.size > 0) {
+        html += `<optgroup label="🔥 ${t('適配推薦')}">`;
+        Array.from(recs.entries()).sort((a,b)=>b[1].maxDPS - a[1].maxDPS).forEach(([name, data]) => {
+            let b = getBase(name), u = used[b]||0, m = charData[b]?.max||1, isEx = u >= m && getBase(curRaw)!==b;
+            if(slotType==1 && isEx) return; 
+            let dpsStr = (data.buildable && data.maxDPS > 0) ? `(${t('保底')} ${data.maxDPS.toFixed(2)}w)` : '';
+            let tag = isEx ? ` 🛑[${t('耗盡')}]` : teamBases.has(b) && getBase(curRaw)!==b ? ` 🛑[${t('在隊')}]` : "";
+            html += `<option value="${name}" ${tag?"disabled":""}>⭐ ${t(name)} ${dpsStr}${tag}</option>`;
+        });
+        html += '</optgroup>';
+    }
+    
+    html += `<optgroup label="🔸 ${t('其他角色')}">`;
+    let validOthers = availableDisplayChars.filter(name => {
+        if (recs.has(name)) return false; 
+        let b = getBase(name); return !(used[b] >= (charData[b]?.max || 1) && getBase(curRaw) !== b); 
+    });
+
+    validOthers.sort((a, b) => {
+        if (slotType === 3) {
+            let isSurvA = (charData[getBase(a)]?.type || "").includes("生存位") ? 1 : 0;
+            let isSurvB = (charData[getBase(b)]?.type || "").includes("生存位") ? 1 : 0;
+            if (isSurvA !== isSurvB) return isSurvB - isSurvA;
+        }
+        return characterOrder.indexOf(getBase(a)) - characterOrder.indexOf(getBase(b));
+    });
+
+    validOthers.forEach(name => {
+        let b = getBase(name), inTeam = teamBases.has(b) && getBase(curRaw)!==b;
+        html += `<option value="${name}" ${inTeam?'disabled':''}>${t(name)}${inTeam?` 🛑[${t('在隊')}]`:''}</option>`;
+    });
+    html += '</optgroup>'; return html;
+}
+
+function getMaxTeams(usedObj) {
+    let baseRemains = {};
+    for(let name of ownedCharacters) {
+        let b = getBase(name);
+        if(charData[b] && baseRemains[b]===undefined) { let r = charData[b].max - (usedObj[b]||0); if(r>0) baseRemains[b] = r; }
+    }
+    let counts = Object.values(baseRemains); let teams = 0;
+    while(counts.length >= 3) { counts.sort((a,b)=>b-a); counts[0]--; counts[1]--; counts[2]--; teams++; counts = counts.filter(c=>c>0); }
+    return Math.min(16, teams);
+}
+
+function renderRotations() {
+    const container = document.getElementById('rotation-setup');
+    const valid = dpsData.filter(d => isOwned(d.c1) && isOwned(d.c2) && isOwned(d.c3));
+    if(!valid.length) { container.innerHTML = `<p style="color:#888; font-style:italic;">${t("請先在上方勾選擁有的角色，以解鎖可組建的排軸...")}</p>`; return; }
+    let groups = {}; valid.forEach(d => { if(!groups[d.c1]) groups[d.c1] = []; groups[d.c1].push(d); });
+    let html = '';
+    for(let c1 in groups) {
+        html += `<div style="margin-bottom:15px; padding:12px; background:#1e1e24; border-radius:5px; border-left: 3px solid #d4af37;"><strong style="color: #d4af37;">🎯 ${t("主輸出")}：${t(c1)}</strong><div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">`;
+        groups[c1].sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min).forEach(d => {
+            let r = getRotDpsRange(d);
+            let dpsStr = (r.max > 0 || r.isCustom) ? `[${r.min.toFixed(2)}~${r.max.toFixed(2)}w]` : t('[無預設/點擊自訂]'); 
+            let colorStyle = r.isCustom ? 'color: #00ffaa; text-decoration: underline; text-decoration-style: dashed;' : (r.min < r.max ? 'color: #ffaa00;' : 'color: #fff;');
+            let tagStyle = d.isUserCustom ? 'background: #4caf50; color: #fff; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; margin-right: 4px;' : '';
+            let tagHTML = d.isUserCustom ? `<span style="${tagStyle}">${t('自訂')}</span>` : '';
+            
+            if(r.max === 0 && !r.isCustom) colorStyle = 'color: #888; text-decoration: underline; text-decoration-style: dashed;';
+            html += `<div style="background:#2b2b36; padding:6px 10px; border-radius:4px; font-size:0.9em; border: 1px solid #444; display:inline-flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="chk_${d.id}" value="${d.id}" ${checkedRotations.has(d.id)?'checked':''} onchange="updateRotationState()">
+                        <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${t(d.diff)}</label>
+                        <span onclick="openStatsModal(event, '${d.id}')" style="cursor:pointer; font-weight:bold; ${colorStyle}; padding:0 4px;" title="${t('點擊輸入數據或加權')}">${dpsStr}</span>
+                        <label for="chk_${d.id}" style="cursor:pointer; margin:0;">${tagHTML}${t(d.c2)} / ${t(d.c3)} (${t(d.rot)})</label>
+                    </div>`;
+        });
+        html += `</div></div>`;
+    }
+    container.innerHTML = html;
+}
+
+const debouncedFilterRotations = debounce(() => {
+    let q = document.getElementById('rot-search').value.toLowerCase();
+    document.querySelectorAll('#rotation-setup input[type="checkbox"]').forEach(i => {
+        let container = i.closest('div');
+        container.style.display = container.innerText.toLowerCase().includes(q) ? 'inline-flex' : 'none';
+    });
+    document.querySelectorAll('#rotation-setup > div').forEach(group => { group.style.display = Array.from(group.querySelectorAll('div > div')).some(l => l.style.display !== 'none') ? 'block' : 'none'; });
+}, 150);
+
+function filterRotations() { debouncedFilterRotations(); }
+
+function toggleAllRotations() {
+    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none');
+    if(!visibleBoxes.length) return;
+    const anyChecked = visibleBoxes.some(i => i.checked);
+    visibleBoxes.forEach(i => i.checked = !anyChecked);
+    updateRotationState();
+}
+
+function toggleDifficulty(diff) {
+    const visibleBoxes = Array.from(document.querySelectorAll('#rotation-setup input[type="checkbox"]')).filter(i => i.closest('div').style.display !== 'none' && i.closest('div').innerText.includes(diff));
+    if(!visibleBoxes.length) return;
+    const allChecked = visibleBoxes.every(i => i.checked);
+    visibleBoxes.forEach(i => i.checked = !allChecked);
+    updateRotationState();
+}
+
+function updateRotationState() {
+    checkedRotations.clear(); document.querySelectorAll('#rotation-setup input:checked').forEach(i => checkedRotations.add(i.value)); debouncedRenderAndTrack();
+}
+
+let activePresetAttrs = new Set(); let activePresetGens = new Set();
+function togglePresetAttr(attr) { activePresetAttrs.has(attr) ? activePresetAttrs.delete(attr) : activePresetAttrs.add(attr); document.querySelector(`button[data-attr="${attr}"]`).classList.toggle(`active-attr-${attr}`); debouncedRenderAndTrack(); }
+function togglePresetGen(gen) { activePresetGens.has(gen) ? activePresetGens.delete(gen) : activePresetGens.add(gen); document.querySelector(`button[data-gen="${gen}"]`).classList.toggle(`active-gen`); debouncedRenderAndTrack(); }
+
 // ==========================================
 // 8. 實戰反推與演算法優化 (Pooled Estimator)
 // ==========================================
@@ -763,7 +990,6 @@ function reverseInferAndOptimize() {
                         effective_dmg_sum += (dmg_left / r_factor);
                         let ebRInt = parseInt(ebR), ebIdxInt = parseInt(ebIdx), ebHpPct = parseFloat(ebHp);
                         
-                        // 🩸 血量校正引擎 2.0: 將傷害與扣除血量%存入歷史池 (用於總和權重算法)
                         if (!isNaN(ebRInt) && !isNaN(ebIdxInt) && !isNaN(ebHpPct) && ebRInt === tmp_r && ebIdxInt === tmp_idx && ebHpPct >= 0.01 && ebHpPct <= 100) {
                             let dmgDoneToEndBoss = (actualScore / env.scoreRatio) - dmgDealtToKilledBosses;
                             let hKey = `R${ebRInt}-${ebIdxInt}`;
@@ -816,7 +1042,6 @@ function reverseInferAndOptimize() {
     updateTracker();
 }
 
-// 🩸 血量校正引擎 2.0 (將歷史 {dmg, pct} 陣列，轉換為總和權重算法)
 function initBossHPMap() {
     let env = { r1_hp: parseFloat(document.getElementById('env-r1').value) || 400.89, r2_hp: parseFloat(document.getElementById('env-r2').value) || 783.56, r3_hp: parseFloat(document.getElementById('env-r3').value) || 1384.9, growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100 };
     try {
@@ -844,11 +1069,10 @@ function renderIndividualHPPanel() {
         for (let i = 1; i <= 4; i++) {
             let key = `R${r}-${i}`, data = bossHPMap[key], btnHtml = '';
             
-            // 使用 Pooled Estimator 算法
             if (bossHPHistory[key] && bossHPHistory[key].length >= 3) {
                 const totalDmg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0);
                 const totalPct = bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0);
-                let avg = totalDmg / totalPct; // 權重最佳解
+                let avg = totalDmg / totalPct; 
                 
                 if (Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.03 && data.isDefault) {
                     btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}: ${avg.toFixed(1)}W</button>`;
@@ -946,7 +1170,6 @@ function saveData() {
     } catch(e) {}
 }
 
-// 📤 問卷大數據升級：隱藏夾帶真實 DPS 與計算血量
 function submitToGoogleForm() {
     if(!confirm(t("您即將匿名提交當前表單上的數據，是否繼續？"))) return;
     let dataParams = []; let rows = document.querySelectorAll('#team-board tr');
@@ -958,12 +1181,11 @@ function submitToGoogleForm() {
         if(ss[0].value && ss[1].value && ss[2].value && !isNaN(score)) {
             let res1 = r.querySelector('.res-chk-1').checked ? 1 : 0, res2 = r.querySelector('.res-chk-2').checked ? 1 : 0, res3 = r.querySelector('.res-chk-3').checked ? 1 : 0, res4 = r.querySelector('.res-chk-4').checked ? 1 : 0;
             
-            // 背景模擬真實 DPS 與反解血量 (同反推邏輯)
             let dmg_left = score / env.scoreRatio, kills = 0, effective_dmg_sum = 0, tmp_r = 1, tmp_idx = 1, tmp_hp = getBossMaxHP(1, 1), dmgDealtToKilledBosses = 0;
             let chk_res = [res1, res2, res3, res4];
             let calculatedTotalHP = 0;
             
-            while (dmg_left > 0 && kills < 40) { // 避免死迴圈
+            while (dmg_left > 0 && kills < 40) { 
                 let r_factor = chk_res[tmp_idx - 1] ? (1 - env.resPenalty / 100) : 1; if (r_factor <= 0) r_factor = 0.1; 
                 if (dmg_left >= tmp_hp) {
                     dmg_left -= tmp_hp; dmgDealtToKilledBosses += tmp_hp; effective_dmg_sum += (tmp_hp / r_factor);
@@ -1009,6 +1231,7 @@ function exportImage() {
 
 // --- 9. 初始化啟動引擎 ---
 function initializeApp() {
+    loadCustomRotations();
     initBoard();
     try { isSimp = localStorage.getItem('ww_lang') === 'zh-CN'; } catch(e){}
     if (isSimp) document.getElementById('lang-toggle').innerText = "繁";
@@ -1033,7 +1256,8 @@ function initializeApp() {
 
     document.getElementById('skill-slider').value = 100; updateMasterSkill();
     
-    renderCheckboxes(); renderRotations();
+    renderCheckboxes(); 
+    renderRotations();
     
     try {
         const st = localStorage.getItem('ww_teams');
