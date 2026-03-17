@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>鳴潮矩陣編隊工具 vBeta</title>
+    <title>鳴潮矩陣編隊工具 vBeta)</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FYW9EX8V5G"></script>
     <script>
@@ -50,7 +50,7 @@
         .team-panel { flex: 2; min-width: 0; width: 100%; }
         
         /* ========================================================= */
-        /* 🚀 核心更新：70% 寬度收束與 6:9:10 黃金比例排版 */
+        /* 🚀 核心更新：70% 寬度收束與 7.1 : 8.5 : 9.9 黃金比例排版 */
         /* ========================================================= */
         .filter-wrapper { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; width: 100%; }
         @media (min-width: 769px) { .filter-wrapper { width: 70%; } }
@@ -63,14 +63,14 @@
 
         /* 比例分配設定 (僅在電腦版生效) */
         @media (min-width: 769px) {
-            .ratio-6 { flex: 6; }
-            .ratio-9 { flex: 9; }
-            .ratio-10 { flex: 10; }
-            .ratio-19 { flex: 19; } /* 9+10，用來完美對齊上方的搜尋框 */
+            .ratio-71 { flex: 7.1; }
+            .ratio-85 { flex: 8.5; }
+            .ratio-99 { flex: 9.9; }
+            .ratio-184 { flex: 18.4; } /* 8.5 + 9.9，用來完美對齊上方的搜尋框 */
         }
         /* 手機版自動改為滿版堆疊，好點擊不破版 */
         @media (max-width: 768px) {
-            .ratio-6, .ratio-9, .ratio-10, .ratio-19 { flex: 1 1 100%; }
+            .ratio-71, .ratio-85, .ratio-99, .ratio-184 { flex: 1 1 100%; }
         }
         /* ========================================================= */
 
@@ -109,7 +109,6 @@
         .btn-apply { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: 0.2s; }
         .btn-apply:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5); }
         
-        /* 🚨 完美重構：實體明暗按鈕 (暗灰底 vs 鮮豔色) */
         .btn-filter, .btn-diff, .btn-preset-filter { border: 1px solid #444; border-radius: 8px; padding: 10px 5px; font-size: 0.9em; cursor: pointer; font-weight: bold; transition: 0.2s; background: #2b2b36; color: #888; text-align: center; }
         .btn-filter:hover, .btn-diff:hover { filter: brightness(1.2); }
         
@@ -122,7 +121,6 @@
         .btn-diff.active-diff-4 { background: #f44336; color: white; border-color: #f44336; }
         .btn-diff.active-diff-5 { background: #9c27b0; color: white; border-color: #9c27b0; }
 
-        /* 🚨 動態紅綠燈按鈕專用 */
         .btn-action-clear { background: #f44336; color: white; border: 1px solid #f44336; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(244,67,54,0.3); }
         .btn-action-all { background: #4caf50; color: white; border: 1px solid #4caf50; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
         .btn-action-clear:hover, .btn-action-all:hover { filter: brightness(1.1); transform: translateY(-1px); }
@@ -206,7 +204,7 @@
 
     <div class="tab-menu">
         <button class="tab-btn active" onclick="switchTab('page1', this)">👤 第一步：設定</button>
-        <button class="tab-btn" onclick="switchTab('page2', this)">⚔️ 第二步：排刀</button>
+        <button class="tab-btn" onclick="switchTab('page2', this)">⚔️ 第二步：編隊</button>
     </div>
 
     <div id="page1" class="page-content active">
@@ -236,8 +234,8 @@
                     <button id="btn-g3" class="btn-filter active-gen" onclick="toggleGen(3)">3.X版</button>
                 </div>
                 <div class="filter-actions-row">
-                    <button id="roster-switch" class="btn-action-clear ratio-6" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
-                    <input type="text" id="char-search" class="ratio-19" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
+                    <button id="roster-switch" class="btn-action-clear ratio-71" onclick="rosterCheckboxButton()">🗑️ 清空角色勾選</button>
+                    <input type="text" id="char-search" class="ratio-184" placeholder="🔍 搜尋角色..." oninput="filterCharacters()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
             
@@ -256,9 +254,9 @@
                     <button id="btn-diff-5" class="btn-diff active-diff-5" onclick="toggleDifficulty('🧩')">🧩 非主流</button>
                 </div>
                 <div class="filter-actions-row">
-                    <button id="rot-all-btn" class="btn-action-clear ratio-6" onclick="toggleAllRotations()">🗑️ 清空可見排軸</button>
-                    <button class="btn-apply ratio-9" onclick="openCustomTeamModal()" style="background: #ffb300; color: #1e1e24; border: none; box-shadow: 0 4px 10px rgba(255,179,0,0.3);">➕ 新增自訂</button>
-                    <input type="text" id="rot-search" class="ratio-10" placeholder="🔍 搜尋排軸..." oninput="filterRotations()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
+                    <button id="rot-all-btn" class="btn-action-clear ratio-71" onclick="toggleAllRotations()">🗑️ 清空可見排軸</button>
+                    <button class="btn-apply ratio-85" onclick="openCustomTeamModal()" style="background: #ffb300; color: #1e1e24; border: none; box-shadow: 0 4px 10px rgba(255,179,0,0.3);">➕ 新增自訂</button>
+                    <input type="text" id="rot-search" class="ratio-99" placeholder="🔍 搜尋排軸(含主C)..." oninput="filterRotations()" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e1e24; color: #fff; outline: none; box-sizing: border-box;">
                 </div>
             </div>
 
@@ -303,7 +301,7 @@
                             <span style="color:#00ffaa; font-weight:bold;">⚙️ 模式：</span>
                             <select id="sim-mode" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:8px; outline:none; flex: 1;">
                                 <option value="auto">🔥 理論極限推演 (依 DPS 接力)</option>
-                                <option value="manual">🗺️ 戰前手動排刀 (依設定終點)</option>
+                                <option value="manual">🗺️ 戰前手動編隊 (依設定終點)</option>
                             </select>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-top: 15px;">
