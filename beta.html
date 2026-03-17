@@ -314,9 +314,13 @@
         </details>
 
         <div class="container">
-            <div class="panel pool-panel">
-                <h3 style="color: var(--gold); margin-top: 0;">3. 剩餘可用次數</h3>
-                <div id="tracker"></div>
+            <div class="panel pool-panel" style="padding: 0; overflow: hidden;">
+                <details open style="width: 100%;">
+                    <summary style="padding: 15px 20px; color: var(--gold); font-size: 1.17em; font-weight: bold; cursor: pointer; outline: none; border-bottom: 1px solid var(--border-glass); background: rgba(0,0,0,0.2);">
+                        3. 剩餘可用次數 (點擊可摺疊)
+                    </summary>
+                    <div id="tracker" style="padding: 20px; padding-top: 10px;"></div>
+                </details>
             </div>
             
             <div class="panel team-panel">
