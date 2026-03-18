@@ -172,10 +172,21 @@ function initBoard() {
     for(let i=1; i<=16; i++) {
         let tr = document.createElement('tr'); tr.className = 'draggable-row'; tr.draggable = true; 
         tr.innerHTML = `<td>${t("第")} ${i} ${t("隊")}</td>
-                        <td data-label="⚔️ ${t('主C')}："><select class="char-select" onchange="updateTracker()"></select></td>
+                        <td data-label="⚔️ ${t('主C')}：">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <select class="char-select" onchange="updateTracker()"></select>
+                                <button onclick="openCalcModal((val) => { 
+                                    const teamIdx = this.closest('tr').rowIndex - 1; 
+                                    if(!customStatsMap[teamIdx]) customStatsMap[teamIdx] = { stability: 100, buff: 0 }; 
+                                    customStatsMap[teamIdx].stability = val; 
+                                    alert('✅ 穩定度 ' + val + '% 已套用至該隊伍！'); 
+                                    if(typeof debouncedRenderAndTrack === 'function') debouncedRenderAndTrack(); else updateTracker();
+                                })" class="btn-speed-mini" style="background: transparent; border: 1px solid #aaa; color: #aaa; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.85em;" title="${t('測算此隊穩定度')}">🧮</button>
+                            </div>
+                        </td>
                         <td data-label="🗡️ ${t('副C')}："><select class="char-select" onchange="updateTracker()"></select></td>
                         <td data-label="🛡️ ${t('生存')}："><select class="char-select" onchange="updateTracker()"></select><button onclick="resetRowDps(this)" class="btn-reset-dps" style="margin-top:5px; padding:4px 8px; border-radius:4px; font-size:0.8em; background:#2b2b36; color:#aaa; border:1px solid #555; cursor:pointer;">🔄 ${t('重設預設')} DPS</button></td>
-                        <td data-label="📊 ${t('實戰得分')} / ${t('殘血設定')}：">
+                        <td data-label="📊 ${t('實戰得分')} / ${t('殘血設定')}：">`;
                             <input type="number" class="score-input" placeholder="${t('實戰得分')}" oninput="debouncedUpdateTracker()"><br>
                             <div style="display:flex; justify-content:center; align-items:center; gap:4px; flex-wrap:wrap; margin-bottom:2px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px; border:1px solid var(--neon-green);">
                                 <span>🎯尾王:</span><select class="hp-calc-select end-boss-r" onchange="updateTracker()">${rOpts}</select>
@@ -661,8 +672,21 @@ function resetRowDps(btn) {
 }
 
 // --- 9. Modals (彈窗與資料管理) ---
-function openCalcModal() { document.getElementById('calc-modal').style.display = 'flex'; document.getElementById('calc-result').style.display = 'none'; }
-function closeCalcModal() { document.getElementById('calc-modal').style.display = 'none'; }
+let speedTestCallback = null; // 🌟 新增：記住是誰呼叫了計算器
+
+function openCalcModal(callback = null) { 
+    speedTestCallback = callback; // 記錄回傳地址
+    document.getElementById('calc-modal').style.display = 'flex'; 
+    document.getElementById('calc-result').style.display = 'none'; 
+    document.getElementById('calc-base-time').value = '';
+    document.getElementById('calc-times').value = '';
+}
+
+function closeCalcModal() { 
+    document.getElementById('calc-modal').style.display = 'none'; 
+    speedTestCallback = null; // 清除紀錄
+}
+
 function calculateStability() {
     let baseTime = parseFloat(document.getElementById('calc-base-time').value);
     let times = document.getElementById('calc-times').value.split(/[\n,]+/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n) && n > 0);
@@ -673,7 +697,18 @@ function calculateStability() {
     document.getElementById('calc-res-mean').innerText = mean.toFixed(2) + ' 秒'; document.getElementById('calc-res-std').innerText = stdDev.toFixed(2) + ' 秒';
     document.getElementById('calc-res-stab').innerText = lastCalculatedStability + ' %'; document.getElementById('calc-result').style.display = 'block';
 }
-function applyCalculatedStability() { document.getElementById('skill-slider').value = lastCalculatedStability; updateMasterSkill(); closeCalcModal(); }
+
+function applyCalculatedStability() { 
+    if (typeof speedTestCallback === 'function') {
+        // 🌟 如果有指定對象（例如點了特定隊伍的按鈕），就把算好的值丟給它
+        speedTestCallback(lastCalculatedStability);
+    } else {
+        // 否則照舊，套用到全局拉桿
+        document.getElementById('skill-slider').value = lastCalculatedStability; 
+        if(typeof updateMasterSkill === 'function') updateMasterSkill(); 
+    }
+    closeCalcModal(); 
+}}
 
 function openCustomTeamModal() {
     let m = document.getElementById('custom-team-modal');
