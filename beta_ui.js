@@ -158,6 +158,10 @@ function initializeApp() {
     updateToggleButtons(); 
     document.querySelectorAll('.tab-btn')[0].click(); 
     translateDOM(document.body);
+    // 翻譯完成後，掀開隱形斗篷
+    requestAnimationFrame(() => {
+        document.body.classList.add('loaded');
+    });
 }
 
 function initBoard() {
@@ -299,7 +303,7 @@ function renderIndividualHPPanel() {
             if (bossHPHistory[key] && bossHPHistory[key].length >= 1) {
                 let avg = bossHPHistory[key].reduce((sum, h) => sum + h.dmg, 0) / Math.max(0.0001, bossHPHistory[key].reduce((sum, h) => sum + h.pct, 0)); 
                 estHtml = `<div style="color: #00ffaa; font-size: 0.75em; margin-top: 2px;">📊 ${t('預估')}: ${avg.toFixed(2)}W</div>`;
-                if (bossHPHistory[key].length >= 3 && Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.10 && data && data.isDefault) {
+                if (bossHPHistory[key].length >= 3 && Math.abs(avg - getBaseEnvHP(r, i)) / getBaseEnvHP(r, i) > 0.05 && data && data.isDefault) {
                     btnHtml = `<button class="btn-calib" onclick="applyCalibratedHP('${key}', ${avg})">⚠️ ${t('套用校正')}</button>`;
                 }
             }
@@ -846,3 +850,61 @@ function submitToGoogleForm() {
 
 // 啟動
 initializeApp();
+
+// --- 指南切換邏輯 ---
+function toggleGuideMode(mode) {
+    const btnBriefs = document.querySelectorAll('.btn-guide-brief');
+    const btnDetails = document.querySelectorAll('.btn-guide-detail');
+    const guideBriefs = document.querySelectorAll('.guide-brief-content');
+    const guideDetails = document.querySelectorAll('.guide-detail-content');
+
+    if (mode === 'brief') {
+        btnBriefs.forEach(btn => { btn.style.background = 'var(--neon-green)'; btn.style.color = '#1e1e24'; btn.style.border = '1px solid var(--neon-green)'; btn.style.boxShadow = '0 0 10px rgba(0,255,170,0.4)'; });
+        btnDetails.forEach(btn => { btn.style.background = 'transparent'; btn.style.color = '#aaa'; btn.style.border = '1px solid #555'; btn.style.boxShadow = 'none'; });
+        guideDetails.forEach(el => el.style.display = 'none');
+        guideBriefs.forEach(el => el.style.display = 'block');
+    } else {
+        btnDetails.forEach(btn => { btn.style.background = 'var(--neon-purple)'; btn.style.color = '#fff'; btn.style.border = '1px solid var(--neon-purple)'; btn.style.boxShadow = '0 0 10px rgba(207,0,255,0.4)'; });
+        btnBriefs.forEach(btn => { btn.style.background = 'transparent'; btn.style.color = '#aaa'; btn.style.border = '1px solid #555'; btn.style.boxShadow = 'none'; });
+        guideBriefs.forEach(el => el.style.display = 'none');
+        guideDetails.forEach(el => el.style.display = 'block');
+    }
+}
+
+// --- 系統報錯與 Email 生成邏輯 ---
+const DEVELOPER_EMAIL = "dpm.builder@outlook.com"; 
+
+function showErrorModal(info) {
+    const preview = document.getElementById('error-preview');
+    if (preview) {
+        preview.textContent = `[${t('時間')}]: ${info.time}\n[${t('錯誤')}]: ${info.message}\n[${t('位置')}]: ${info.location}\n[${t('設備')}]: ${info.userAgent.substring(0, 50)}...`;
+    }
+    const modal = document.getElementById('error-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeErrorModal() {
+    const modal = document.getElementById('error-modal');
+    if (modal) modal.style.display = 'none';
+    currentErrorInfo = null;
+}
+
+function sendErrorReport() {
+    if (!currentErrorInfo) return;
+    const subject = encodeURIComponent(`[矩陣編隊工具 - 自動報錯] ${currentErrorInfo.message.substring(0, 40)}`);
+    const rawBody = `開發者您好，我在使用矩陣編隊工具時遇到了錯誤。
+
+【錯誤詳細資訊】
+時間: ${currentErrorInfo.time}
+錯誤訊息: ${currentErrorInfo.message}
+發生位置: ${currentErrorInfo.location}
+
+【玩家設備與環境】
+瀏覽器: ${currentErrorInfo.userAgent}
+
+【堆疊追蹤 (Stack Trace)】
+${currentErrorInfo.stack}
+`;
+    window.location.href = `mailto:${DEVELOPER_EMAIL}?subject=${subject}&body=${encodeURIComponent(rawBody)}`;
+    closeErrorModal();
+}
