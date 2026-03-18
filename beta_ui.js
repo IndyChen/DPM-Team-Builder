@@ -708,7 +708,7 @@ function applyCalculatedStability() {
         if(typeof updateMasterSkill === 'function') updateMasterSkill(); 
     }
     closeCalcModal(); 
-}}
+}
 
 function openCustomTeamModal() {
     let m = document.getElementById('custom-team-modal');
