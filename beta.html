@@ -15,6 +15,9 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* 預防多語系切換閃爍 (FOUC) */
+        body { opacity: 0; transition: opacity 0.3s ease-in-out; }
+        body.loaded { opacity: 1; }
         :root {
             --bg-main: #101014;
             --bg-panel: rgba(30, 30, 36, 0.7);
@@ -202,24 +205,45 @@
 
     <div id="page1" class="page-content active">
         <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-            <details open style="flex: 1; min-width: 300px; background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer;">
-                <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 歡迎使用！點此查看「頁面操作指南」與「下一頁預告」</summary>
-                <div style="margin-top: 15px; font-size: 0.95em; color: #ddd; line-height: 1.6; border-top: 1px dashed var(--neon-green); padding-top: 15px;">
-                    <strong style="color: #fff; font-size: 1.05em;">【當前頁面：角色與排軸設定】</strong><br>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li style="margin-bottom: 5px;"><strong>選擇角色：</strong>請在下方勾選您目前擁有的角色，系統會自動計算您可用的組隊次數。</li>
-                        <li style="margin-bottom: 5px;"><strong>篩選排軸難度：</strong>根據您的手法，勾選您有把握的排軸難度。系統只會顯示您可以組建的隊伍。</li>
-                        <li style="margin-bottom: 5px;"><strong>微調穩定性：</strong>若您的手法容易失誤，可以透過拉桿微調「全局」或「各難度」的達成率，系統將自動折算您的實戰傷害下限。</li>
-                    </ul>
-                    
-                    <strong style="color: var(--neon-green); font-size: 1.05em;">【下一頁預告：矩陣編隊與實戰推演】</strong><br>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li style="margin-bottom: 5px;">完成設定後，點擊右下角按鈕前往下一頁。</li>
-                        <li style="margin-bottom: 5px;">您可以在該頁面進行<strong>「一鍵自動編隊」</strong>，或是手動排兵布陣。</li>
-                        <li>該頁面亦提供硬核的<strong>「實戰分數反推與無損洗牌重排」</strong>功能，幫助您找出最優的出戰順序。</li>
+            <details open style="flex: 1; min-width: 300px; background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer; margin-bottom: 20px;">
+            <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 歡迎使用！點此查看「角色與排軸設定」指南</summary>
+            <div style="margin-top: 15px; border-top: 1px dashed var(--neon-green); padding-top: 15px; cursor: default;" onclick="event.stopPropagation();">
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                    <button class="btn-guide-brief" onclick="toggleGuideMode('brief')" style="background: var(--neon-green); color: #1e1e24; border: 1px solid var(--neon-green); padding: 6px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 0 10px rgba(0,255,170,0.4);">🟢 簡明版 (快速上手)</button>
+                    <button class="btn-guide-detail" onclick="toggleGuideMode('detail')" style="background: transparent; color: #aaa; border: 1px solid #555; padding: 6px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s;">🔍 詳細版 (模塊原理解析)</button>
+                </div>
+                <div class="guide-brief-content" style="display: block; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
+                    <strong style="color: #fff; font-size: 1.05em;">【三步完成基礎設定】</strong>
+                    <ol style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>勾選角色：</strong>點亮您目前持有的角色。</li>
+                        <li><strong>選擇難度：</strong>關閉您不想打的難度（如⚠️極難）。</li>
+                        <li><strong>前往下一步：</strong>點擊右下角按鈕，進入編隊沙盤！</li>
+                    </ol>
+                    <strong style="color: var(--gold); font-size: 1.05em; margin-top: 10px; display: inline-block;">【快捷按鈕與功能】</strong>
+                    <ul style="margin: 5px 0 0 20px; padding: 0; color: #ccc;">
+                        <li><strong>🔍 快速篩選：</strong>利用星級、世代按鈕或搜尋框快速過濾。</li>
+                        <li><strong>➕ 新增自訂：</strong>手動創建專屬排軸，設定主C、副C與預設 DPS。</li>
+                        <li><strong>🎯 達成率拉桿：</strong>依照您的操作熟練度設定折損比例，系統會自動下修實戰預估傷害。</li>
+                        <li><strong>⏱️ 穩定性計算器：</strong>輸入實測打王耗時，由系統幫您精算出真實達成率。</li>
                     </ul>
                 </div>
-            </details>
+                <div class="guide-detail-content" style="display: none; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
+                    <strong style="color: #fff; font-size: 1.05em;">【角色勾選與快捷過濾】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>運作方式：</strong>系統內建全角色「耐力值」（一般 1 次，部分生存 2 次）。</li>
+                        <li><strong>UI 操作：</strong>點擊「🗑️ 清空/全選」可一鍵批次操作。</li>
+                    </ul>
+                    <strong style="color: var(--gold); font-size: 1.05em;">【排軸難度與自訂功能】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>📊 單一排軸自訂加權：</strong>點擊卡片上的 [DPS數字]，可手動覆寫該隊的真實 DPS、穩定性，及設定「🌟當期屬性增傷加權(%)」。</li>
+                    </ul>
+                    <strong style="color: var(--neon-purple); font-size: 1.05em;">【🎯 達成率拉桿與穩定性計算】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>運算公式：</strong><code>各難度折損率 = 100 - (100 - 全局設定值) × 難度權重</code></li>
+                    </ul>
+                </div>
+            </div>
+        </details>
 
             <details open style="flex: 1; min-width: 300px; background: rgba(30, 30, 36, 0.7); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); cursor: pointer;">
                 <summary style="color: var(--gold); font-weight: bold; outline: none; font-size: 1.1em;">✨ vBeta 專屬更新說明 (對比正式版)</summary>
@@ -324,18 +348,43 @@
         
         <details style="background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); margin-bottom: 20px; cursor: pointer;">
             <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 操作指南：實戰編隊與推演功能 (點擊展開)</summary>
-            <div style="margin-top: 15px; font-size: 0.95em; color: #ddd; line-height: 1.6; border-top: 1px dashed var(--neon-green); padding-top: 15px;">
-                <strong style="color: #fff; font-size: 1.05em;">【第一步：一鍵理論編隊】</strong><br>
-                如果您只是想知道手邊的角色能組出什麼最高分的隊伍，請直接點擊表格上方的<strong>「🔥 一鍵極限編制 (理論推演)」</strong>。系統會依已存於本機與預設的編制，自動配出最高總 DPS 的組合（註：當前演算法尚未針對各隊伍排軸的「出傷折線」進行最佳化）。<br><br>
-                
-                <strong style="color: var(--neon-green); font-size: 1.05em;">【第二步：實戰反推與無損洗牌 (進階功能)】</strong><br>
-                <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                    <li style="margin-bottom: 5px;">請先按照您在遊戲中實際出戰的順序，將隊伍排在表格上。</li>
-                    <li style="margin-bottom: 5px;">在表格內的<strong>「實戰得分」</strong>欄位，填入該隊打完結算的總分。</li>
-                    <li style="margin-bottom: 5px;">勾選該隊伍遭遇抗性的是第幾隻王 `[1] [2] [3] [4]`（若有）。</li>
-                    <li style="margin-bottom: 5px;"><strong>殘血推演與代數校正：</strong>若該隊伍沒把王打死，請在「🎯尾王:」下拉選單選擇終點王，並在「🩸剩(%):」輸入剩餘血量。</li>
-                    <li style="margin-bottom: 5px;">點擊 <strong>「🔄 依實戰得分反推與無損重排」</strong>。系統會精準扣除轉場動畫延遲與抗性干擾，推算真實 DPS，並<strong>無損為您重新排序最佳出戰順序！</strong></li>
-                </ul>
+            <div style="margin-top: 15px; border-top: 1px dashed var(--neon-green); padding-top: 15px; cursor: default;" onclick="event.stopPropagation();">
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                    <button class="btn-guide-brief" onclick="toggleGuideMode('brief')" style="background: var(--neon-green); color: #1e1e24; border: 1px solid var(--neon-green); padding: 6px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 0 10px rgba(0,255,170,0.4);">🟢 簡明版 (快速上手)</button>
+                    <button class="btn-guide-detail" onclick="toggleGuideMode('detail')" style="background: transparent; color: #aaa; border: 1px solid #555; padding: 6px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s;">🔍 詳細版 (模塊原理解析)</button>
+                </div>
+                <div class="guide-brief-content" style="display: block; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
+                    <strong style="color: #fff; font-size: 1.05em;">【兩大推演模式】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>模式一 (抄作業)：</strong>點擊「🔥 一鍵極限編制」，系統會自動滿編目前最高總分的隊伍。</li>
+                        <li><strong>模式二 (優化現有)：</strong>排好出戰隊伍並填寫「實戰得分」。接著點擊「🔄 無損洗牌反推」，系統會自動排序最佳出戰順序！</li>
+                    </ul>
+                    <strong style="color: var(--gold); font-size: 1.05em; margin-top: 10px; display: inline-block;">【沙盤快捷按鈕與功能】</strong>
+                    <ul style="margin: 5px 0 0 20px; padding: 0; color: #ccc;">
+                        <li><strong>⚙️ 雙軌模式切換：</strong>在「環境設定」內可隨時切換「🔥自動推演」與「🗺️手動編隊」。</li>
+                        <li><strong>⚡ 快速填入：</strong>利用沙盤上方的屬性篩選，一鍵將推薦配隊填入空位。</li>
+                        <li><strong>💾 記憶 / 📂 讀取：</strong>儲存您的深塔愛用陣容，隨時無縫切換。</li>
+                        <li><strong>⚙️ 數據總管(右上角)：</strong>管理自訂資料，產生備份代碼以實現跨裝置同步。</li>
+                        <li><strong>🌐 簡/繁切換 (全域)：</strong>一鍵無縫切換繁簡中文介面。</li>
+                    </ul>
+                </div>
+                <div class="guide-detail-content" style="display: none; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
+                    <strong style="color: #fff; font-size: 1.05em;">【⚙️ 雙軌推演模式 (環境設定)】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>🔥 自動推演：</strong>依據理論上限與操作達成率，給出 <strong><code>[保底得分 ~ 理論極限分]</code></strong> 推演區間。</li>
+                        <li><strong>🗺️ 手動編隊：</strong>根據尾王與殘血反推預估得分，並計算「📈單排置信度」抓出失誤。</li>
+                    </ul>
+                    <strong style="color: #00ffaa; font-size: 1.05em;">【🔄 實戰反推與無損洗牌 (硬核最佳化)】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>運算公式：</strong><code>真實 DPS = 等效總傷害 ÷ 真實戰鬥時間</code></li>
+                        <li><strong>結果事例：</strong>【忌炎隊】打 10000 分，遭遇 [1] 號抗性王 (50%抗)。帳面打 400w，實際消耗等效傷害 <code>400w ÷ (1 - 0.5) = 800w</code>。</li>
+                    </ul>
+                    <strong style="color: #ffaa00; font-size: 1.05em;">【🧮 代數反解與王血量校正】</strong>
+                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                        <li><strong>運算公式：</strong><code>真實尾王總血量 = 傷害量 ÷ (1 - 剩餘血量%)</code></li>
+                        <li><strong>⚠️ 套用校正：</strong>收集滿 3 筆且偏差 <strong>> 5%</strong>，進階面板將彈出校正按鈕。</li>
+                    </ul>
+                </div>
             </div>
         </details>
 
@@ -510,6 +559,19 @@
     </div>
 
     <div id="custom-team-modal" class="modal-overlay"></div>
+    <div id="error-modal" class="modal-overlay">
+        <div style="background:var(--bg-panel); backdrop-filter:blur(20px); padding:25px; border-radius:16px; border:2px solid #f44336; width:450px; max-width:90%; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+            <h3 style="margin-top:0; color:#f44336; text-align:center;">⚠️ 系統發生未預期錯誤</h3>
+            <p style="color:#ccc; font-size:0.95em; line-height:1.5;">哎呀！矩陣編隊工具遇到了一些問題。為了幫助我們修復，請考慮將錯誤報告發送給開發者。</p>
+            <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:8px; border:1px solid #555; margin-bottom:15px; max-height:150px; overflow-y:auto;">
+                <pre id="error-preview" style="color:#ffaa00; font-size:0.8em; margin:0; white-space:pre-wrap; font-family:monospace; line-height: 1.4;"></pre>
+            </div>
+            <div style="display:flex; gap: 10px;">
+                <button onclick="closeErrorModal()" class="btn-action-clear" style="flex:1; padding: 10px; background:#555; border:none; box-shadow:none;">關閉 (不回報)</button>
+                <button onclick="sendErrorReport()" class="btn-action-all" style="flex:2; background:#f44336; border-color:#f44336; padding: 10px;">📧 寄出錯誤報告</button>
+            </div>
+        </div>
+    </div>
 
     <script src="beta_data.js"></script>
     <script src="beta_core.js"></script>
