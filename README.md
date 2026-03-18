@@ -1,6 +1,6 @@
 # 🌊 鳴潮矩陣編隊工具 (Wuthering Waves Doubled Pawns Matrix Team Builder)
 
-![Version](https://img.shields.io/badge/version-v4.7.3-blue.svg)
+![Version](https://img.shields.io/badge/version-v4.7.5-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Web_Browser-success.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML_|_CSS_|_JS-orange.svg)
 ![License](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-green.svg)
@@ -28,6 +28,12 @@
 輸入你的遊戲結算得分，系統將進行逆向工程，扣除抗性干擾與發呆時間，推算你的「純粹真實 DPS」。
 若發現數據偏差過大，系統會**自動校正本機的王血量數據**，並立刻幫你把現有隊伍「大洗牌」重排至理論最高分順序！
 
+### 🖱️ 沉浸式拖曳互動與數量控制 (Drag & Drop UI)
+沙盤表格全面支援直覺的拖曳排序功能，搭配自由切換的顯示數量上限 (3~16隊) 與暗黑毛玻璃卡片介面，提供絕佳且整潔的編隊體驗。
+
+### 💾 雲端備份與多組記憶 (Local Storage & Backup)
+支援自訂命名並儲存最多 10 套常用的深塔編隊陣容，隨時一鍵無縫讀取切換。搭配「數據總管」功能，還能一鍵產生/匯入備份代碼，輕鬆實現跨裝置資料同步。
+
 ### 🎯 實戰手法折損系統 (Combat Stability & Loss System)
 紙上談兵的 11萬 DPS 極限軸，實戰中真的打得出來嗎？
 - 系統針對不同排軸難度（⚠️極難、⭐進階、🔵中等、🟩輪椅、🧩非主流）設定了專屬的**失誤懲罰權重**。
@@ -38,7 +44,7 @@
 * **平均耗時** 與 **節奏標準差 (σ)**
 * **回歸擬合估算 (R²)**
 * **綜合穩定性評分 (%) 與實戰評級 (SSS ~ C)**
-算出你的穩定度後，可一鍵套用至全域 DPS 折損計算！
+算出你的穩定度後，可一鍵精確套用至該隊伍或全域 DPS 折損計算！
 
 ### 📤 大數據貢獻池 (Crowdsourcing Data)
 玩家可透過點擊「貢獻實戰大數據」按鈕，將推演戰果透過預填問卷匿名傳送，協助社群共同建立大數據池，精準校正下一版矩陣的王血量與抗性公式！
@@ -57,13 +63,14 @@
    * （可選）點擊排軸旁的數字輸入專屬 DPS 與環境加權。
 3. **矩陣推演與編隊**：
    * 點擊「🔥 一鍵編制」，取得最佳爬塔陣容！
-   * 或是填入「實戰得分」，點擊「🔄 依實戰得分反推與重排」進行極限最佳化洗牌。
+   * 或是填入「實戰得分」，點擊「🔄 無損洗牌反推」進行極限最佳化洗牌。
+   * 可自由將編好的隊伍「💾 記憶當前實戰」儲存下來。
 4. **匯出分享**：點擊「📷 截圖分享」，將完美編排的矩陣圖存成圖片與社群分享。
 
 ---
 
 ## 🐛 報錯與意見回饋 (Feedback & Issues)
-如果你發現工具中有 Bug，或是身為排軸大佬有更極限的 DPS 數據/新隊伍想提供，歡迎透過 [GitHub Issues](https://github.com/IndyChen/DPM-Team-Builder/issues) 提交給我們！
+如果你發現工具中有 Bug，或是身為排軸大佬有更極限的 DPS 數據/新隊伍想提供，歡迎透過 [GitHub Issues](https://github.com/IndyChen/DPM-Team-Builder/issues) 提交給我們！系統也內建了自動報錯擷取功能，方便直接發送 Email 回報。
 
 ---
 
