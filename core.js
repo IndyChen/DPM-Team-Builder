@@ -577,7 +577,6 @@ function reverseInferAndOptimize() {
             hp: getBossMaxHP(1, 1)
         }];
 
-        let n = poolToPermute.length;
         for (let step = 0; step < n; step++) {
             let nextStates = [];
             for (let state of states) {
