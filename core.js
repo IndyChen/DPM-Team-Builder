@@ -395,7 +395,12 @@ function reverseInferAndOptimize() {
             let rotId = null;
             let possibleRots = dpsData.filter(d => d.c1 === c1 && d.c2 === c2 && d.c3 === c3 && checkedRotations.has(d.id));
             if (possibleRots.length > 0) {
-                possibleRots.sort((a,b) => getRotDpsRange(b).min - getRotDpsRange(a).min);
+                //如果有自訂編隊，優先把反推 DPS 存回自訂編隊；否則才找最高分的
+                possibleRots.sort((a, b) => {
+                    if (a.isUserCustom && !b.isUserCustom) return -1;
+                    if (!a.isUserCustom && b.isUserCustom) return 1;
+                    return getRotDpsRange(b).min - getRotDpsRange(a).min;
+                });
                 rotId = possibleRots[0].id;
             }
 
@@ -498,6 +503,9 @@ function reverseInferAndOptimize() {
         }
     });
 
+    // 將所有反推出來的真實 DPS，強制寫入硬碟永久保存！
+    safeStorageSet('ww_custom_stats', customStatsMap);
+    
     if (currentTeams.length > 0) {
         let maxAllowed = parseInt(document.getElementById('team-count-select').value) || 16;
         let fillFromDB = confirm(t("是否要從資料庫自動填補剩下的空位？\n\n[確定]：保留現有隊伍，並自動用最高分隊伍填滿剩下的空位。\n[取消]：僅針對當前已有隊伍進行重新排序。"));
