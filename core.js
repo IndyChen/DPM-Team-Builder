@@ -1,8 +1,9 @@
 // ==========================================
-// 鳴潮矩陣編隊工具 - Beta 測試版 [核心運算模組]
-// 檔案：beta_core.js
+// 鳴潮矩陣編隊工具v4.7.6 [核心運算模組]
+// 檔案：core.js
 // 職責：資料存取、數學推演、DPS 計算、狀態管理
 // ==========================================
+
 // --- 0. 全域崩潰攔截系統 ---
 let currentErrorInfo = null;
 
@@ -92,11 +93,9 @@ function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedC
 
 // --- 3. 資料初始化與存取 (Data Init & Storage) ---
 function initCoreData() {
-    // 判斷語系
     let savedLang = localStorage.getItem('ww_lang');
     isSimp = (savedLang === 'zh-CN' || savedLang === '"zh-CN"');
 
-    // 載入排軸與自訂資料
     if (typeof teamDB !== 'undefined' && typeof charData !== 'undefined') {
         for (let c1 in teamDB) {
             teamDB[c1].forEach(tData => {
@@ -115,7 +114,6 @@ function initCoreData() {
     savedLineups = safeStorageGet('ww_saved_lineups', []);
     customStatsMap = safeStorageGet('ww_custom_stats', {});
 
-    // 初始化角色池勾選狀態
     let parsedRoster = safeStorageGet('ww_roster', null);
     if (Array.isArray(parsedRoster)) {
         parsedRoster.forEach(name => { if (charData[name] || ['光主','暗主','風主'].includes(name)) ownedCharacters.add(name); });
@@ -123,7 +121,6 @@ function initCoreData() {
         ownedCharacters = new Set(Object.keys(charData));
     }
 
-    // 初始化排軸勾選狀態
     let parsedRots = safeStorageGet('ww_rotations', null);
     if (Array.isArray(parsedRots)) {
         const validIds = new Set(dpsData.map(d => d.id));
@@ -155,7 +152,6 @@ function getEnvSettings() {
         transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, 
         battleTime: parseFloat(document.getElementById('env-time').value) || 120, 
         resPenalty: parseFloat(document.getElementById('env-res').value) || 40,
-        // 🌟 讀取 1~4 號王的專屬抗性
         resTags: [
             document.getElementById('env-res-1') ? document.getElementById('env-res-1').value : "",
             document.getElementById('env-res-2') ? document.getElementById('env-res-2').value : "",
@@ -278,9 +274,7 @@ function runSimulations(env) {
         let ebIdx = row.querySelector('.end-boss-idx').value;
         let ebHp = row.querySelector('.end-boss-hp').value;
         
-        //自動比對屬性
         let teamAttr = typeof charAttrMap !== 'undefined' ? charAttrMap[c1] : null;
-        let isResisted = teamAttr && (teamAttr === env.resTag1 || teamAttr === env.resTag2);
 
         if (c1 && c2 && c3) {
             rowResult.valid = true;
@@ -300,7 +294,6 @@ function runSimulations(env) {
                             let loopGuard = 0;
                             while (t_left > 0 && loopGuard < 50) {
                                 loopGuard++;
-                                // 🌟 動態比對「當前這隻王 (idx)」的專屬抗性
                                 let isResisted = teamAttr && teamAttr === env.resTags[idx - 1];
                                 let eff_dps = Math.max(0.0001, dps * (isResisted ? (1 - env.resPenalty / 100) : 1)); 
                                 let ttk = hp / eff_dps;
