@@ -154,7 +154,10 @@ function getEnvSettings() {
         growth: (parseFloat(document.getElementById('env-growth').value) || 5) / 100, 
         transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, 
         battleTime: parseFloat(document.getElementById('env-time').value) || 120, 
-        resPenalty: parseFloat(document.getElementById('env-res').value) || 40 
+        resPenalty: parseFloat(document.getElementById('env-res').value) || 40,
+        //讀取環境抗性標籤
+        resTag1: document.getElementById('env-res-tag1') ? document.getElementById('env-res-tag1').value : "",
+        resTag2: document.getElementById('env-res-tag2') ? document.getElementById('env-res-tag2').value : ""
     }; 
 }
 
@@ -271,12 +274,9 @@ function runSimulations(env) {
         let ebIdx = row.querySelector('.end-boss-idx').value;
         let ebHp = row.querySelector('.end-boss-hp').value;
         
-        let chk_res = [
-            row.querySelector('.res-chk-1') ? row.querySelector('.res-chk-1').checked : false, 
-            row.querySelector('.res-chk-2') ? row.querySelector('.res-chk-2').checked : false, 
-            row.querySelector('.res-chk-3') ? row.querySelector('.res-chk-3').checked : false, 
-            row.querySelector('.res-chk-4') ? row.querySelector('.res-chk-4').checked : false
-        ];
+        //自動比對屬性
+        let teamAttr = typeof charAttrMap !== 'undefined' ? charAttrMap[c1] : null;
+        let isResisted = teamAttr && (teamAttr === env.resTag1 || teamAttr === env.resTag2);
 
         if (c1 && c2 && c3) {
             rowResult.valid = true;
@@ -296,7 +296,7 @@ function runSimulations(env) {
                             let loopGuard = 0;
                             while (t_left > 0 && loopGuard < 50) {
                                 loopGuard++;
-                                let eff_dps = Math.max(0.0001, dps * (chk_res[idx - 1] ? (1 - env.resPenalty / 100) : 1)); 
+                                let eff_dps = Math.max(0.0001, dps * (isResisted ? (1 - env.resPenalty / 100) : 1));
                                 let ttk = hp / eff_dps;
                                 if (ttk <= t_left) { 
                                     dmg += hp; t_left -= (ttk + env.transTime); 
