@@ -69,6 +69,21 @@ function clampHpPct(el) {
 function getBase(n) { return ['光主', '暗主', '風主'].includes(n) ? '漂泊者' : n; }
 function isOwned(n) { return ['光主', '暗主', '風主'].includes(n) ? ownedCharacters.has('漂泊者') : ownedCharacters.has(n); }
 
+// ⚡ 動態設備算力測速器 (測試 50ms)
+function getDeviceBenchmark() {
+    let testStart = performance.now();
+    let testOps = 0;
+    let dummyArr = [1, 2, 3, 4, 5]; 
+    while (performance.now() - testStart < 50) {
+        for(let i=0; i<1000; i++) {
+            let x = dummyArr[i % 5] * 1.5; 
+            testOps++;
+        }
+    }
+    let rawOpsPerSec = testOps * (1000 / 50);
+    // 乘以 0.5 係數以高估運算時間，並設定 50 萬次為防呆底線
+    return Math.max(500000, rawOpsPerSec * 0.5); 
+}
 // ==========================================
 // 🛡️ 核心特權過濾器 (確保自訂隊伍不被忽略)
 // ==========================================
@@ -489,7 +504,7 @@ function reverseInferAndOptimize() {
         let estValidCombos = 1;
         for (let i = 1; i <= n; i++) estValidCombos *= i;
 
-        let opsPerSec = 2000000;
+        let opsPerSec = getDeviceBenchmark();
         let fullSearchSeconds = (estValidCombos / opsPerSec).toFixed(2);
         let comboString = estValidCombos > 100000000 ? (estValidCombos / 100000000).toFixed(2) + t(" 億") : (estValidCombos > 10000 ? (estValidCombos / 10000).toFixed(2) + t(" 萬") : estValidCombos);
         let fullTimeString = fullSearchSeconds < 0.1 ? t("小於 0.1 秒") + t(" (低階設備約 1 秒)") : fullSearchSeconds + t(" 秒");
