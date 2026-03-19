@@ -155,9 +155,13 @@ function getEnvSettings() {
         transTime: parseFloat(document.getElementById('env-trans').value) || 1.5, 
         battleTime: parseFloat(document.getElementById('env-time').value) || 120, 
         resPenalty: parseFloat(document.getElementById('env-res').value) || 40,
-        //讀取環境抗性標籤
-        resTag1: document.getElementById('env-res-tag1') ? document.getElementById('env-res-tag1').value : "",
-        resTag2: document.getElementById('env-res-tag2') ? document.getElementById('env-res-tag2').value : ""
+        // 🌟 讀取 1~4 號王的專屬抗性
+        resTags: [
+            document.getElementById('env-res-1') ? document.getElementById('env-res-1').value : "",
+            document.getElementById('env-res-2') ? document.getElementById('env-res-2').value : "",
+            document.getElementById('env-res-3') ? document.getElementById('env-res-3').value : "",
+            document.getElementById('env-res-4') ? document.getElementById('env-res-4').value : ""
+        ]
     }; 
 }
 
@@ -296,7 +300,9 @@ function runSimulations(env) {
                             let loopGuard = 0;
                             while (t_left > 0 && loopGuard < 50) {
                                 loopGuard++;
-                                let eff_dps = Math.max(0.0001, dps * (isResisted ? (1 - env.resPenalty / 100) : 1));
+                                // 🌟 動態比對「當前這隻王 (idx)」的專屬抗性
+                                let isResisted = teamAttr && teamAttr === env.resTags[idx - 1];
+                                let eff_dps = Math.max(0.0001, dps * (isResisted ? (1 - env.resPenalty / 100) : 1)); 
                                 let ttk = hp / eff_dps;
                                 if (ttk <= t_left) { 
                                     dmg += hp; t_left -= (ttk + env.transTime); 
