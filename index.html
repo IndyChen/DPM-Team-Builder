@@ -221,30 +221,38 @@
                                 <li><strong>選擇難度：</strong>關閉您不想打的難度（如⚠️極難）。</li>
                                 <li><strong>前往下一步：</strong>點擊右下角按鈕，進入編隊沙盤！</li>
                             </ol>
-                            <strong style="color: var(--gold); font-size: 1.05em; margin-top: 10px; display: inline-block;">【快捷按鈕與功能】</strong>
+                            <strong style="color: var(--gold); font-size: 1.05em; margin-top: 10px; display: inline-block;">【快捷按鈕與輔助功能】</strong>
                             <ul style="margin: 5px 0 0 20px; padding: 0; color: #ccc;">
-                                <li><strong>🔍 快速篩選：</strong>利用星級、世代按鈕或搜尋框快速過濾。</li>
+                                <li><strong>🔍 快速篩選：</strong>利用頂部星級、世代按鈕或搜尋框快速過濾角色。</li>
                                 <li><strong>➕ 新增自訂：</strong>手動創建專屬排軸，設定主C、副C與預設 DPS。</li>
                                 <li><strong>🎯 達成率拉桿：</strong>依照您的操作熟練度設定折損比例，系統會自動下修實戰預估傷害。</li>
-                                <li><strong>⏱️ 穩定性計算器：</strong>輸入實測打王耗時，由系統幫您精算出真實達成率。</li>
                             </ul>
                         </div>
                         <div class="guide-detail-content" style="display: none; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
-                            <strong style="color: #fff; font-size: 1.05em;">【角色勾選與快捷過濾】</strong>
+                            <strong style="color: #fff; font-size: 1.05em;">【頂部操作：角色勾選與快捷過濾】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                                <li><strong>運作方式：</strong>系統內建全角色的「耐力值」(一般角色 1 次，部分生存位 2 次)。您可利用上方的「🌟星級」與「世代」過濾器，或直接在「🔍 搜尋框」輸入名字快速找人。點擊「🗑️ 清空/全選」可一鍵批次操作。</li>
+                                <li><strong>耐力機制：</strong>系統內建全角色的「耐力值」(一般角色 1 次，部分生存位 2 次)，勾選後即代表該角色可投入後續沙盤推演。</li>
+                                <li><strong>快捷過濾：</strong>您可利用上方的「🌟星級」與「世代」過濾器，或直接在「🔍 搜尋框」輸入名字快速找人。點擊「🗑️ 清空/全選」可一鍵批次操作。</li>
                             </ul>
-                            <strong style="color: var(--gold); font-size: 1.05em;">【排軸難度與自訂功能】</strong>
+                            <strong style="color: var(--gold); font-size: 1.05em;">【核心列表：排軸難度與內建數據】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
                                 <li><strong>運作方式：</strong>內建各大佬測算的理論排軸，分為 🟩輪椅 到 ⚠️極難 五個檔次。關閉特定難度後，該排軸將不會參與下一頁的推演。</li>
-                                <li><strong>➕ 新增自訂：</strong>允許手動綁定主C、副C、生存並賦予 DPS 與難度，永久寫入瀏覽器本機。</li>
-                                <li><strong>📊 單一排軸自訂加權：</strong>點擊排軸卡片上的 [DPS數字]，可直接手動覆寫該隊的真實 DPS、穩定性，甚至設定「🌟 當期屬性增傷加權(%)」(例如本期深塔冷凝傷害+20%)。</li>
                             </ul>
-                            <strong style="color: var(--neon-purple); font-size: 1.05em;">【🎯 達成率拉桿與穩定性計算】</strong>
+                            <strong style="color: var(--neon-purple); font-size: 1.05em;">【全局設定：🎯 達成率拉桿與折損計算】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
                                 <li><strong>運算公式：</strong><code>各難度折損率 = 100 - (100 - 全局設定值) × 難度權重</code>。您也可點開下方的摺疊面板，單獨對「⚠️ 極難」或「🟩 輪椅」進行微調。</li>
                                 <li><strong>結果事例：</strong>【今汐隊】理論 DPS 為 6w (⭐進階)。若您將拉桿設為 80%，該排軸的真實達成率為 <code>100-(100-80)×1.4 = 72%</code>。系統會將該隊實戰 DPS 下修為 <strong>4.32w</strong>，防止分數預估膨脹。</li>
-                                <li><strong>⏱️ 內建軸穩定性計算器：</strong>輸入排軸的「標準耗時」與您去全像實測的 3 次「實際耗時」。系統會用標準差(σ)算出您的真實穩定度，點擊即可一鍵套用至拉桿。</li>
+                            </ul>
+                            <strong style="color: #00ffaa; font-size: 1.05em;">【🪟 第一頁專屬彈出視窗與面板操作】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>📊 自訂加權面板：</strong>點擊排軸卡片上的 [DPS數字] 可開啟面板，直接手動覆寫該隊的真實 DPS、穩定性，甚至設定「🌟 當期矩陣屬性增傷加權(%)」。</li>
+                                <li><strong>⏱️ 穩定性計算器：</strong>在「自訂加權」面板內點擊🧮按鈕。輸入排軸的「標準耗時」與多次實測「實際耗時」(以逗號分隔)，系統會用標準差(σ)算出您的真實穩定度，一鍵套用。</li>
+                                <li><strong>➕ 新增自訂編隊：</strong>點擊列表頂部的按鈕，可手動綁定主C、副C、生存並賦予 DPS 與難度，永久寫入瀏覽器本機。</li>
+                            </ul>
+                            <strong style="color: var(--neon-purple); font-size: 1.05em;">【全域視窗：管理與互動】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>⚙️ 數據總管與跨裝置備份 (右上角)：</strong>可一覽已解鎖角色與記憶存檔。點擊「📥 產生備份代碼」生成專屬密碼；在另一台裝置點擊「📤 匯入存檔代碼」即可完全覆寫同步。</li>
+                                <li><strong>⚠️ 系統防呆與報錯：</strong>遭遇未預期錯誤時系統會彈出報錯視窗，您可點擊「📧 寄出錯誤報告」發送給開發者協助修復。</li>
                             </ul>
                         </div>
                     </div>
@@ -262,40 +270,26 @@
                 </div>
             </div>
 
-            <details open style="flex: 1; min-width: 300px; background: rgba(30, 30, 36, 0.7); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); cursor: pointer;">
+            <details style="flex: 1; min-width: 300px; background: rgba(30, 30, 36, 0.7); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); cursor: pointer;">
                 <summary style="color: var(--gold); font-weight: bold; outline: none; font-size: 1.1em;">📜 點此查看版本更新說明 (當前: v4.7.6 正式版)</summary>
                 <div style="margin-top: 15px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed var(--border-glass); padding-top: 15px; cursor: default;" onclick="event.stopPropagation();">
                     
-                    <strong style="color: var(--neon-purple); font-size: 1.05em;">✨ 【新增功能】</strong>
+                    <strong style="color: var(--neon-purple); font-size: 1.05em;">✨ v4.7.6 【核心演算法與機制升級】</strong>
                     <ul style="margin: 5px 0 15px 20px; padding: 0; color: #ccc;">
-                        <li>📖 <strong>操作指南：</strong>新增「簡明版」與「詳細版(模塊原理解析)」切換功能。</li>
-                        <li>🧮 <strong>穩定度計算器：</strong>主C各排軸自訂欄位與「新增自訂」面板中加入計算器按鈕。</li>
-                        <li>🖱️ <strong>編隊互動：</strong>編隊卡片支援拖曳排序。</li>
-                        <li>📉 <strong>編隊數量控制：</strong>新增「顯示編隊數量」選單。</li>
-                        <li>💾 <strong>本地儲存：</strong>支援命名並儲存最多 10 套編隊，可於數據總管載入。</li>
-                        <li>⚠️ <strong>報錯系統：</strong>新增錯誤攔截機制，支援將錯誤資訊透過 Email 發送給開發者。</li>
+                        <li>🧠 <strong>Beam Search 引擎：</strong>一鍵編制正式升級為束式搜索演算法，支援全局最佳化運算與自訂搜尋深度。</li>
+                        <li>🌍 <strong>全局環境抗性：</strong>捨棄單隊勾選，改為於環境設定中為 1~4 號王獨立設定抗性標籤，系統推演時將自動比對隊伍主C屬性結算減傷。</li>
+                        <li>🤖 <strong>資料庫自動填補：</strong>實戰洗牌完成後，支援依據剩餘角色疲勞值，自動從資料庫抓取最高分隊伍填滿空位。</li>
+                        <li>🔄 <strong>精確數據剝離：</strong>實戰反推時會先排除隊伍自訂加權 (Buff)，計算出純粹基礎 DPS，再與理論區間進行比對校正。</li>
                     </ul>
 
-                    <strong style="color: #00ffaa; font-size: 1.05em;">🚀 【介面與體驗優化】</strong>
-                    <ul style="margin: 5px 0 15px 20px; padding: 0; color: #ccc;">
-                        <li>📱 <strong>介面調整：</strong>套用暗色毛玻璃卡片佈局，調整手機端與電腦版的排版寬度。</li>
-                        <li>📷 <strong>截圖分享：</strong>分享面板新增顯示全編制實戰得分、BOSS 殘血狀態及抗性資訊。</li>
-                    </ul>
-
-                    <strong style="color: #ffaa00; font-size: 1.05em;">🔧 【修復與調整】</strong>
-                    <ul style="margin: 5px 0 15px 20px; padding: 0; color: #ccc;">
-                        <li>⚙️ <strong>推演模式切換：</strong>修復「自動推演」與「手動編隊」選單無法正確切換底層邏輯的問題。</li>
-                        <li>🚦 <strong>狀態指示：</strong>為篩選器與「全選/清空」按鈕加上狀態切換的視覺提示。</li>
-                        <li>🛠️ <strong>渲染修復：</strong>修復字串拼接語法錯誤導致的沙盤無法顯示問題。</li>
-                    </ul>
-
-                    <strong style="color: #888; font-size: 1em;">【v4.7.0 ~ 4.7.4 近期版本回顧】</strong>
+                    <strong style="color: #888; font-size: 1em;">【v4.7.0 ~ 4.7.5 近期版本回顧】</strong>
                     <div style="margin: 5px 0 0 10px; color: #888; line-height: 1.6; font-size: 0.95em;">
-                        - (4.7.4) 無損實戰洗牌、防呆選單與血量鎖定、一鍵重設預設 DPS、雙檔分離與分頁 UI。<br>
-                        - (4.7.3) 實裝實戰反推最佳化、序列王血量代數反解引擎與大數據貢獻問卷。<br>
-                        - (4.7.2) 實裝「動態壓軸」一鍵編制邏輯。<br>
-                        - (4.7.1) 新增「內建軸穩定性計算器」，支援實測耗時統計分析。<br>
-                        - (4.7.0) 實裝「手法折損全局與微調拉桿」及無預設 DPS 自訂覆寫功能。
+                        - (4.7.5) 指南擴充、穩定度計算器普及、編隊拖曳互動、記憶擴充(10套)、系統報錯功能。<br>
+                        - (4.7.4) 無損實戰洗牌、一鍵重設預設 DPS、雙檔分離 UI。<br>
+                        - (4.7.3) 序列王血量代數反解引擎、大數據貢獻問卷。<br>
+                        - (4.7.2) 實裝「動態壓軸」編制邏輯。<br>
+                        - (4.7.1) 新增「內建軸穩定性計算器」。<br>
+                        - (4.7.0) 實裝「手法折損全局與微調拉桿」。
                     </div>
                 </div>
             </details>
