@@ -247,7 +247,7 @@
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
                                 <li><strong>📊 自訂加權面板：</strong>點擊排軸卡片上的 [DPS數字] 可開啟面板，直接手動覆寫該隊的真實 DPS、穩定性，甚至設定「🌟 當期矩陣屬性增傷加權(%)」。</li>
                                 <li><strong>⏱️ 穩定性計算器：</strong>在「自訂加權」面板內點擊🧮按鈕。輸入排軸的「標準耗時」與多次實測「實際耗時」(以逗號分隔)，系統會用標準差(σ)算出您的真實穩定度，一鍵套用。</li>
-                                <li><strong>➕ 新增自訂編隊：</strong>點擊列表頂部的按鈕，可手動綁定主C、副C、生存並賦予 DPS 與難度，永久寫入瀏覽器本機。</li>
+                                <li><strong>➕ 新增自訂編隊：</strong>點擊列表頂部的按鈕，可綁定角色並賦予專屬 DPS 與難度。新建後系統會自動打勾啟用，並在推演時具備絕對優先權。</li>
                             </ul>
                             <strong style="color: var(--neon-purple); font-size: 1.05em;">【全域視窗：管理與互動】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
@@ -276,10 +276,12 @@
                     
                     <strong style="color: var(--neon-purple); font-size: 1.05em;">✨ v4.7.6 【核心演算法與機制升級】</strong>
                     <ul style="margin: 5px 0 15px 20px; padding: 0; color: #ccc;">
-                        <li>🧠 <strong>Beam Search 引擎：</strong>一鍵編制正式升級為束式搜索演算法，支援全局最佳化運算與自訂搜尋深度。</li>
+                        <li>🧠 <strong>Beam Search 引擎：</strong>「一鍵極限編制」與「無損洗牌反推」全面升級為束式搜索演算法，支援全局最佳化運算與自訂搜尋深度。</li>
                         <li>🌍 <strong>全局環境抗性：</strong>捨棄單隊勾選，改為於環境設定中為 1~4 號王獨立設定抗性標籤，系統推演時將自動比對隊伍主C屬性結算減傷。</li>
                         <li>🤖 <strong>資料庫自動填補：</strong>實戰洗牌完成後，支援依據剩餘角色疲勞值，自動從資料庫抓取最高分隊伍填滿空位。</li>
                         <li>🔄 <strong>精確數據剝離：</strong>實戰反推時會先排除隊伍自訂加權 (Buff)，計算出純粹基礎 DPS，再與理論區間進行比對校正。</li>
+                        <li>👑 <strong>自訂編隊優先權：</strong>系統會優先採用自訂編隊設定，解決預設排軸覆蓋問題。新增自訂編隊後將自動啟用。</li>
+                        <li>⚡ <strong>動態算力偵測：</strong>執行推演前進行 50 毫秒的硬體測速，提供更精準的運算時間預估。</li>
                     </ul>
 
                     <strong style="color: #888; font-size: 1em;">【v4.7.0 ~ 4.7.5 近期版本回顧】</strong>
@@ -430,8 +432,9 @@
                     <strong style="color: #00ffaa; font-size: 1.05em;">【右側推演按鈕：🔄 實戰反推與無損洗牌 (硬核最佳化)】</strong>
                     <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
                         <li><strong>運算公式：</strong><code>真實 DPS = 等效總傷害 ÷ 真實戰鬥時間</code>。系統會精準扣除您在環境設定中的「轉場耗時」與各王的「獨立抗性減傷」。</li>
-                        <li><strong>抗性扣除事例：</strong>您將 [1] 號王設為「❄️冷凝」(抗性50%)。當【凌陽隊(冷凝主C)】打出 1000 萬實際扣血，系統反推擊殺第 1 隻王時，會判定其消耗了 <code>400w ÷ (1 - 0.5) = 800w</code> 的等效傷害。系統會還原真實火力並重新排序！</li>
-                        <li><strong>彈窗操作 (自動填補)：</strong>洗牌完成後彈出確認視窗。若點選「確定」，系統會自動從資料庫抓取最高分且不衝突的排軸，填滿剩下的沙盤空位。</li>
+                        <li><strong>抗性扣除事例：</strong>您將 [1] 號王設為「❄️冷凝」(抗性50%)。當【凌陽隊(冷凝主C)】打出 1000 萬實際扣血，系統反推擊殺第 1 隻王時，會判定其消耗了 <code>400w ÷ (1 - 0.5) = 800w</code> 的等效傷害。系統會還原各隊真實火力，並透過 Beam Search 引擎進行「穿插運算」，為您找出完美避開抗性且轉場浪費最少的最佳順序！</li>
+                        <li><strong>彈窗操作 1 (搜尋深度)：</strong>點擊後系統會評估理論組合數，並要求輸入「搜尋深度 (Beam Width)」，以進行最佳穿插順序之計算。</li>
+                        <li><strong>彈窗操作 2 (自動填補)：</strong>洗牌完成後彈出確認視窗。若點選「確定」，系統會依序從資料庫抓取分數最高且不衝突的排軸，填補剩餘空位。</li>
                     </ul>
                     <strong style="color: #ffaa00; font-size: 1.05em;">【右側隱藏機制：🧮 代數反解與王血量校正】</strong>
                     <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
