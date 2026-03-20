@@ -254,19 +254,36 @@ function renderRotations() {
 function buildOptionsHTML(slotType, v1, v2, v3, curRaw, used, teamBases) {
     let html = `<option value="">-- ${slotType==1 ? t('主C') : slotType==2 ? t('副C') : t('生存')} --</option>`;
     let recs = new Map(), hasContext = (slotType === 1 && (v2 || v3)) || (slotType === 2 && (v1 || v3)) || (slotType === 3 && (v1 || v2));
+    
     let availableDisplayChars = [];
-    for (let name of ownedCharacters) { if (name === '漂泊者') { availableDisplayChars.push('光主', '暗主', '風主'); } else { availableDisplayChars.push(name); } }
+    let availableSet = new Set(); // 🚀 新增：用 Set 來做 O(1) 光速查找
+
+    for (let name of ownedCharacters) { 
+        if (name === '漂泊者') { 
+            availableDisplayChars.push('光主', '暗主', '風主'); 
+            availableSet.add('光主').add('暗主').add('風主'); // 同步加進雷達
+        } else { 
+            availableDisplayChars.push(name); 
+            availableSet.add(name); // 同步加進雷達
+        } 
+    }
 
     dpsData.forEach(d => {
         let match = hasContext ? ((slotType === 1 || !v1 || d.c1 === v1) && (slotType === 2 || !v2 || d.c2 === v2) && (slotType === 3 || !v3 || d.c3 === v3)) : checkedRotations.has(d.id);
         if(match) {
             let target = slotType==1 ? d.c1 : slotType==2 ? d.c2 : d.c3;
-            if(availableDisplayChars.includes(target)) {
+            
+            // 🚀 殺招：把 .includes() 換成 .has()，徹底消除陣列遍歷的卡頓！
+            if(availableSet.has(target)) {
                 let c1Avail = (slotType === 1) || (d.c1 === v1 || (used[getBase(d.c1)]||0) < (charData[getBase(d.c1)]?.max||1));
                 let c2Avail = (slotType === 2) || (d.c2 === v2 || (used[getBase(d.c2)]||0) < (charData[getBase(d.c2)]?.max||1));
                 let c3Avail = (slotType === 3) || (d.c3 === v3 || (used[getBase(d.c3)]||0) < (charData[getBase(d.c3)]?.max||1));
                 if (!recs.has(target)) recs.set(target, { maxDPS: 0, buildable: false });
-                if (c1Avail && c2Avail && c3Avail) { recs.get(target).buildable = true; let r = getRotDpsRange(d); if (r.min > recs.get(target).maxDPS) recs.get(target).maxDPS = r.min; }
+                if (c1Avail && c2Avail && c3Avail) { 
+                    recs.get(target).buildable = true; 
+                    let r = getRotDpsRange(d); 
+                    if (r.min > recs.get(target).maxDPS) recs.get(target).maxDPS = r.min; 
+                }
             }
         }
     });
