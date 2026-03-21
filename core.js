@@ -568,7 +568,8 @@ function runBitmaskDP(teams, env) {
             }
         }
     }
-    return dp[numStates - 1].seq;
+    // 🚀 原本只有回傳陣列，現在連同最高分數一起回傳
+    return { seq: dp[numStates - 1].seq, score: dp[numStates - 1].score };
 }
 
 // --- 8. 進階推演與編隊功能 (雙引擎調度器) ---
@@ -784,11 +785,14 @@ async function reverseInferAndOptimize() {
             else useDP = (n <= 14); 
 
             let bestSequence = [];
+            let bestSimDmg = 0; // 🚀 新增：用來記錄底層引擎算出的最高總傷害
 
             if (useDP) {
                 updateProgress(50, t(`啟動狀態壓縮 DP 引擎 (預估 `) + `${estDpTimeSec}` + t(` 秒)...`));
                 await yieldToMain();
-                bestSequence = runBitmaskDP(poolToPermute, env); 
+                let dpRes = runBitmaskDP(poolToPermute, env); 
+                bestSequence = dpRes.seq;
+                bestSimDmg = dpRes.score; // 🚀 攔截 DP 引擎的最高分
             } else {
                 let beamWidth = defaultBeamWidth;
                 let widthChoice = prompt(t(`啟動束式搜索。\n請輸入搜尋深度 (Beam Width)。\n建議值：500。`), "500");
@@ -813,7 +817,6 @@ async function reverseInferAndOptimize() {
                                 loopGuard++;
                                 let lvlPenalty = (tmp_r === 1) ? 1.0 : (tmp_r === 2 ? (env.pen110 || 1.0) : (env.pen120 || 1.0));
                                 
-                                // 🚀 統一增傷計算器
                                 let r_factor = getCombatMultiplier(env, team.teamAttr, team.c1, tmp_idx);
                                 
                                 let timeOnField = env.battleTime - t_left;
@@ -842,6 +845,7 @@ async function reverseInferAndOptimize() {
                     states = nextStates.slice(0, beamWidth);
                 }
                 bestSequence = states[0].sequence;
+                bestSimDmg = states[0].score; // 🚀 攔截 Beam 引擎的最高分
             }
 
             updateProgress(100, t('穿插最佳化完成！'));
@@ -860,7 +864,11 @@ async function reverseInferAndOptimize() {
                 }
             });
             
+            // 🚀 將原始總傷害換算為《鳴潮》遊戲內得分，並顯示在彈窗中
+            let projectedScore = Math.floor(bestSimDmg * env.scoreRatio);
+            
             let successMsg = fillFromDB ? t("✅ 實戰反推與穿插最佳化完成，並已自動填補空位！") : t("✅ 實戰反推完成，已為您計算出能避開抗性與轉場浪費的最佳順序！");
+            successMsg += t("\n🏆 最佳化後預估總分：") + projectedScore.toLocaleString() + t(" 分");
             alert(successMsg);
         }
         updateTracker();
