@@ -21,8 +21,6 @@
       gtag('js', new Date());
       gtag('config', 'G-FYW9EX8V5G');
     </script>
-</head>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* 預防多語系切換閃爍 (FOUC) */
@@ -200,7 +198,7 @@
         <button class="btn-top" onclick="openDataManager()" style="color:var(--neon-green); border-color:var(--border-glass);">⚙️ 數據總管與備份</button>
     </div>
     
-    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: var(--neon-purple); vertical-align: middle;">v4.7.6</span></h2>
+    <h2>鳴潮矩陣編隊工具 <span style="font-size: 0.5em; color: var(--neon-purple); vertical-align: middle;">v4.8.0</span></h2>
     
     <div class="data-source">
         <span>📊 數據庫設計與邏輯：AI架構 / 數據提供：QuichilOvO、南邊 / 整理：Kolton</span>
@@ -213,11 +211,11 @@
     </div>
 
     <div id="page1" class="page-content active">
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch;">
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-start;">
             
             <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
                 
-                <details open style="flex: 1; background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer;">
+                <details open style="background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); cursor: pointer;">
                     <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 歡迎使用！點此查看「角色與排軸設定」指南</summary>
                     <div style="margin-top: 15px; border-top: 1px dashed var(--neon-green); padding-top: 15px; cursor: default;" onclick="event.stopPropagation();">
                         <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
@@ -253,11 +251,13 @@
                                 <li><strong>運算公式：</strong><code>各難度折損率 = 100 - (100 - 全局設定值) × 難度權重</code>。您也可點開下方的摺疊面板，單獨對「⚠️ 極難」或「🟩 輪椅」進行微調。</li>
                                 <li><strong>結果事例：</strong>【今汐隊】理論 DPS 為 6w (⭐進階)。若您將拉桿設為 80%，該排軸的真實達成率為 <code>100-(100-80)×1.4 = 72%</code>。系統會將該隊實戰 DPS 下修為 <strong>4.32w</strong>，防止分數預估膨脹。</li>
                             </ul>
-                            <strong style="color: #00ffaa; font-size: 1.05em;">【🪟 第一頁專屬彈出視窗與面板操作】</strong>
+                            <strong style="color: #00ffaa; font-size: 1.05em;">【🪟 第一頁專屬彈出視窗與進階面板 (v4.8 升級)】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                                <li><strong>📊 自訂加權面板：</strong>點擊排軸卡片上的 [DPS數字] 可開啟面板，直接手動覆寫該隊的真實 DPS、穩定性，甚至設定「🌟 當期矩陣屬性增傷加權(%)」。</li>
+                                <li><strong>📊 自訂加權面板：</strong>點擊排軸卡片上的 [DPS數字] 可開啟面板，直接手動覆寫該隊的真實 DPS、穩定性。</li>
+                                <li><strong>🎲 蒙地卡羅大頭判定：</strong>若主C極度依賴單次核爆(如今汐)，可在此設定核心暴率與沒暴損失，系統將以 10,000 次亂數模擬精算下限期望值。</li>
+                                <li><strong>📈 魔法曲線解析：</strong>實戰傷害並非線性。您可以貼上動作排軸，讓「魔法解析器」自動抓取爆發點，並精算出專屬的 K 值 (冪函數指數)，使殘血推演達到極致精準。</li>
                                 <li><strong>⏱️ 穩定性計算器：</strong>在「自訂加權」面板內點擊🧮按鈕。輸入排軸的「標準耗時」與多次實測「實際耗時」(以逗號分隔)，系統會用標準差(σ)算出您的真實穩定度，一鍵套用。</li>
-                                <li><strong>➕ 新增自訂編隊：</strong>點擊列表頂部的按鈕，可綁定角色並賦予專屬 DPS 與難度。新建後系統會自動打勾啟用，並在推演時具備絕對優先權。</li>
+                                <li><strong>➕ 新增自訂編隊：</strong>點擊列表頂部的按鈕，可綁定角色並賦予專屬 DPS、自訂循環軸長與難度。新建後系統會自動打勾啟用，並在推演時具備絕對優先權。</li>
                             </ul>
                             <strong style="color: var(--neon-purple); font-size: 1.05em;">【全域視窗：管理與互動】</strong>
                             <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
@@ -268,34 +268,49 @@
                     </div>
                 </details>
 
-                <div style="background: rgba(30, 30, 36, 0.7); border: 1px solid #9c9c26; border-left: 4px solid #9c9c26; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-                    <strong style="color: #d4af37; font-size: 1.05em;">🛠️ 開發者備註 & 下期預告 (v4.8 展望)：</strong>
-                    <div style="margin-top: 8px; color: #ddd; font-size: 0.95em; line-height: 1.6;">
-                        因目前系統尚缺乏精確的「動態傷害曲線」數據，當前版本的一鍵編制與實戰重排，是採用相對傻瓜式的「平滑均傷」演算法。<br><br>
-                        我們深知實戰中「爆發前置」與「平滑出傷」在殘血收尾時的巨大差異。因此，我們將在下個大版本 (v4.8) 嘗試實裝：<br>
-                        1. <strong>【自訂各軸傷害折線】</strong>：允許您自訂排軸的傷害模型（例如：按照每秒產生多少百分比的「累加曲線」去拉動，或是設定「第幾秒會產生幾 % 的總傷」的爆發模型）。<br>
-                        2. <strong>【自訂循環次數】</strong>：讓傷害與耗時計算以完整的 Rotation 循環為單位。<br>
-                        這會讓編隊與殘血推演的精準度產生質的飛躍，敬請期待！
+                <div style="background: rgba(30, 30, 36, 0.7); border: 1px solid #9c9c26; border-left: 4px solid #9c9c26; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); flex: 1; min-width: 300px;">
+                    <strong style="color: #d4af37; font-size: 1.1em; display: block; margin-bottom: 15px; border-bottom: 1px dashed #555; padding-bottom: 10px;">🛠️ 開發者備註 (3/21 v4.8)：</strong>
+                    
+                    <div style="color: #ddd; font-size: 0.95em; line-height: 1.8;">
+                        <p style="margin-top: 0; color: #fff;">致各位使用者：</p>
+                        
+                        <p style="margin-bottom: 12px; text-align: justify;">
+                            1. 為了應對未來的「終焉矩陣」，本次升級徹底重構了底層時間引擎。現在系統已能消化 3.2 版本中帶有「首輪暖機特化（如弗洛洛首輪耗時 34s）」與「非 25s 常規軸」的動態數據。
+                        </p>
+
+                        <p style="margin-bottom: 12px; text-align: justify;">
+                            2. 環境設定新增了 Boss 等級 (Lv.110/120) 傷害衰減欄位。系統內建代數校正功能，若想追求極致的推演精準度，請在實戰各 R 階段測出裸傷來進行一鍵反解。
+                        </p>
+
+                        <p style="margin-bottom: 15px; text-align: justify;">
+                            3. 下次大更新預計將配合「終焉矩陣」第一季上線進行針對性調整。目前這套 DP+Beam 雙引擎的幫助，暫時滿足了本工具的創立初衷，各位若有任何突發奇想或好建議，歡迎隨時提出！
+                        </p>
+                        
+                        <p style="text-align: right; margin-bottom: 0; margin-top: 25px; font-style: italic; color: #aaa; border-top: 1px solid var(--border-glass); padding-top: 15px;">
+                            by skoda_hab OR 清音浮香(801028084) 
+                        </p>
                     </div>
                 </div>
+                
             </div>
 
             <details style="flex: 1; min-width: 300px; background: rgba(30, 30, 36, 0.7); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); cursor: pointer;">
-                <summary style="color: var(--gold); font-weight: bold; outline: none; font-size: 1.1em;">📜 點此查看版本更新說明 (當前: v4.7.6 正式版)</summary>
+                <summary style="color: var(--gold); font-weight: bold; outline: none; font-size: 1.1em;">📜 點此查看版本更新說明 (當前: v4.8.0 正式版)</summary>
                 <div style="margin-top: 15px; font-size: 0.95em; color: #ccc; line-height: 1.6; border-top: 1px dashed var(--border-glass); padding-top: 15px; cursor: default;" onclick="event.stopPropagation();">
                     
-                    <strong style="color: var(--neon-purple); font-size: 1.05em;">✨ v4.7.6 【核心演算法與機制升級】</strong>
+                    <strong style="color: var(--neon-purple); font-size: 1.05em;">✨ v4.8.0 【核心演算法與穩定性升級】</strong>
                     <ul style="margin: 5px 0 15px 20px; padding: 0; color: #ccc;">
-                        <li>🧠 <strong>Beam Search 引擎：</strong>「一鍵極限編制」與「無損洗牌反推」全面升級為束式搜索演算法，支援全局最佳化運算與自訂搜尋深度。</li>
-                        <li>🌍 <strong>全局環境抗性：</strong>捨棄單隊勾選，改為於環境設定中為 1~4 號王獨立設定抗性標籤，系統推演時將自動比對隊伍主C屬性結算減傷。</li>
-                        <li>🤖 <strong>資料庫自動填補：</strong>實戰洗牌完成後，支援依據剩餘角色疲勞值，自動從資料庫抓取最高分隊伍填滿空位。</li>
-                        <li>🔄 <strong>精確數據剝離：</strong>實戰反推時會先排除隊伍自訂加權 (Buff)，計算出純粹基礎 DPS，再與理論區間進行比對校正。</li>
-                        <li>👑 <strong>自訂編隊優先權：</strong>系統會優先採用自訂編隊設定，解決預設排軸覆蓋問題。新增自訂編隊後將自動啟用。</li>
-                        <li>⚡ <strong>動態算力偵測：</strong>執行推演前進行 50 毫秒的硬體測速，提供更精準的運算時間預估。</li>
+                        <li>⏳ <strong>動態軸長與首輪特化：</strong>徹底打破 25 秒固定軸長限制！系統現支援讀取各排軸的「真實循環秒數」與「首輪暖機特化 (如弗洛洛首輪34s)」，新增自訂編隊時亦開放設定專屬軸長。</li>
+                        <li>📈 <strong>非線性傷害曲線：</strong>實裝冪函數曲線運算 (K值)，支援跨輪次殘血推演與極低血量防護機制。</li>
+                        <li>🎲 <strong>蒙地卡羅模擬：</strong>新增 10,000 次亂數抽樣功能，針對單發高傷技能未暴擊的損傷進行期望值精算。</li>
+                        <li>🧠 <strong>雙引擎動態調度：</strong>首度實裝「狀態壓縮 DP」演算法 (保證全域最佳解)。系統會依據候選隊伍數量自動在 DP 與 Beam Search 間分流，完美兼顧運算效能與數學極限。</li>
+                        <li>⚙️ <strong>等級減傷校正：</strong>環境設定新增實測傷害參數輸入功能，可反算並覆寫 110 級與 120 級的真實減傷係數。</li>
+                        <li>🔒 <strong>非同步運算防護：</strong>推演引擎重構為非同步執行，加入防連點鎖與單次遍歷優化，避免高負載運算時瀏覽器卡死。</li>
                     </ul>
 
-                    <strong style="color: #888; font-size: 1em;">【v4.7.0 ~ 4.7.5 近期版本回顧】</strong>
+                    <strong style="color: #888; font-size: 1em;">【v4.7.0 ~ 4.7.6 近期版本回顧】</strong>
                     <div style="margin: 5px 0 0 10px; color: #888; line-height: 1.6; font-size: 0.95em;">
+                        - (4.7.6) Beam Search 升級、全局環境抗性、自動填補空位、精確數據剝離、自訂編隊優先、動態算力偵測。<br>
                         - (4.7.5) 指南擴充、穩定度計算器普及、編隊拖曳互動、記憶擴充(10套)、系統報錯功能。<br>
                         - (4.7.4) 無損實戰洗牌、一鍵重設預設 DPS、雙檔分離 UI。<br>
                         - (4.7.3) 序列王血量代數反解引擎、大數據貢獻問卷。<br>
@@ -346,41 +361,41 @@
             </div>
 
             <div style="margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-        <span style="color: var(--gold); font-weight: bold;">🎯 全局操作達成率 (自動依難度換算折損)</span>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <button onclick="openCalcModal()" style="background:var(--neon-purple); color:#fff; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 0 10px rgba(207,0,255,0.4);">⏱️ 內建軸穩定性計算器</button>
-            <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
-        </div>
-    </div>
-    <input type="range" id="skill-slider" min="50" max="100" value="100" oninput="updateMasterSkill()">
-    
-    <details style="margin-top: 15px;">
-        <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">⚙️ 依排軸難度微調個別穩定性 (點擊展開)</summary>
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-            <div style="flex: 1; min-width: 120px;">
-                <label style="color:#f44336; font-size:0.85em; font-weight:bold;">⚠️ 極難: <span id="val-diff-4">100%</span></label>
-                <input type="range" id="slider-diff-4" min="1" max="100" value="100" oninput="updateIndividualSkill('⚠️', this.value, 'val-diff-4')">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                    <span style="color: var(--gold); font-weight: bold;">🎯 全局操作達成率 (自動依難度換算折損)</span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="openCalcModal()" style="background:var(--neon-purple); color:#fff; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 0 10px rgba(207,0,255,0.4);">⏱️ 內建軸穩定性計算器</button>
+                        <span id="skill-display" style="color: var(--neon-purple); font-weight: 800; font-size: 1.2em;">100%</span>
+                    </div>
+                </div>
+                <input type="range" id="skill-slider" min="50" max="100" value="100" oninput="updateMasterSkill()">
+                
+                <details style="margin-top: 15px;">
+                    <summary style="color:#aaa; font-size:0.9em; cursor:pointer; outline:none;">⚙️ 依排軸難度微調個別穩定性 (點擊展開)</summary>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+                        <div style="flex: 1; min-width: 120px;">
+                            <label style="color:#f44336; font-size:0.85em; font-weight:bold;">⚠️ 極難: <span id="val-diff-4">100%</span></label>
+                            <input type="range" id="slider-diff-4" min="1" max="100" value="100" oninput="updateIndividualSkill('⚠️', this.value, 'val-diff-4')">
+                        </div>
+                        <div style="flex: 1; min-width: 120px;">
+                            <label style="color:#ffb300; font-size:0.85em; font-weight:bold;">⭐ 進階: <span id="val-diff-3">100%</span></label>
+                            <input type="range" id="slider-diff-3" min="1" max="100" value="100" oninput="updateIndividualSkill('⭐', this.value, 'val-diff-3')">
+                        </div>
+                        <div style="flex: 1; min-width: 120px;">
+                            <label style="color:#2196f3; font-size:0.85em; font-weight:bold;">🔵 中等: <span id="val-diff-2">100%</span></label>
+                            <input type="range" id="slider-diff-2" min="1" max="100" value="100" oninput="updateIndividualSkill('🔵', this.value, 'val-diff-2')">
+                        </div>
+                        <div style="flex: 1; min-width: 120px;">
+                            <label style="color:#4caf50; font-size:0.85em; font-weight:bold;">🟩 輪椅: <span id="val-diff-1">100%</span></label>
+                            <input type="range" id="slider-diff-1" min="1" max="100" value="100" oninput="updateIndividualSkill('🟩', this.value, 'val-diff-1')">
+                        </div>
+                        <div style="flex: 1; min-width: 120px;">
+                            <label style="color:#9c27b0; font-size:0.85em; font-weight:bold;">🧩 非主流: <span id="val-diff-5">100%</span></label>
+                            <input type="range" id="slider-diff-5" min="1" max="100" value="100" oninput="updateIndividualSkill('🧩', this.value, 'val-diff-5')">
+                        </div>
+                    </div>
+                </details>
             </div>
-            <div style="flex: 1; min-width: 120px;">
-                <label style="color:#ffb300; font-size:0.85em; font-weight:bold;">⭐ 進階: <span id="val-diff-3">100%</span></label>
-                <input type="range" id="slider-diff-3" min="1" max="100" value="100" oninput="updateIndividualSkill('⭐', this.value, 'val-diff-3')">
-            </div>
-            <div style="flex: 1; min-width: 120px;">
-                <label style="color:#2196f3; font-size:0.85em; font-weight:bold;">🔵 中等: <span id="val-diff-2">100%</span></label>
-                <input type="range" id="slider-diff-2" min="1" max="100" value="100" oninput="updateIndividualSkill('🔵', this.value, 'val-diff-2')">
-            </div>
-            <div style="flex: 1; min-width: 120px;">
-                <label style="color:#4caf50; font-size:0.85em; font-weight:bold;">🟩 輪椅: <span id="val-diff-1">100%</span></label>
-                <input type="range" id="slider-diff-1" min="1" max="100" value="100" oninput="updateIndividualSkill('🟩', this.value, 'val-diff-1')">
-            </div>
-            <div style="flex: 1; min-width: 120px;">
-                <label style="color:#9c27b0; font-size:0.85em; font-weight:bold;">🧩 非主流: <span id="val-diff-5">100%</span></label>
-                <input type="range" id="slider-diff-5" min="1" max="100" value="100" oninput="updateIndividualSkill('🧩', this.value, 'val-diff-5')">
-            </div>
-        </div>
-    </details>
-</div>
 
             <div id="rotation-setup" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
         </div>
@@ -390,7 +405,7 @@
         </div>
     </div>
 
-    </div> <div id="page2" class="page-content">
+    <div id="page2" class="page-content">
         
         <details style="background: rgba(0, 255, 170, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); margin-bottom: 20px; cursor: pointer;">
             <summary style="color: var(--neon-green); font-weight: bold; outline: none; font-size: 1.1em;">📖 操作指南：實戰編隊與推演功能 (點擊展開)</summary>
@@ -400,65 +415,79 @@
                     <button class="btn-guide-detail" onclick="toggleGuideMode('detail')" style="background: transparent; color: #aaa; border: 1px solid #555; padding: 6px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s;">🔍 詳細版 (模塊原理解析)</button>
                 </div>
                 <div class="guide-brief-content" style="display: block; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
-                    <strong style="color: #fff; font-size: 1.05em;">【左側面板：可用資源掌控】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>⏳ 剩餘次數追蹤：</strong>隨時盯緊左側清單，排入沙盤的角色會即時扣除可用次數，幫助您掌控隊伍調度。</li>
-                    </ul>
-                    <strong style="color: #fff; font-size: 1.05em;">【右側沙盤：兩大推演模式】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>模式一 (抄作業)：</strong>點擊沙盤上方的「🔥 一鍵極限編制」，系統會自動滿編目前最高總分的隊伍。</li>
-                        <li><strong>模式二 (優化現有)：</strong>排好出戰隊伍並填寫「實戰得分」。接著點擊「🔄 無損洗牌反推」，系統會自動排序最佳出戰順序！</li>
-                    </ul>
-                    <strong style="color: var(--gold); font-size: 1.05em; margin-top: 10px; display: inline-block;">【右側面板：快捷與環境設定】</strong>
-                    <ul style="margin: 5px 0 0 20px; padding: 0; color: #ccc;">
-                        <li><strong>⚙️ 雙軌模式切換：</strong>在沙盤下方的「環境設定」內，可隨時切換「🔥自動推演」與「🗺️手動編隊」。</li>
-                        <li><strong>🌌 環境參數微調：</strong>您可展開環境設定，自訂各王血量、轉場耗時與各序列專屬抗性，讓推演更貼近當期真實環境。</li>
-                        <li><strong>⚡ 快速填入：</strong>利用沙盤上方的屬性篩選，一鍵將推薦配隊填入空位。</li>
-                        <li><strong>💾 記憶 / 📂 讀取：</strong>儲存您的矩陣愛用陣容，隨時無縫切換。</li>
-                    </ul>
-                </div>
-                <div class="guide-detail-content" style="display: none; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
-                    <strong style="color: #fff; font-size: 1.05em;">【左側面板：⏳ 剩餘可用次數 (疲勞值追蹤)】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>動態扣除：</strong>左側面板會即時掃描您的沙盤。當您將角色排入隊伍，對應的可用次數就會減少（一般角色 1 次，部分生存位 2 次）。</li>
-                        <li><strong>防呆提示：</strong>耗盡次數的角色會標記為「耗盡」；若您強行將已耗盡的角色排入隊伍，沙盤上的選單會亮起紅框警告。</li>
-                    </ul>
-                    <strong style="color: #fff; font-size: 1.05em;">【右側面板：🌌 矩陣環境設定與雙軌模式】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li>點開沙盤區的「🌌 矩陣實戰接力推演與環境設定」，此處為核心推演引擎的參數控制台：
-                            <ol style="margin: 5px 0 5px 20px; color: #aaa;">
-                                <li><strong>⚙️ 雙軌推演模式切換：</strong>可切換「🔥自動推演」或「🗺️手動編隊」(根據殘血反算總分與置信度)。</li>
-                                <li><strong>📊 底層數值微調：</strong>包含「比例(分/萬)」、「各階段均血 (R1~R3)」、「血量後續成長(%)」、「轉場耗時(秒)」與「單隊時限(秒)」。決定了系統如何精確計算等效傷害與預估分數。</li>
+                            <strong style="color: #fff; font-size: 1.05em;">【左側面板：可用資源掌控】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>⏳ 剩餘次數追蹤：</strong>隨時盯緊左側清單，排入沙盤的角色會即時扣除可用次數，幫助您掌控隊伍調度。</li>
+                            </ul>
+                            <strong style="color: var(--gold); font-size: 1.05em;">【右側沙盤：兩大推演模式】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>模式一 (抄作業)：</strong>點擊沙盤上方的「🔥 一鍵極限編制」，系統會自動滿編目前最高總分的隊伍。</li>
+                                <li><strong>模式二 (優化現有)：</strong>排好出戰隊伍並填寫「實戰得分」。接著點擊「🔄 無損洗牌反推」，系統會自動排序最佳出戰順序！</li>
+                            </ul>
+                            <strong style="color: var(--neon-purple); font-size: 1.05em;">【右側面板：快捷與環境設定】</strong>
+                            <ul style="margin: 5px 0 0 20px; padding: 0; color: #ccc;">
+                                <li><strong>⚙️ 雙軌模式切換：</strong>在沙盤下方的「環境設定」內，可隨時切換「🔥自動推演」與「🗺️手動編隊」。</li>
+                                <li><strong>🌌 環境參數微調：</strong>您可展開環境設定，自訂各王血量、轉場耗時與各序列專屬抗性，讓推演更貼近當期真實環境。</li>
+                                <li><strong>⚡ 快速填入：</strong>利用沙盤上方的屬性篩選，一鍵將推薦配隊填入空位。</li>
+                                <li><strong>💾 記憶 / 📂 讀取：</strong>儲存您的矩陣愛用陣容，隨時無縫切換。</li>
+                            </ul>
+                        </div>
+                        <div class="guide-detail-content" style="display: none; font-size: 0.95em; color: #ddd; line-height: 1.6; animation: fadeIn 0.3s;">
+                            <strong style="color: #fff; font-size: 1.05em;">【左側面板：⏳ 剩餘可用資源與疲勞值】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>動態扣除：</strong>左側面板會即時掃描您的沙盤。當您將角色排入隊伍，對應的可用次數就會減少（一般角色 1 次，部分生存位 2 次）。</li>
+                                <li><strong>防呆提示：</strong>耗盡次數的角色會標記為「耗盡」；若您強行將已耗盡的角色排入隊伍，沙盤上的選單會亮起紅框警告。</li>
+                            </ul>
+                            
+                            <strong style="color: #fff; font-size: 1.05em;">【右側頂部：🚀 雙軌制自動編隊與陣容記憶】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>兩大編隊方案 (搭載智慧運算引擎)：</strong>
+                                    <ol style="margin: 5px 0 5px 20px; color: #aaa;">
+                                        <li><strong>🔥 一鍵極限編制：</strong>以「理論 DPS」或「穩定度下限」為基準，透過束式搜索極速篩選出全域總分最高的滿編隊伍。</li>
+                                        <li><strong>🔄 無損洗牌反推：</strong>扣除抗性與轉場，結合「魔法 K 值」與「首輪特化動態秒數」精算殘血收尾，為您找出完美避開抗性、時間浪費最少的最佳接力順序！</li>
+                                    </ol>
+                                </li>
+                                <li style="margin-top: 8px;"><strong>🧠 洗牌反推專屬雙引擎 (預設 14 隊自動切換，支援手動覆寫)：</strong>
+                                    <div style="color: #888; font-size: 0.85em; margin: 4px 0 6px 0; padding-left: 20px;">
+                                        * ⏳ 以下預估時間以現代主流桌機 CPU 為參考。若使用手機或舊型設備，時間將顯著增加。
+                                    </div>
+                                    <ul style="margin: 0 0 5px 20px; color: #aaa;">
+                                        <li><strong style="color:#00ffaa;">💎 狀態壓縮 DP：</strong>保證給出「絕對最高分」。但耗時呈指數成長 <strong>(例：排 15 隊約需 1~2 秒；極限 16 隊需 3~5 秒以上，超過 16 隊極易卡死)</strong>。僅建議在隊伍數量固定的「無損洗牌反推」時使用。</li>
+                                        <li><strong style="color:#ffb300;">🚀 Beam Search (束式搜索)：</strong>極速逼近極限。能瞬間處理海量組合 <strong>(例：面對一鍵編制高達 40~60 組候選隊伍的龐大數據，也僅需數秒即可完成)</strong>。憑藉 DPS 降冪啟發式邏輯，在預設深度下有 <strong>95%~99% 的機率</strong>命中全域最優解，是效能與準確度的完美平衡。</li>
+                                    </ul>
+                                </li>
+                                <li style="margin-top: 8px;"><strong>💾 記憶與 📂 讀取：</strong>可將當前沙盤完整存檔 (最多10組)，隨時一鍵無縫載入。</li>
+                            </ul>
+
+                            <strong style="color: var(--gold); font-size: 1.05em;">【右側中段：🌌 矩陣環境設定與推薦填入】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>⚙️ 雙軌推演模式切換：</strong>可切換「🔥自動推演 (依 DPS 接力波次)」或「🗺️手動編隊 (根據您填寫的尾王殘血反算總分)」。</li>
+                                <li><strong>🧠 引擎與 🎲 蒙地卡羅大頭判定：</strong>可手動強制覆寫使用的引擎。若啟用蒙地卡羅模擬，系統會以萬次亂數抽樣，解決依賴單發高傷角色(如今汐)未暴擊的期望值偏差。</li>
+                                <li><strong>📊 數值微調與校正：</strong>包含比例(分/萬)、均血與轉場耗時等。<strong>重點功能：</strong>點擊 Lv.110 或 Lv.120 旁的 ⚙️ 按鈕，輸入實測裸傷與衰減傷害，即可自動反解真實減傷係數。</li>
                                 <li><strong>🛡️ 各序列 Boss 抗性標籤：</strong>可為 1~4 號王獨立標註屬性抗性。系統推演時會自動比對隊伍主C屬性，精準結算減傷。</li>
-                            </ol>
-                        </li>
-                    </ul>
-                    <strong style="color: var(--gold); font-size: 1.05em;">【右側推演按鈕：🔥 一鍵編制 (Beam Search) 與參數設定】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>原理：</strong>系統採用束式搜索，同時展開多條分支推演，確保 16 隊加總最高，並將高火力隊伍壓軸。</li>
-                        <li><strong>彈窗操作 1 (選擇策略)：</strong>點擊執行後，系統會彈出視窗報告「預估運算時間」。請在輸入框輸入 1 (追求下限穩定度最高) 或 2 (追求上限理論值最高)。</li>
-                        <li><strong>彈窗操作 2 (搜尋深度)：</strong>接著系統會請您輸入「Beam Width (搜尋深度)」。數值越大越精準，若輸入大於組合總數，系統將啟動窮舉全域搜索。</li>
-                    </ul>
-                    <strong style="color: #00ffaa; font-size: 1.05em;">【右側推演按鈕：🔄 實戰反推與無損洗牌 (硬核最佳化)】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>運算公式：</strong><code>真實 DPS = 等效總傷害 ÷ 真實戰鬥時間</code>。系統會精準扣除您在環境設定中的「轉場耗時」與各王的「獨立抗性減傷」。</li>
-                        <li><strong>抗性扣除事例：</strong>您將 [1] 號王設為「❄️冷凝」(抗性50%)。當【凌陽隊(冷凝主C)】打出 1000 萬實際扣血，系統反推擊殺第 1 隻王時，會判定其消耗了 <code>400w ÷ (1 - 0.5) = 800w</code> 的等效傷害。系統會還原各隊真實火力，並透過 Beam Search 引擎進行「穿插運算」，為您找出完美避開抗性且轉場浪費最少的最佳順序！</li>
-                        <li><strong>彈窗操作 1 (搜尋深度)：</strong>點擊後系統會評估理論組合數，並要求輸入「搜尋深度 (Beam Width)」，以進行最佳穿插順序之計算。</li>
-                        <li><strong>彈窗操作 2 (自動填補)：</strong>洗牌完成後彈出確認視窗。若點選「確定」，系統會依序從資料庫抓取分數最高且不衝突的排軸，填補剩餘空位。</li>
-                    </ul>
-                    <strong style="color: #ffaa00; font-size: 1.05em;">【右側隱藏機制：🧮 代數反解與王血量校正】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>原理：</strong>當您在「手動編隊」模式下填寫了分數與準確的尾王殘血，系統會代數反解該隻王的真實總血量。若收集滿樣本且偏差大於 5%，會於環境設定內的「進階校正面板」提示您一鍵校正底層參數。</li>
-                    </ul>
-                    <strong style="color: var(--neon-purple); font-size: 1.05em;">【全域視窗：🪟 沙盤進階管理與互動】</strong>
-                    <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
-                        <li><strong>💾 記憶與 📂 讀取編隊：</strong>點擊「記憶」可將整盤陣容輸入名稱存檔（最多10組）。點擊「讀取」一鍵無縫載入沙盤。</li>
-                        <li><strong>⚙️ 數據總管與跨裝置備份 (右上角)：</strong>可一覽已解鎖角色與記憶存檔。點擊「📥 產生備份代碼」生成專屬密碼；在另一台裝置點擊「📤 匯入存檔代碼」即可完全覆寫同步。</li>
-                        <li><strong>⚠️ 系統防呆與報錯：</strong>遭遇未預期錯誤時系統會彈出報錯視窗，您可點擊「📧 寄出錯誤報告」發送給開發者協助修復。</li>
-                    </ul>
-                </div>
-            </div>
-        </details>
+                                <li><strong>🧮 代數反解 (隱藏機制)：</strong>當您在手動模式下填寫分數與準確的尾王殘血，系統會代數反解該隻王的真實總血量。偏差大於 5% 時，會於「進階校正面板」提示您一鍵校正。</li>
+                                <li><strong>⚡ 推薦配隊快速填入：</strong>利用面板下方的屬性與世代篩選，一鍵將推薦的高分排軸填入沙盤空位。</li>
+                            </ul>
+
+                            <strong style="color: var(--neon-purple); font-size: 1.05em;">【右側底部：📋 數據儀表板與編隊沙盤】</strong>
+                            <ul style="margin: 5px 0 10px 20px; padding: 0; color: #ccc;">
+                                <li><strong>📊 數據儀表板：</strong>顯示當前推演分數區間與實戰得分。手動模式下還會計算「數據置信度」，若低於標準，代表您填寫的實戰成績或血量可能有誤。</li>
+                                <li><strong>📷 截圖分享與 📤 數據貢獻：</strong>點擊可生成精美的戰報大圖，或匿名將實戰數據上傳給開發者完善大數據資料庫。</li>
+                                <li><strong>📋 沙盤表格互動：</strong>
+                                    <ol style="margin: 5px 0 5px 20px; color: #aaa;">
+                                        <li>支援滑鼠拖曳 (<code>Drag & Drop</code>) 快速調換隊伍順序。</li>
+                                        <li><strong>⚠️ 實戰數據動態覆寫 (DPS 與穩定度)：</strong>在表格內填寫【實戰得分】並執行反推後，系統會自動校正該隊伍的面板數據：
+                                            <ul style="margin: 5px 0 5px 20px; color: #aaa;">
+                                                <li><strong style="color:#00ffaa;">📈 上修 (超常發揮)：</strong>若實戰火力突破理論上限，系統會調高「自訂 DPS」，並將穩定度重置為 100% (視為您的新基準)。</li>
+                                                <li><strong style="color:#ff5252;">📉 下修 (低於下限)：</strong>若實戰火力跌破原穩定度的下限，系統會<strong>【維持理論 DPS 上限】</strong>，但直接調降該隊伍的「穩定度 (%)」，使其保底傷害恰好符合您的實際輸出，真實反映您當前的操作達成率。</li>
+                                            </ul>
+                                            (💡 若要還原為資料庫的理論預設值，請點擊該隊伍右側的「🔄 重設預設」按鈕。)
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </div>
+                    </details>
 
         <div class="container">
             <div class="panel pool-panel" style="padding: 0; overflow: hidden;">
@@ -496,12 +525,34 @@
                 <div class="preset-box" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--neon-green); margin-bottom: 15px;">
                     <details open>
                         <summary style="color:var(--neon-green); font-weight:bold; cursor:pointer; outline:none;">🌌 矩陣實戰接力推演與環境設定 (影響分數與轉場計算)</summary>
-                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-                            <span style="color:#00ffaa; font-weight:bold;">⚙️ 模式：</span>
-                            <select id="sim-mode" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:8px; outline:none; flex: 1;">
-                                <option value="auto">🔥 自動推演 (依DPS接力)</option>
-                                <option value="manual">🗺️ 手動編隊 (根據殘血反算總分與置信度)</option>
-                            </select>
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border-left: 3px solid var(--neon-purple);">
+                            <div style="flex: 1; min-width: 250px; display: flex; align-items: center; gap: 8px;">
+                                <span style="color:#00ffaa; font-weight:bold; white-space: nowrap;">⚙️ 模式：</span>
+                                <select id="sim-mode" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:8px; outline:none; flex: 1;">
+                                    <option value="auto">🔥 自動推演 (依DPS接力)</option>
+                                    <option value="manual">🗺️ 手動編隊 (根據殘血反算)</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 250px; display: flex; align-items: center; gap: 8px;">
+                                <span style="color:var(--neon-purple); font-weight:bold; white-space: nowrap;">🧠 引擎：</span>
+                                <select id="engine-select" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:8px; outline:none; flex: 1;">
+                                    <option value="auto">🤖 智慧分流 (推薦)</option>
+                                    <option value="dp">💎 狀態壓縮 DP (算力高)</option>
+                                    <option value="beam">🚀 Beam Search (極速)</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 250px; display: flex; align-items: center; gap: 8px;">
+                                <span style="color:var(--gold); font-weight:bold; white-space: nowrap;">🎲 模擬：</span>
+                                <select id="mc-select" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:8px; outline:none; flex: 1;">
+                                    <option value="off">⚡ 關閉 (僅算期望)</option>
+                                    <option value="on">🎲 啟用蒙地卡羅大頭判定</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="sim-progress-container" style="display: none; margin-top: 10px; margin-bottom: 5px; width: 100%; background: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid var(--neon-purple); overflow: hidden;">
+                            <div id="sim-progress-bar" style="width: 0%; height: 8px; background: var(--neon-purple); box-shadow: 0 0 10px var(--neon-purple); transition: width 0.1s linear;"></div>
+                            <div id="sim-progress-text" style="text-align: center; font-size: 0.8em; color: #ccc; margin-top: 4px; padding-bottom: 4px;">運算準備中...</div>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-top: 15px;">
                             <div><label style="font-size:0.8em; color:#aaa;">比例(分/萬):</label><input type="number" id="env-ratio" class="env-input" value="10" step="1" oninput="updateTracker()"></div>
@@ -510,6 +561,21 @@
                             <div><label style="font-size:0.8em; color:#aaa;">R3 均血:</label><input type="number" id="env-r3" class="env-input" value="1384.9" oninput="resetIndividualHP(); updateTracker();"></div>
                             <div><label style="font-size:0.8em; color:#aaa;">後續成長(%):</label><input type="number" id="env-growth" class="env-input" value="5" step="1" oninput="resetIndividualHP(); updateTracker();"></div>
                             <div><label style="font-size:0.8em; color:#aaa;">抗性減傷(%):</label><input type="number" id="env-res" class="env-input" value="40" step="5" style="color:#ffaa00;" oninput="updateTracker()"></div>
+                            <div><label style="font-size:0.8em; color:var(--neon-green);">增益加成(%):</label><input type="number" id="env-buff" class="env-input" value="30" step="5" style="color:var(--neon-green);" oninput="updateTracker()"></div>
+                            <div>
+                                <label style="font-size:0.8em; color:#ffb300;">Lv.110減傷:</label>
+                                <div style="display:flex; gap:4px; align-items:center;">
+                                    <input type="number" id="env-pen110" class="env-input" value="0.975" step="0.001" style="width: 60px;" oninput="updateTracker()">
+                                    <button onclick="calibratePenalty(110)" style="background:transparent; border:1px solid #ffb300; color:#ffb300; border-radius:4px; cursor:pointer; font-size:0.75em; padding:4px;" title="輸入實測傷害自動校正">⚙️</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-size:0.8em; color:#ff4d4d;">Lv.120減傷:</label>
+                                <div style="display:flex; gap:4px; align-items:center;">
+                                    <input type="number" id="env-pen120" class="env-input" value="0.951" step="0.001" style="width: 60px;" oninput="updateTracker()">
+                                    <button onclick="calibratePenalty(120)" style="background:transparent; border:1px solid #ff4d4d; color:#ff4d4d; border-radius:4px; cursor:pointer; font-size:0.75em; padding:4px;" title="輸入實測傷害自動校正">⚙️</button>
+                                </div>
+                            </div>
                             <div><label style="font-size:0.8em; color:#aaa;">轉場耗時(秒):</label><input type="number" id="env-trans" class="env-input" value="1.5" step="0.1" oninput="updateTracker()"></div>
                             <div><label style="font-size:0.8em; color:#aaa;">單隊時限(秒):</label><input type="number" id="env-time" class="env-input" style="color:var(--neon-purple);" value="120" step="10" oninput="updateTracker()"></div>
                             <div style="grid-column: 1 / -1; margin-top: 5px; padding-top: 12px; border-top: 1px dashed var(--border-glass); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -519,6 +585,27 @@
                                 <div style="display:flex; align-items:center; gap:2px;"><span style="color:#aaa; font-size:0.8em;">[2]</span><select id="env-res-2" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:4px; border-radius:4px; outline:none; font-size:0.85em;"><option value="">--無--</option><option value="冷凝">❄️冷凝</option><option value="熱熔">🔥熱熔</option><option value="導電">⚡導電</option><option value="氣動">🌪️氣動</option><option value="衍射">✨衍射</option><option value="湮滅">🌑湮滅</option></select></div>
                                 <div style="display:flex; align-items:center; gap:2px;"><span style="color:#aaa; font-size:0.8em;">[3]</span><select id="env-res-3" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:4px; border-radius:4px; outline:none; font-size:0.85em;"><option value="">--無--</option><option value="冷凝">❄️冷凝</option><option value="熱熔">🔥熱熔</option><option value="導電">⚡導電</option><option value="氣動">🌪️氣動</option><option value="衍射">✨衍射</option><option value="湮滅">🌑湮滅</option></select></div>
                                 <div style="display:flex; align-items:center; gap:2px;"><span style="color:#aaa; font-size:0.8em;">[4]</span><select id="env-res-4" onchange="updateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:4px; border-radius:4px; outline:none; font-size:0.85em;"><option value="">--無--</option><option value="冷凝">❄️冷凝</option><option value="熱熔">🔥熱熔</option><option value="導電">⚡導電</option><option value="氣動">🌪️氣動</option><option value="衍射">✨衍射</option><option value="湮滅">🌑湮滅</option></select></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <label style="font-size:0.85em; color:var(--neon-green); font-weight:bold; min-width: 180px;">⚔️ 各序列 Boss 增益標籤:</label>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <div style="display:flex; align-items:center; gap:2px;">
+                                        <span style="color:#aaa; font-size:0.8em;">[1]</span>
+                                        <input type="text" id="env-weak-1" placeholder="屬性或角色名" oninput="debouncedUpdateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--neon-green); padding:4px; border-radius:4px; outline:none; font-size:0.85em; width:95px;">
+                                        </div>
+                                    <div style="display:flex; align-items:center; gap:2px;">
+                                        <span style="color:#aaa; font-size:0.8em;">[2]</span>
+                                        <input type="text" id="env-weak-2" placeholder="屬性或角色名" oninput="debouncedUpdateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--neon-green); padding:4px; border-radius:4px; outline:none; font-size:0.85em; width:95px;">
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:2px;">
+                                        <span style="color:#aaa; font-size:0.8em;">[3]</span>
+                                        <input type="text" id="env-weak-3" placeholder="屬性或角色名" oninput="debouncedUpdateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--neon-green); padding:4px; border-radius:4px; outline:none; font-size:0.85em; width:95px;">
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:2px;">
+                                            <span style="color:#aaa; font-size:0.8em;">[4]</span>
+                                            <input type="text" id="env-weak-4" placeholder="屬性或角色名" oninput="debouncedUpdateTracker()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--neon-green); padding:4px; border-radius:4px; outline:none; font-size:0.85em; width:95px;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         </div>
@@ -585,8 +672,10 @@
 
     <div id="stats-modal" class="modal-overlay">
         <div style="background:var(--bg-panel); backdrop-filter:blur(20px); padding:25px; border-radius:16px; border:1px solid var(--gold); width:340px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+            
             <h3 style="margin-top:0; color:var(--gold); text-align:center;">📊 自訂加權</h3>
             <p id="stats-modal-rot" style="color:#aaa; font-size:0.9em; text-align:center; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;"></p>
+            
             <label style="display:block; margin-bottom:12px; color:#fff;">⚔️ 真實 DPS (萬): <input type="number" id="stats-dps" step="0.01" class="score-input" style="color:#fff; border-color:var(--border-glass);"></label>
             <label style="display:block; margin-bottom:12px; color:#fff;">
                 ⚖️ 穩定性 (%): 
@@ -599,6 +688,65 @@
                     </button>
                 </div>
             </label>
+
+            <div style="background:rgba(255,170,0,0.1); border:1px solid #ffaa00; padding:12px; border-radius:8px; margin-top:12px; margin-bottom:12px;">
+                <div style="color:#ffaa00; font-weight:bold; font-size:0.9em; margin-bottom:8px;">🎲 蒙地卡羅大頭判定 (選填)</div>
+                <div style="display:flex; gap:10px;">
+                    <label style="flex:1; color:#fff; font-size:0.8em;">
+                        🎯 核心暴率(%): <input type="number" id="stats-nuke-cr" class="score-input" placeholder="例: 75" style="margin-top:4px; border-color:#ffaa00; color:#ffaa00;">
+                    </label>
+                    <label style="flex:1; color:#fff; font-size:0.8em;">
+                        📉 沒暴損失(萬): <input type="number" id="stats-nuke-loss" class="score-input" placeholder="例: 15" style="margin-top:4px; border-color:#ffaa00; color:#ffaa00;">
+                    </label>
+                </div>
+            </div>
+
+            <div style="background:rgba(0,255,170,0.1); border:1px solid #00ffaa; padding:12px; border-radius:8px; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="color:#00ffaa; font-weight:bold; font-size:0.9em;">📈 傷害曲線擬合與魔法解析</div>
+                </div>
+                
+                <div style="display:flex; gap:8px; margin-bottom: 10px;">
+                    <label style="flex:1; color:#fff; font-size:0.75em;">
+                        🕒 檢核時間(%): <input type="number" id="stats-burst-t" class="score-input" placeholder="例: 30" style="margin-top:4px; border-color:#00ffaa; color:#00ffaa;" oninput="autoCalcK()">
+                    </label>
+                    <label style="flex:1; color:#fff; font-size:0.75em;">
+                        💥 累積總傷(%): <input type="number" id="stats-burst-d" class="score-input" placeholder="例: 80" style="margin-top:4px; border-color:#00ffaa; color:#00ffaa;" oninput="autoCalcK()">
+                    </label>
+                    <label style="flex:1; color:#fff; font-size:0.75em;">
+                        🧮 曲線指數(k): <input type="number" id="stats-curve-k" class="score-input" placeholder="預設: 1.0" step="0.01" style="margin-top:4px; border-color:#00ffaa; color:#00ffaa;">
+                    </label>
+                </div>
+
+                <details style="margin-top: 5px; border-top: 1px dashed #00ffaa; padding-top: 8px;">
+                    <summary style="color:#00ffaa; font-size:0.8em; cursor:pointer; outline:none;">✨ 貼上動作排軸，讓系統施展魔法 (點擊展開)</summary>
+                    <div style="margin-top: 8px;">
+                        
+                        <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center; flex-wrap: wrap;">
+                            <label style="color:#aaa; font-size:0.75em;">解析模式:</label>
+                            <select id="magic-parse-mode" class="score-input" style="width: auto; height: 24px; padding: 0 4px; margin-bottom: 0; font-size: 0.75em;">
+                                <option value="auto">🤖 智慧偵測 (2~3欄)</option>
+                                <option value="2col">⚖️ 強制雙欄 (動作, 傷害 - 自動均分)</option>
+                                <option value="3col-dur">⏱️ 強制三欄 (動作, 耗時, 傷害)</option>
+                                <option value="3col-time">⏳ 強制三欄 (動作, 第幾秒出傷, 傷害)</option>
+                            </select>
+                            
+                            <label style="color:#aaa; font-size:0.75em; margin-left:auto;">總耗時(秒):</label>
+                            <input type="number" id="magic-total-time" class="score-input" placeholder="例: 25" step="0.5" style="width: 60px; height: 24px; padding: 2px 4px; margin-bottom: 0;">
+                            <label style="color:#aaa; font-size:0.75em;">總傷害(萬):</label>
+                            <input type="number" id="magic-total-dmg" class="score-input" placeholder="選填" step="1" style="width: 60px; height: 24px; padding: 2px 4px; margin-bottom: 0;">
+                        </div>
+                        
+                        <textarea id="magic-paste-area" placeholder="請依上方模式貼上對應資料。&#10;支援「第幾秒出傷」或「單招耗時」。&#10;若選自動偵測，時間欄位可留空或打短號 (-)。" style="width:100%; height:100px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-glass); padding:8px; border-radius:6px; outline:none; font-family:monospace; resize:vertical; font-size:0.8em; box-sizing:border-box;"></textarea>
+                        
+                        <button type="button" onclick="runMagicParser()" style="width:100%; margin-top:5px; background:var(--neon-green); color:#000; font-weight:bold; border:none; padding:6px; border-radius:6px; cursor:pointer;">
+                            🪄 解析並自動填入 K 值
+                        </button>
+                        
+                    </div>
+                </details>
+            </div>
+
             <div style="display:flex; gap: 10px; margin-top: 20px;">
                 <button onclick="closeStatsModal()" class="btn-action-clear" style="flex:1; padding: 10px; background:#555; border:none;">取消</button>
                 <button onclick="clearStatsModal()" class="btn-action-clear" style="flex:1; padding: 10px; background:#d9534f;">清除自訂</button>
